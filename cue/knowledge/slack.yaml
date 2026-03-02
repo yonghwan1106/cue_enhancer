@@ -1,0 +1,216 @@
+app_name: Slack
+
+shortcuts:
+  - action: open Quick Switcher (jump to channel/DM)
+    keys: "Ctrl+K"
+    reliability: 1.0
+  - action: compose new message (direct message)
+    keys: "Ctrl+Shift+K"
+    reliability: 1.0
+  - action: search messages and files
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: navigate to next unread channel/DM
+    keys: "Alt+Shift+Down"
+    reliability: 1.0
+  - action: navigate to previous channel/DM
+    keys: "Alt+Shift+Up"
+    reliability: 1.0
+  - action: go to next channel in history
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: go to previous channel in history
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: mark channel as read
+    keys: "Escape"
+    reliability: 1.0
+  - action: mark all messages as read
+    keys: "Shift+Escape"
+    reliability: 1.0
+  - action: toggle mute microphone (in huddle/call)
+    keys: "M"
+    reliability: 0.9
+  - action: open Threads view
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: open All DMs view
+    keys: "Ctrl+Shift+K"
+    reliability: 0.9
+  - action: open Activity / notifications
+    keys: "Ctrl+Shift+M"
+    reliability: 1.0
+  - action: open Slack preferences
+    keys: "Ctrl+, (comma)"
+    reliability: 1.0
+  - action: toggle sidebar
+    keys: "Ctrl+Shift+D"
+    reliability: 0.9
+  - action: send message (in message composer)
+    keys: "Enter"
+    reliability: 1.0
+  - action: add new line in message (without sending)
+    keys: "Shift+Enter"
+    reliability: 1.0
+  - action: edit last sent message
+    keys: "Up arrow (in empty composer)"
+    reliability: 1.0
+  - action: bold selected text in composer
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: italic selected text in composer
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: strikethrough selected text in composer
+    keys: "Ctrl+Shift+X"
+    reliability: 1.0
+  - action: inline code selected text in composer
+    keys: "Ctrl+Shift+C (or backtick ` around text)"
+    reliability: 0.9
+  - action: code block in composer
+    keys: "Ctrl+Alt+Shift+C (or ```)"
+    reliability: 0.9
+  - action: add emoji reaction to message
+    keys: "Hover over message > click emoji icon, or press : then emoji name"
+    reliability: 0.9
+  - action: open emoji picker in composer
+    keys: "Ctrl+Shift+\\ or click emoji icon"
+    reliability: 0.8
+  - action: upload file
+    keys: "Ctrl+U or drag file into message composer"
+    reliability: 1.0
+  - action: jump to a specific date in channel
+    keys: "Click the calendar icon in the top right of a channel"
+    reliability: 0.8
+  - action: zoom in (increase font/UI size)
+    keys: "Ctrl+= or Ctrl++"
+    reliability: 0.9
+  - action: zoom out
+    keys: "Ctrl+-"
+    reliability: 0.9
+  - action: reset zoom
+    keys: "Ctrl+0"
+    reliability: 0.9
+
+pitfalls:
+  - situation: pressing Enter sends the message when intending to add a new line
+    avoid: pressing Enter for a line break in the message composer
+    instead: >
+      Press Shift+Enter to insert a new line without sending the message.
+      If Enter sends immediately, check Preferences > Advanced to change the
+      "Send messages" setting to require Ctrl+Enter if preferred.
+
+  - situation: accidentally editing a previously sent message with Up arrow
+    avoid: pressing Up arrow in the empty composer when meaning to scroll the channel
+    instead: >
+      Up arrow in an empty message composer opens the last sent message for editing.
+      Press Escape to cancel the edit without changes. Scroll the channel by
+      clicking in the message area first, then using Up/Down arrows or scroll wheel.
+
+  - situation: Ctrl+F searching in-app instead of globally
+    avoid: expecting Ctrl+F to search across all channels — it opens Slack's search
+    instead: >
+      Ctrl+F opens the Slack search bar (not browser find). Type your query and
+      use filters (From, In, Date) to narrow results. Press Enter to see all results
+      in the search results view.
+
+  - situation: "@ mentioning the wrong person due to autocomplete"
+    avoid: pressing Enter immediately after typing @ without reviewing autocomplete
+    instead: >
+      Type at least 2-3 characters of the name to narrow autocomplete suggestions.
+      Use arrow keys to select the correct person, then press Enter or Tab to confirm.
+      Review the @mention before sending.
+
+  - situation: notification from a channel but cannot find the unread message
+    avoid: scrolling manually through a channel to find the new message
+    instead: >
+      Press Alt+Shift+Down to jump to the next unread channel. Once in the channel,
+      press Escape to mark it as read, or look for the "New Messages" divider line
+      in the channel message list.
+
+  - situation: file upload dialog opens OS file picker and path is unknown
+    avoid: browsing randomly to find the file
+    instead: >
+      Use Ctrl+U in the Slack message composer to open the file upload dialog.
+      In the file picker, press Ctrl+L or type in the path bar to navigate directly
+      to the file location. Or drag the file from File Explorer into the composer.
+
+  - situation: message formatting (bold, code) renders incorrectly or shows raw markdown
+    avoid: typing *bold* or `code` and expecting it to always render in sent messages
+    instead: >
+      Slack renders markdown formatting. Use Ctrl+B for bold, Ctrl+I for italic,
+      backtick for inline code. Check the preview in the composer before sending.
+      Formatting renders after sending; the composer shows a preview toggle.
+
+navigation:
+  - target: specific channel or DM
+    method: "Ctrl+K to open Quick Switcher, type channel or person name, press Enter"
+    notes: Fastest navigation method; fuzzy search works on partial names.
+
+  - target: unread messages
+    method: "Alt+Shift+Down to jump to next unread channel"
+    notes: Alt+Shift+Up goes to previous unread; Shift+Escape marks all as read.
+
+  - target: Threads (replies you are following)
+    method: "Ctrl+Shift+T or click 'Threads' in the left sidebar"
+    notes: Shows all threads you have participated in or are mentioned in.
+
+  - target: Direct Messages
+    method: "Ctrl+Shift+K to open DM list, or click a person in the left sidebar"
+    notes: Type a name to search for a person to DM.
+
+  - target: search results
+    method: "Ctrl+F then type query; press Enter for full results view"
+    notes: "Use In: and From: filters to narrow scope; Date filter for time ranges."
+
+  - target: message in a thread
+    method: "Click 'Reply in thread' on a message or click the thread reply count"
+    notes: Thread panel opens on the right side; Ctrl+Shift+T shows all threads.
+
+  - target: Slack preferences
+    method: "Ctrl+, or click your profile picture > Preferences"
+    notes: Notifications, themes, sidebar customization are all in Preferences.
+
+  - target: workspace switcher
+    method: "Ctrl+Shift+1-9 to switch between workspaces by number"
+    notes: Workspace icons shown in the far left column.
+
+common_tasks:
+  - name: send a message to a channel
+    steps:
+      - "Press Ctrl+K and type the channel name"
+      - "Press Enter to open the channel"
+      - "Click the message composer at the bottom"
+      - "Type the message"
+      - "Press Enter to send (Shift+Enter for new line)"
+
+  - name: start a direct message with someone
+    steps:
+      - "Press Ctrl+K and type the person's name"
+      - "Select their name from the list (DM icon)"
+      - "Press Enter to open the DM"
+      - "Type your message and press Enter to send"
+
+  - name: reply to a message in a thread
+    steps:
+      - "Hover over the message you want to reply to"
+      - "Click the speech bubble icon (Reply in thread)"
+      - "The thread panel opens on the right"
+      - "Type your reply in the thread composer"
+      - "Press Enter to send"
+
+  - name: search for a specific message
+    steps:
+      - "Press Ctrl+F to open the search bar"
+      - "Type keywords from the message"
+      - "Press Enter to view all results"
+      - "Use From:, In:, and date filters to narrow results"
+      - "Click a result to jump to that message in context"
+
+  - name: upload a file to a channel
+    steps:
+      - "Navigate to the target channel"
+      - "Press Ctrl+U or click the paperclip/attachment icon in the composer"
+      - "Browse to and select the file"
+      - "Add an optional message/caption"
+      - "Press Enter or click Send"

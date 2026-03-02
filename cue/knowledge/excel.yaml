@@ -1,0 +1,240 @@
+app_name: Microsoft Excel
+
+shortcuts:
+  - action: navigate to specific cell (Name Box)
+    keys: "Ctrl+G or F5 (Go To dialog), or click Name Box and type address"
+    reliability: 1.0
+  - action: save file
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as
+    keys: "F12"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: paste special
+    keys: "Ctrl+Alt+V"
+    reliability: 1.0
+  - action: toggle bold
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: toggle italic
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: toggle underline
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: select all cells
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: find
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: go to first cell A1
+    keys: "Ctrl+Home"
+    reliability: 1.0
+  - action: go to last used cell
+    keys: "Ctrl+End"
+    reliability: 1.0
+  - action: move to next sheet
+    keys: "Ctrl+Page Down"
+    reliability: 1.0
+  - action: move to previous sheet
+    keys: "Ctrl+Page Up"
+    reliability: 1.0
+  - action: enter edit mode for current cell
+    keys: "F2"
+    reliability: 1.0
+  - action: confirm entry and move down
+    keys: "Enter"
+    reliability: 1.0
+  - action: confirm entry and stay in cell
+    keys: "Ctrl+Enter"
+    reliability: 1.0
+  - action: cancel cell edit
+    keys: "Escape"
+    reliability: 1.0
+  - action: open Format Cells dialog
+    keys: "Ctrl+1"
+    reliability: 1.0
+  - action: auto-sum selected range
+    keys: "Alt+="
+    reliability: 1.0
+  - action: insert row
+    keys: "Ctrl+Shift+Plus (with row selected)"
+    reliability: 0.9
+  - action: delete row
+    keys: "Ctrl+Minus (with row selected)"
+    reliability: 0.9
+  - action: insert function dialog
+    keys: "Shift+F3"
+    reliability: 1.0
+  - action: extend selection to last filled cell
+    keys: "Ctrl+Shift+End"
+    reliability: 1.0
+  - action: select entire column
+    keys: "Ctrl+Space"
+    reliability: 1.0
+  - action: select entire row
+    keys: "Shift+Space"
+    reliability: 1.0
+  - action: toggle AutoFilter
+    keys: "Ctrl+Shift+L"
+    reliability: 1.0
+  - action: group rows or columns
+    keys: "Alt+Shift+Right"
+    reliability: 0.9
+  - action: ungroup rows or columns
+    keys: "Alt+Shift+Left"
+    reliability: 0.9
+  - action: open Name Manager
+    keys: "Ctrl+F3"
+    reliability: 1.0
+  - action: create table from selection
+    keys: "Ctrl+T"
+    reliability: 1.0
+  - action: fill down
+    keys: "Ctrl+D"
+    reliability: 1.0
+  - action: fill right
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: open new workbook
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: print
+    keys: "Ctrl+P"
+    reliability: 1.0
+
+pitfalls:
+  - situation: keyboard shortcut not working because cell is in edit mode
+    avoid: using Ctrl+Home, Ctrl+End, or navigation shortcuts while F2 edit mode is active
+    instead: >
+      Press Escape to exit cell edit mode first. The bottom status bar shows "Edit"
+      when edit mode is active. Navigation shortcuts act on cell content in edit mode.
+
+  - situation: sort scrambles data because headers were included in the sort range
+    avoid: selecting a range that includes the header row before sorting
+    instead: >
+      Click any cell inside the data range (not the header), then use Data > Sort.
+      Excel auto-detects the range. In the Sort dialog, ensure "My data has headers"
+      is checked so the header row is excluded from sorting.
+
+  - situation: formula returns #VALUE! or #REF! error after copy-paste
+    avoid: pasting formulas without checking relative vs. absolute cell references
+    instead: >
+      Check if the formula uses $ for absolute references where needed (e.g., $A$1).
+      Press F2 to enter edit mode and verify reference addresses are correct.
+      Use Paste Special > Formulas (Ctrl+Alt+V, then F) for formulas only.
+
+  - situation: number stored as text — SUM returns 0
+    avoid: summing a column where numbers were imported as text (left-aligned in cells)
+    instead: >
+      Select the affected cells. Look for the green triangle warning in the corner.
+      Click the warning icon > Convert to Number. Alternatively use
+      VALUE() function or paste-as-values from a helper column.
+
+  - situation: accidentally entering data into a filtered-out (hidden) row
+    avoid: pressing Enter and data going to a hidden row instead of the next visible row
+    instead: >
+      When AutoFilter is active, use Ctrl+Enter to confirm and stay in the visible cell.
+      Navigate visible rows with Ctrl+Down to jump between non-hidden cells.
+
+  - situation: merged cells causing sort or formula errors
+    avoid: trying to sort or use INDEX/MATCH on ranges with merged cells
+    instead: >
+      Unmerge cells first (Home > Merge & Center > Unmerge Cells) before sorting.
+      Fill the unmerged cells with values if needed. Avoid merging cells in data tables.
+
+navigation:
+  - target: specific cell by address
+    method: "Click Name Box (top-left, shows cell address) > type address (e.g., D42) > Enter"
+    notes: Fastest way to jump to any cell; supports range addresses like A1:C10.
+
+  - target: Go To Special (blanks, formulas, etc.)
+    method: "Ctrl+G then click Special button"
+    notes: "Selects cells by type: blanks, formulas, constants, errors - very powerful."
+
+  - target: next/previous sheet
+    method: "Ctrl+Page Down (next) or Ctrl+Page Up (previous)"
+    notes: Right-click sheet navigation arrows at bottom-left for a sheet list.
+
+  - target: end of data in a direction
+    method: "Ctrl+Arrow key (Up/Down/Left/Right)"
+    notes: Jumps to last non-empty cell before a blank in that direction.
+
+  - target: Filter dropdown on a column
+    method: "Click column header dropdown arrow (enabled with Ctrl+Shift+L)"
+    notes: Alt+Down opens the filter dropdown for the active cell's column.
+
+  - target: data validation dropdown in a cell
+    method: "Click the cell then press Alt+Down"
+    notes: Opens dropdown list for cells with data validation lists.
+
+  - target: Format Cells dialog
+    method: "Ctrl+1"
+    notes: Fastest access to number format, alignment, borders, and protection.
+
+common_tasks:
+  - name: jump to a specific cell
+    steps:
+      - "Click the Name Box (shows current cell like 'A1')"
+      - "Type the target cell address (e.g., F100)"
+      - "Press Enter"
+
+  - name: sort data by a column
+    steps:
+      - "Click any cell inside the data range"
+      - "Go to Data tab > Sort (or press Alt, A, S, S)"
+      - "Choose the sort column and order (A-Z or Z-A)"
+      - "Verify 'My data has headers' is checked"
+      - "Click OK"
+
+  - name: apply AutoFilter and filter by value
+    steps:
+      - "Click any cell in the header row"
+      - "Press Ctrl+Shift+L to toggle AutoFilter"
+      - "Click the dropdown arrow on the column to filter"
+      - "Uncheck 'Select All', then check the value(s) to show"
+      - "Click OK"
+
+  - name: create a formula with absolute reference
+    steps:
+      - "Click the target cell"
+      - "Type the formula (e.g., =A1*$B$1)"
+      - "Use $ before column/row for absolute references"
+      - "Press Enter to confirm"
+      - "Copy the formula to other cells with Ctrl+C then select range, Ctrl+V"
+
+  - name: format cells as currency
+    steps:
+      - "Select the cell range"
+      - "Press Ctrl+1 to open Format Cells"
+      - "Click the Number tab and select Currency"
+      - "Set decimal places and symbol"
+      - "Click OK"
+
+  - name: create a PivotTable
+    steps:
+      - "Click any cell in the data range"
+      - "Go to Insert > PivotTable"
+      - "Verify the data range is correct"
+      - "Choose New Worksheet for the PivotTable location"
+      - "Click OK"
+      - "Drag fields into Rows, Columns, and Values areas in the PivotTable pane"

@@ -1,0 +1,180 @@
+app_name: gedit
+
+shortcuts:
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: save file
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as
+    keys: "Ctrl+Shift+S"
+    reliability: 1.0
+  - action: new file
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: close tab
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: quit gedit
+    keys: "Ctrl+Q"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Shift+Z"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: select all
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: find text
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: find next match
+    keys: "Ctrl+G or F3"
+    reliability: 1.0
+  - action: find previous match
+    keys: "Ctrl+Shift+G or Shift+F3"
+    reliability: 1.0
+  - action: go to specific line number
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: toggle line numbers display
+    keys: "View menu > Show Line Numbers"
+    reliability: 0.8
+  - action: indent selected lines
+    keys: "Tab"
+    reliability: 1.0
+  - action: unindent selected lines
+    keys: "Shift+Tab"
+    reliability: 1.0
+  - action: comment out line (requires plugin)
+    keys: "Ctrl+M (with Code Comment plugin)"
+    reliability: 0.6
+  - action: switch to next tab
+    keys: "Ctrl+Alt+Page Down"
+    reliability: 0.9
+  - action: switch to previous tab
+    keys: "Ctrl+Alt+Page Up"
+    reliability: 0.9
+  - action: open file manager panel (plugin)
+    keys: "F9 (File Browser panel)"
+    reliability: 0.7
+  - action: zoom in (increase font size)
+    keys: "Ctrl++"
+    reliability: 0.9
+  - action: zoom out (decrease font size)
+    keys: "Ctrl+-"
+    reliability: 0.9
+  - action: full screen toggle
+    keys: "F11"
+    reliability: 1.0
+  - action: print document
+    keys: "Ctrl+P"
+    reliability: 1.0
+
+pitfalls:
+  - situation: file not saving when Ctrl+S is pressed for a new untitled file
+    avoid: expecting Ctrl+S to silently save a new file — it opens Save As dialog
+    instead: >
+      For new (untitled) files, Ctrl+S opens the Save As dialog. Enter a filename
+      and path, then click Save. Subsequent Ctrl+S saves overwrite without a dialog.
+
+  - situation: find bar closes unexpectedly when pressing Enter
+    avoid: pressing Enter in the find bar expecting to stay in the bar and cycle matches
+    instead: >
+      In gedit's find bar, Enter jumps to the next match and closes the bar.
+      Use Ctrl+G or F3 to find next match while keeping the bar open (if using
+      the persistent search bar mode).
+
+  - situation: text encoding issues when opening files with special characters
+    avoid: opening a non-UTF-8 file and seeing garbled text without checking encoding
+    instead: >
+      Open the file via File > Open, click the encoding dropdown at the bottom of the
+      dialog to select the correct encoding (e.g., ISO-8859-1, Windows-1252).
+      You can also change encoding after opening via File > Save As > set encoding.
+
+  - situation: plugins like spell-check or bracket matching not available
+    avoid: assuming all features are built-in — gedit relies heavily on plugins
+    instead: >
+      Enable plugins via Edit > Preferences > Plugins tab. Enable spell checking,
+      code comment, bracket completion, etc. as needed.
+
+  - situation: accidental overwrite of a file due to auto-save being enabled
+    avoid: assuming gedit does not auto-save — the auto-save plugin can be enabled
+    instead: >
+      Check Edit > Preferences > Editor tab for auto-save settings.
+      Disable if you want manual save control only.
+
+navigation:
+  - target: specific line number
+    method: "Ctrl+I opens Go to Line dialog; type line number and press Enter"
+    notes: Line numbers shown in left margin if enabled via View menu.
+
+  - target: text search result
+    method: "Ctrl+F to open find bar, type term, Enter or Ctrl+G to cycle matches"
+    notes: Ctrl+Shift+G for previous match.
+
+  - target: open file tab
+    method: "Click tab at top of editor, or Ctrl+Alt+Page Up/Down to cycle"
+    notes: Tabs appear at the top of the editor window for each open file.
+
+  - target: recently opened files
+    method: "File > Open Recent"
+    notes: Lists recently accessed files for quick reopening.
+
+  - target: file browser panel
+    method: "View > Side Panel or F9 (requires File Browser Panel plugin)"
+    notes: Provides folder tree navigation without leaving gedit.
+
+  - target: bottom output panel
+    method: "View > Bottom Panel"
+    notes: Used by plugins like Python console or terminal integration.
+
+common_tasks:
+  - name: open and edit a text file
+    steps:
+      - "Press Ctrl+O to open file dialog"
+      - "Navigate to the file and click Open"
+      - "Edit the content"
+      - "Press Ctrl+S to save"
+
+  - name: find and replace text in a file
+    steps:
+      - "Press Ctrl+H to open Find and Replace dialog"
+      - "Enter the search term in the Search field"
+      - "Enter the replacement in the Replace With field"
+      - "Click Replace All or use Replace to replace one at a time"
+      - "Close the dialog when done"
+
+  - name: go to a specific line
+    steps:
+      - "Press Ctrl+I to open Go to Line dialog"
+      - "Type the line number"
+      - "Press Enter to jump to that line"
+
+  - name: open multiple files in tabs
+    steps:
+      - "Press Ctrl+O for the first file"
+      - "Press Ctrl+O again for the next file (it opens in a new tab)"
+      - "Switch between tabs with Ctrl+Alt+Page Down/Up or clicking the tabs"
+
+  - name: enable syntax highlighting for a file type
+    steps:
+      - "Open the file in gedit"
+      - "Click View menu > Highlight Mode"
+      - "Select the appropriate language from the list"
+      - "Syntax colors apply immediately"

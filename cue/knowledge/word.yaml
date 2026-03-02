@@ -1,0 +1,233 @@
+app_name: Microsoft Word
+
+shortcuts:
+  - action: save document
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as
+    keys: "F12"
+    reliability: 1.0
+  - action: open document
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: new document
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: print
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: paste and keep source formatting
+    keys: "Ctrl+Shift+V (shows Paste Options)"
+    reliability: 0.8
+  - action: paste as plain text (unformatted)
+    keys: "Ctrl+Alt+V then select Unformatted Text"
+    reliability: 0.9
+  - action: select all
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: toggle bold
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: toggle italic
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: toggle underline
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: toggle strikethrough
+    keys: "Alt+H then 4 (Home > Strikethrough button)"
+    reliability: 0.8
+  - action: align left
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: align center
+    keys: "Ctrl+E"
+    reliability: 1.0
+  - action: align right
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: justify
+    keys: "Ctrl+J"
+    reliability: 1.0
+  - action: increase font size
+    keys: "Ctrl+Shift+>"
+    reliability: 1.0
+  - action: decrease font size
+    keys: "Ctrl+Shift+<"
+    reliability: 1.0
+  - action: apply Heading 1 style
+    keys: "Ctrl+Alt+1"
+    reliability: 1.0
+  - action: apply Heading 2 style
+    keys: "Ctrl+Alt+2"
+    reliability: 1.0
+  - action: apply Heading 3 style
+    keys: "Ctrl+Alt+3"
+    reliability: 1.0
+  - action: apply Normal style
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: find text
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: go to page / line / heading
+    keys: "Ctrl+G or F5"
+    reliability: 1.0
+  - action: go to beginning of document
+    keys: "Ctrl+Home"
+    reliability: 1.0
+  - action: go to end of document
+    keys: "Ctrl+End"
+    reliability: 1.0
+  - action: insert page break
+    keys: "Ctrl+Enter"
+    reliability: 1.0
+  - action: toggle Show/Hide formatting marks
+    keys: "Ctrl+Shift+8 (Ctrl+*)"
+    reliability: 1.0
+  - action: insert hyperlink
+    keys: "Ctrl+K"
+    reliability: 1.0
+  - action: check spelling and grammar
+    keys: "F7"
+    reliability: 1.0
+  - action: toggle track changes
+    keys: "Ctrl+Shift+E"
+    reliability: 1.0
+  - action: insert comment
+    keys: "Ctrl+Alt+M"
+    reliability: 1.0
+  - action: open Navigation Pane (headings/search)
+    keys: "Ctrl+F (opens Navigation Pane in modern Word)"
+    reliability: 1.0
+  - action: word count
+    keys: "Ctrl+Shift+G"
+    reliability: 1.0
+  - action: repeat last action
+    keys: "F4"
+    reliability: 0.9
+
+pitfalls:
+  - situation: paste brings in unwanted formatting from source
+    avoid: Ctrl+V which keeps source formatting including fonts, colors, spacing
+    instead: >
+      Use Ctrl+Alt+V to open Paste Special, then choose "Unformatted Text" for
+      clean paste that inherits document styles. Or press Ctrl+V then look for
+      the Paste Options button that appears and click "Keep Text Only".
+
+  - situation: heading styles applied but Table of Contents not updating
+    avoid: editing headings and expecting the TOC to auto-update
+    instead: >
+      Right-click the Table of Contents and select "Update Field", then choose
+      "Update entire table". Or press Ctrl+A to select all, then press F9
+      to update all fields in the document.
+
+  - situation: track changes is recording edits unintentionally
+    avoid: making edits and having all changes marked as revisions without noticing
+    instead: >
+      Check Review tab or look for colored markup in the document. Press Ctrl+Shift+E
+      to toggle track changes off. Accept all existing tracked changes via
+      Review > Accept > Accept All Changes to clean up the document.
+
+  - situation: document shows "Compatibility Mode" in the title bar
+    avoid: using legacy .doc format features that limit modern Word functionality
+    instead: >
+      Go to File > Info > Convert to update the document to the latest .docx format.
+      This enables all modern features and removes compatibility restrictions.
+
+  - situation: page numbering starts from wrong number
+    avoid: editing page numbers directly in the header/footer — numbers are fields
+    instead: >
+      Double-click the header/footer area to edit it. Click the page number,
+      then go to Insert > Page Number > Format Page Numbers to set the start number.
+
+  - situation: image moves unexpectedly when text is added or removed
+    avoid: inserting images with "In Line with Text" wrapping then being surprised by reflow
+    instead: >
+      Right-click the image > Wrap Text and choose "Square", "Through", or
+      "Fix Position on Page" to anchor it in place independent of text flow.
+
+navigation:
+  - target: specific page by number
+    method: "Ctrl+G (Go To dialog) > select Page > type page number > Enter"
+    notes: F5 also opens Go To; supports navigating by headings, bookmarks, tables.
+
+  - target: Navigation Pane (headings overview)
+    method: "Ctrl+F opens search + Navigation Pane; click Headings tab"
+    notes: Click any heading in the pane to jump to that section instantly.
+
+  - target: find specific text
+    method: "Ctrl+F to open Navigation Pane > type text in search box"
+    notes: Matches highlighted in document; arrows cycle through matches.
+
+  - target: document beginning / end
+    method: "Ctrl+Home (beginning) or Ctrl+End (end)"
+    notes: Works regardless of current scroll position.
+
+  - target: header / footer area
+    method: "Double-click in header or footer area of the page"
+    notes: Double-click body text to exit header/footer editing mode.
+
+  - target: styles panel
+    method: "Ctrl+Alt+Shift+S to open Styles pane, or Home tab > Styles gallery"
+    notes: Shows all available styles; click to apply to current paragraph.
+
+  - target: specific bookmark or heading
+    method: "Ctrl+G > choose Bookmark or Heading > type name or select from list"
+    notes: Bookmarks must be inserted first via Insert > Bookmark.
+
+common_tasks:
+  - name: apply a heading style
+    steps:
+      - "Click anywhere in the target paragraph"
+      - "Press Ctrl+Alt+1 for Heading 1, Ctrl+Alt+2 for Heading 2, Ctrl+Alt+3 for Heading 3"
+      - "Verify style name in the Style box on the Home tab"
+
+  - name: find and replace text
+    steps:
+      - "Press Ctrl+H to open Find and Replace"
+      - "Type search text in 'Find what' field"
+      - "Type replacement in 'Replace with' field"
+      - "Click Replace All or Replace to replace one at a time"
+      - "Note the count of replacements made"
+      - "Click Close"
+
+  - name: insert a table of contents
+    steps:
+      - "Ensure all section headings use Heading styles (Ctrl+Alt+1/2/3)"
+      - "Place cursor where TOC should appear"
+      - "Go to References tab > Table of Contents"
+      - "Select Automatic Table 1 or 2"
+      - "To update later: right-click TOC > Update Field"
+
+  - name: track changes for document review
+    steps:
+      - "Press Ctrl+Shift+E to turn on Track Changes"
+      - "Make edits — insertions appear underlined, deletions struck through"
+      - "Press Ctrl+Shift+E again to stop tracking"
+      - "Reviewer: accept with Review > Accept or reject with Review > Reject"
+
+  - name: export document as PDF
+    steps:
+      - "Press Alt+F to open File menu"
+      - "Choose Export > Create PDF/XPS"
+      - "Set filename and save location"
+      - "Click Publish"

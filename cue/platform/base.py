@@ -81,6 +81,8 @@ def create_environment() -> EnvironmentAbstraction:
     elif sys.platform == "darwin":
         raise NotImplementedError("macOS support is planned for Phase 2")
     elif sys.platform == "win32":
-        raise NotImplementedError("Windows support is planned for Phase 2")
+        from cue.platform.windows import WindowsEnvironment
+
+        return WindowsEnvironment()
     else:
         raise RuntimeError(f"Unsupported platform: {sys.platform}")

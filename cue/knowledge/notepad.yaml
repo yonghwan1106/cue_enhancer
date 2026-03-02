@@ -1,0 +1,184 @@
+app_name: Notepad
+
+shortcuts:
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: save file
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as
+    keys: "Ctrl+Shift+S"
+    reliability: 1.0
+  - action: new file
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: new window
+    keys: "Ctrl+Shift+N"
+    reliability: 0.8
+  - action: print
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: select all
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: find text
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: find next match
+    keys: "F3"
+    reliability: 1.0
+  - action: find previous match
+    keys: "Shift+F3"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: go to line number
+    keys: "Ctrl+G"
+    reliability: 1.0
+  - action: insert date and time stamp
+    keys: "F5"
+    reliability: 1.0
+  - action: toggle word wrap
+    keys: "Alt+V then W (Format > Word Wrap in classic) or View > Word Wrap in new Notepad"
+    reliability: 0.9
+  - action: zoom in
+    keys: "Ctrl++"
+    reliability: 0.9
+  - action: zoom out
+    keys: "Ctrl+-"
+    reliability: 0.9
+  - action: reset zoom
+    keys: "Ctrl+0"
+    reliability: 0.9
+  - action: go to beginning of line
+    keys: "Home"
+    reliability: 1.0
+  - action: go to end of line
+    keys: "End"
+    reliability: 1.0
+  - action: go to beginning of file
+    keys: "Ctrl+Home"
+    reliability: 1.0
+  - action: go to end of file
+    keys: "Ctrl+End"
+    reliability: 1.0
+  - action: delete word to the right
+    keys: "Ctrl+Delete"
+    reliability: 1.0
+  - action: delete word to the left
+    keys: "Ctrl+Backspace"
+    reliability: 1.0
+  - action: close file (Windows 11 Notepad with tabs)
+    keys: "Ctrl+W"
+    reliability: 0.9
+
+pitfalls:
+  - situation: Notepad does not preserve formatting (bold, colors, fonts)
+    avoid: expecting rich text formatting to be saved — Notepad is plain text only
+    instead: >
+      Notepad saves plain text (.txt) only. Formatting (bold, color, font size) is
+      not stored. Use WordPad (write.exe) or Word for formatted documents.
+      For code editing, use Notepad++ or VS Code instead.
+
+  - situation: file saved in wrong encoding causing garbled characters
+    avoid: saving a file with Unicode/UTF-8 content using ANSI encoding
+    instead: >
+      In Save As dialog, check the Encoding dropdown at the bottom.
+      Choose UTF-8 (or UTF-8 with BOM for Windows tools) for Unicode content.
+      Windows 11 Notepad defaults to UTF-8; older versions default to ANSI.
+
+  - situation: large file opens very slowly or causes Notepad to freeze
+    avoid: opening log files or CSV files larger than several MB in Notepad
+    instead: >
+      Use a more capable editor like Notepad++ for large files. Notepad is not
+      optimized for large files and may become unresponsive. For very large files
+      use PowerShell (Get-Content) or a dedicated log viewer.
+
+  - situation: Go to Line (Ctrl+G) is greyed out
+    avoid: trying to use Ctrl+G when Word Wrap is enabled — it disables Go to Line
+    instead: >
+      Disable Word Wrap first (Format > Word Wrap or View > Word Wrap) to enable
+      the Go to Line feature. With word wrap on, line numbers are not tracked.
+
+  - situation: undo history lost after closing and reopening file
+    avoid: expecting undo to work across file saves or sessions
+    instead: >
+      Notepad's undo history is session-only and clears on file close/reopen.
+      Windows 11 Notepad retains unsaved content across sessions, but not undo history.
+
+navigation:
+  - target: specific line number
+    method: "Ctrl+G (requires Word Wrap to be off)"
+    notes: Type line number and click Go To to jump to that line.
+
+  - target: text in document
+    method: "Ctrl+F to open Find dialog, type term, press Find Next"
+    notes: F3 finds next match after closing the dialog.
+
+  - target: beginning / end of document
+    method: "Ctrl+Home for beginning, Ctrl+End for end"
+    notes: Reliable navigation for large files.
+
+  - target: beginning / end of current line
+    method: "Home / End keys"
+    notes: Home moves to start of line; pressing again moves to very start of text.
+
+  - target: tabs (Windows 11 Notepad)
+    method: "Ctrl+Tab or click tab at top"
+    notes: Windows 11 Notepad supports multiple tabs; Ctrl+W closes current tab.
+
+common_tasks:
+  - name: open a text file and search for content
+    steps:
+      - "Press Ctrl+O and navigate to the file"
+      - "Click Open"
+      - "Press Ctrl+F to open Find"
+      - "Type the search term and press Enter or Find Next"
+      - "Press Escape when done searching"
+
+  - name: find and replace text in a file
+    steps:
+      - "Press Ctrl+H to open Find and Replace"
+      - "Type the text to find in the Find field"
+      - "Type the replacement in the Replace With field"
+      - "Click Replace All or Replace to replace one at a time"
+      - "Press Ctrl+S to save"
+
+  - name: save file with specific encoding
+    steps:
+      - "Press Ctrl+Shift+S to open Save As"
+      - "Enter filename"
+      - "Click the Encoding dropdown"
+      - "Select the desired encoding (UTF-8, ANSI, etc.)"
+      - "Click Save"
+
+  - name: create a quick timestamped log entry
+    steps:
+      - "Open or create a .log file in Notepad"
+      - "Press F5 to insert current date and time"
+      - "Type the log entry"
+      - "Press Ctrl+S to save"
+
+  - name: go to a specific line number
+    steps:
+      - "Ensure Word Wrap is off (Format/View > Word Wrap)"
+      - "Press Ctrl+G to open Go to Line dialog"
+      - "Type the line number"
+      - "Press Enter or click Go To"

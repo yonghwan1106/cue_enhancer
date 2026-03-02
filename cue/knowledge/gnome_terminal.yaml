@@ -1,0 +1,201 @@
+app_name: GNOME Terminal
+
+shortcuts:
+  - action: open new terminal tab
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: open new terminal window
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: close current tab
+    keys: "Ctrl+Shift+W"
+    reliability: 1.0
+  - action: close terminal window
+    keys: "Ctrl+Shift+Q"
+    reliability: 1.0
+  - action: switch to next tab
+    keys: "Ctrl+Page Down"
+    reliability: 1.0
+  - action: switch to previous tab
+    keys: "Ctrl+Page Up"
+    reliability: 1.0
+  - action: switch to tab by number
+    keys: "Alt+1 through Alt+9"
+    reliability: 0.9
+  - action: copy selected text
+    keys: "Ctrl+Shift+C"
+    reliability: 1.0
+  - action: paste clipboard text
+    keys: "Ctrl+Shift+V"
+    reliability: 1.0
+  - action: find in terminal output
+    keys: "Ctrl+Shift+F"
+    reliability: 1.0
+  - action: zoom in (increase font size)
+    keys: "Ctrl++"
+    reliability: 1.0
+  - action: zoom out (decrease font size)
+    keys: "Ctrl+-"
+    reliability: 1.0
+  - action: reset zoom to default
+    keys: "Ctrl+0"
+    reliability: 1.0
+  - action: scroll up in terminal history
+    keys: "Shift+Page Up"
+    reliability: 1.0
+  - action: scroll down in terminal history
+    keys: "Shift+Page Down"
+    reliability: 1.0
+  - action: scroll to top of history
+    keys: "Shift+Home"
+    reliability: 0.9
+  - action: scroll to bottom of history
+    keys: "Shift+End"
+    reliability: 0.9
+  - action: interrupt current process (SIGINT)
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: send EOF / close stdin
+    keys: "Ctrl+D"
+    reliability: 1.0
+  - action: suspend process (SIGTSTP)
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: clear terminal screen
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: move cursor to beginning of line (bash)
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: move cursor to end of line (bash)
+    keys: "Ctrl+E"
+    reliability: 1.0
+  - action: delete from cursor to end of line (bash)
+    keys: "Ctrl+K"
+    reliability: 1.0
+  - action: delete from cursor to beginning of line (bash)
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: delete previous word (bash)
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: search command history backward
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: recall previous command
+    keys: "Up arrow"
+    reliability: 1.0
+  - action: recall next command in history
+    keys: "Down arrow"
+    reliability: 1.0
+  - action: tab completion for commands and paths
+    keys: "Tab"
+    reliability: 1.0
+  - action: open GNOME Terminal preferences
+    keys: "Edit > Preferences (no standard shortcut)"
+    reliability: 0.8
+
+pitfalls:
+  - situation: trying to use Ctrl+C to copy selected text
+    avoid: Ctrl+C sends SIGINT (interrupt) to the running process, not copy
+    instead: >
+      Use Ctrl+Shift+C to copy selected text in GNOME Terminal. Similarly,
+      use Ctrl+Shift+V to paste (not Ctrl+V). This is different from most GUI apps.
+
+  - situation: terminal appears to hang with no response to keystrokes
+    avoid: assuming the terminal is frozen when output was paused with Ctrl+S
+    instead: >
+      Press Ctrl+Q to resume output (XON/XOFF flow control). Ctrl+S pauses
+      terminal output; Ctrl+Q resumes it. If truly hung, try Ctrl+C to interrupt.
+
+  - situation: running a long command and accidentally pressing Ctrl+C
+    avoid: pressing Ctrl+C when trying to copy text — it kills the running process
+    instead: >
+      First select the text with mouse, then use Ctrl+Shift+C to copy.
+      If you accidentally killed a process, rerun the command.
+
+  - situation: Ctrl+D closing the terminal unexpectedly
+    avoid: pressing Ctrl+D on an empty prompt — it sends EOF and closes the shell
+    instead: >
+      Only press Ctrl+D intentionally to exit the shell. If an interactive
+      program (like python) is running, Ctrl+D exits that program, not the terminal.
+      Set IGNOREEOF=10 in .bashrc to require 10 Ctrl+D presses before bash exits.
+
+  - situation: pasting text with special characters causes unexpected command execution
+    avoid: pasting multi-line text or text with newlines directly into the prompt
+    instead: >
+      Paste carefully and review before pressing Enter. Multi-line pastes may
+      execute each line as a command. Use 'cat > file' then paste then Ctrl+D
+      if you need to paste text into a file.
+
+  - situation: history search (Ctrl+R) not finding a command
+    avoid: typing the wrong part of the command in reverse-i-search
+    instead: >
+      Ctrl+R searches backward through history matching the substring you type.
+      Press Ctrl+R again to cycle to older matches. Press Escape or Ctrl+G to
+      cancel without executing. Type at any point to refine the search term.
+
+navigation:
+  - target: previous command in history
+    method: "Up arrow key (repeatedly) or Ctrl+R for search"
+    notes: Up/Down arrows cycle through history; Ctrl+R allows substring search.
+
+  - target: specific tab
+    method: "Alt+1 through Alt+9, or Ctrl+Page Up/Down to cycle"
+    notes: Alt+number jumps directly to that tab number.
+
+  - target: beginning of current command line
+    method: "Ctrl+A"
+    notes: Moves cursor to start of line; Ctrl+E moves to end.
+
+  - target: previous word in command line
+    method: "Alt+B"
+    notes: Moves cursor one word backward; Alt+F moves one word forward.
+
+  - target: terminal scrollback history
+    method: "Shift+Page Up / Shift+Page Down"
+    notes: Scrolls through terminal output history without affecting running processes.
+
+  - target: find text in scrollback
+    method: "Ctrl+Shift+F"
+    notes: Opens find toolbar to search terminal scrollback buffer.
+
+  - target: new tab (separate shell session)
+    method: "Ctrl+Shift+T"
+    notes: Each tab runs an independent shell; working directory inherits from parent.
+
+common_tasks:
+  - name: run a command and copy its output
+    steps:
+      - "Type and run the command (e.g., ls -la)"
+      - "Click and drag to select the output text"
+      - "Press Ctrl+Shift+C to copy"
+      - "Switch to target application"
+      - "Paste with Ctrl+V (or Ctrl+Shift+V in another terminal)"
+
+  - name: search command history
+    steps:
+      - "Press Ctrl+R to open reverse history search"
+      - "Type a substring of the command you want (e.g., 'grep')"
+      - "Press Ctrl+R again to cycle to older matches"
+      - "Press Enter to execute the found command"
+      - "Press Escape to cancel and return to empty prompt"
+
+  - name: open multiple tabs for different tasks
+    steps:
+      - "Press Ctrl+Shift+T to open first new tab"
+      - "Repeat for additional tabs"
+      - "Switch between tabs with Ctrl+Page Up / Ctrl+Page Down or Alt+number"
+
+  - name: interrupt and resume a process
+    steps:
+      - "Press Ctrl+C to send SIGINT (interrupt/kill) to foreground process"
+      - "Or press Ctrl+Z to suspend (pause) the process to background"
+      - "Type 'bg' to resume suspended process in background"
+      - "Type 'fg' to bring background process back to foreground"
+
+  - name: clear terminal and start fresh
+    steps:
+      - "Press Ctrl+L or type 'clear' and press Enter"
+      - "This clears visible output but scrollback history is preserved"
+      - "Type 'reset' and Enter to fully reset the terminal (clears scrollback too)"

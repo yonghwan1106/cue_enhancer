@@ -1,0 +1,193 @@
+app_name: Nautilus
+
+shortcuts:
+  - action: open location bar (type path)
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: go to home directory
+    keys: "Alt+Home"
+    reliability: 1.0
+  - action: go up one directory level
+    keys: "Alt+Up"
+    reliability: 1.0
+  - action: go back in history
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: go forward in history
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: open new window
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: open new tab
+    keys: "Ctrl+T"
+    reliability: 1.0
+  - action: close current tab
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: toggle hidden files visibility
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: find / search files
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: copy selected file(s)
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut selected file(s)
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste file(s)
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: move to trash
+    keys: "Delete"
+    reliability: 1.0
+  - action: permanently delete (skip trash)
+    keys: "Shift+Delete"
+    reliability: 1.0
+  - action: rename selected file
+    keys: "F2"
+    reliability: 1.0
+  - action: select all files in folder
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: open selected file / folder
+    keys: "Enter"
+    reliability: 1.0
+  - action: open file properties dialog
+    keys: "Ctrl+I or Alt+Enter"
+    reliability: 1.0
+  - action: switch to icon view
+    keys: "Ctrl+1"
+    reliability: 1.0
+  - action: switch to list view
+    keys: "Ctrl+2"
+    reliability: 1.0
+  - action: zoom in (icon size)
+    keys: "Ctrl++"
+    reliability: 1.0
+  - action: zoom out (icon size)
+    keys: "Ctrl+-"
+    reliability: 1.0
+  - action: open terminal in current folder
+    keys: "Right-click in folder > Open in Terminal (if extension installed)"
+    reliability: 0.7
+  - action: undo last file operation
+    keys: "Ctrl+Z"
+    reliability: 0.9
+  - action: create new folder
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: open bookmarks sidebar
+    keys: "F9"
+    reliability: 0.9
+
+pitfalls:
+  - situation: trying to type a path directly into the location breadcrumb bar
+    avoid: clicking the breadcrumb path bar — it shows folder names as clickable buttons, not a text field
+    instead: >
+      Press Ctrl+L to switch to the text-entry location bar. Then type the full
+      path (e.g., /home/user/Documents) and press Enter. Press Escape to cancel.
+
+  - situation: hidden files (dotfiles) not visible
+    avoid: assuming a file is missing when it starts with a dot
+    instead: >
+      Press Ctrl+H to toggle visibility of hidden files (those starting with .).
+      The setting persists across sessions but can be toggled back with Ctrl+H.
+
+  - situation: copy/paste not moving the file — both source and destination have the file
+    avoid: using Ctrl+C + Ctrl+V when you intended to move (not copy)
+    instead: >
+      To move a file, use Ctrl+X (cut) then Ctrl+V (paste). Ctrl+C always copies,
+      leaving the original in place. Alternatively drag with middle mouse or
+      drag+hold Shift to force move on some systems.
+
+  - situation: rename operation accidentally renames wrong file
+    avoid: pressing F2 without verifying which file is selected (highlighted)
+    instead: >
+      Click once to select the target file (verify it is highlighted), then
+      press F2. The filename becomes editable inline. Press Enter to confirm
+      or Escape to cancel without renaming.
+
+  - situation: file operation (delete/move) seems to do nothing
+    avoid: assuming the operation failed silently
+    instead: >
+      Check the trash (for Delete) or the destination folder (for Move/Paste).
+      Nautilus may show a notification bar at the top with Undo option.
+      Press Ctrl+Z to undo the last file operation if needed.
+
+  - situation: search returning no results for a file that exists
+    avoid: searching without knowing search scope — default may be limited to current folder
+    instead: >
+      After pressing Ctrl+F, check if the search is scoped to current folder or
+      all files. In newer Nautilus versions there is a dropdown to choose scope.
+      Also verify the filename spelling is correct.
+
+navigation:
+  - target: specific directory by path
+    method: "Ctrl+L then type path (e.g., /home/user/Downloads) then Enter"
+    notes: Supports tab completion; press Escape to cancel without navigating.
+
+  - target: home directory
+    method: "Alt+Home or click Home in the left sidebar bookmarks"
+    notes: Always navigates to the current user's home directory.
+
+  - target: parent directory
+    method: "Alt+Up or click the parent folder name in the breadcrumb bar"
+    notes: Can be pressed repeatedly to traverse up the tree.
+
+  - target: recent files
+    method: "Click 'Recent' in the left sidebar"
+    notes: Shows recently accessed files across all folders.
+
+  - target: bookmarked folder
+    method: "Click bookmark name in the left sidebar"
+    notes: Add bookmarks via Ctrl+D or drag folder to the sidebar.
+
+  - target: trash
+    method: "Click 'Trash' in the left sidebar"
+    notes: Shows deleted files; right-click > Restore to recover a file.
+
+  - target: file search results
+    method: "Ctrl+F then type filename or content"
+    notes: Results update in real-time; click result to navigate to its location.
+
+  - target: network / remote locations
+    method: "Other Locations in sidebar, or Ctrl+L then type smb:// or sftp://"
+    notes: Supports SMB, FTP, SFTP, and WebDAV through the location bar.
+
+common_tasks:
+  - name: navigate to a specific folder
+    steps:
+      - "Press Ctrl+L to open the path entry bar"
+      - "Type the full path (e.g., /home/user/Documents/Projects)"
+      - "Press Tab for autocompletion suggestions"
+      - "Press Enter to navigate"
+
+  - name: create a new folder
+    steps:
+      - "Navigate to the parent directory"
+      - "Press Ctrl+Shift+N"
+      - "Type the folder name in the inline rename field"
+      - "Press Enter to confirm"
+
+  - name: copy files to another location
+    steps:
+      - "Select one or more files (click, Ctrl+click for multiple)"
+      - "Press Ctrl+C to copy"
+      - "Navigate to the destination folder"
+      - "Press Ctrl+V to paste"
+
+  - name: rename a file
+    steps:
+      - "Click once on the file to select it"
+      - "Press F2 to enter rename mode"
+      - "Edit the name (select all with Ctrl+A if replacing entirely)"
+      - "Press Enter to confirm"
+
+  - name: show and access hidden configuration files
+    steps:
+      - "Press Ctrl+H to show hidden files (dotfiles)"
+      - "Navigate to the desired hidden file or folder"
+      - "Press Ctrl+H again to hide them when done"

@@ -1,0 +1,205 @@
+app_name: Microsoft Edge
+
+shortcuts:
+  - action: focus address bar
+    keys: "Ctrl+L or Alt+D or F4"
+    reliability: 1.0
+  - action: open new tab
+    keys: "Ctrl+T"
+    reliability: 1.0
+  - action: close current tab
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: reopen last closed tab
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: open new window
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: open InPrivate window
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: switch to next tab
+    keys: "Ctrl+Tab"
+    reliability: 1.0
+  - action: switch to previous tab
+    keys: "Ctrl+Shift+Tab"
+    reliability: 1.0
+  - action: switch to tab by number
+    keys: "Ctrl+1 through Ctrl+8"
+    reliability: 1.0
+  - action: switch to last tab
+    keys: "Ctrl+9"
+    reliability: 1.0
+  - action: go back
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: go forward
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: reload page
+    keys: "Ctrl+R or F5"
+    reliability: 1.0
+  - action: hard reload (bypass cache)
+    keys: "Ctrl+Shift+R or Ctrl+F5"
+    reliability: 1.0
+  - action: stop loading
+    keys: "Escape"
+    reliability: 1.0
+  - action: find in page
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: zoom in
+    keys: "Ctrl++"
+    reliability: 1.0
+  - action: zoom out
+    keys: "Ctrl+-"
+    reliability: 1.0
+  - action: reset zoom to 100%
+    keys: "Ctrl+0"
+    reliability: 1.0
+  - action: open downloads
+    keys: "Ctrl+J"
+    reliability: 1.0
+  - action: open history
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: bookmark current page
+    keys: "Ctrl+D"
+    reliability: 1.0
+  - action: open favorites / bookmarks manager
+    keys: "Ctrl+Shift+O"
+    reliability: 1.0
+  - action: open developer tools
+    keys: "F12"
+    reliability: 1.0
+  - action: open settings
+    keys: "Alt+F then S, or navigate to edge://settings"
+    reliability: 0.9
+  - action: open task manager (Edge process)
+    keys: "Shift+Esc"
+    reliability: 1.0
+  - action: print page
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: save page as
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: read aloud (Immersive Reader)
+    keys: "Ctrl+Shift+U (when in Immersive Reader)"
+    reliability: 0.7
+  - action: open Immersive Reader
+    keys: "F9"
+    reliability: 0.8
+  - action: open Collections sidebar
+    keys: "Ctrl+Shift+Y"
+    reliability: 0.9
+  - action: pin / unpin sidebar
+    keys: "Ctrl+Shift+[ (toggle sidebar)"
+    reliability: 0.7
+  - action: add page to Reading List
+    keys: "Ctrl+Shift+D (in some configurations)"
+    reliability: 0.7
+  - action: scroll to top
+    keys: "Ctrl+Home"
+    reliability: 1.0
+  - action: scroll to bottom
+    keys: "Ctrl+End"
+    reliability: 1.0
+
+pitfalls:
+  - situation: Edge sidebar (Copilot, Shopping) obscuring page content
+    avoid: ignoring the sidebar overlay which may cover interactive page elements
+    instead: >
+      Click the X or pin button on the sidebar to close or collapse it.
+      Go to edge://settings/sidebar to disable specific sidebar apps or
+      toggle the sidebar entirely with Ctrl+Shift+/.
+
+  - situation: downloads saved to wrong location
+    avoid: assuming all downloads go to the same folder as previous sessions
+    instead: >
+      Edge may ask where to save each download or use a default folder.
+      Check Ctrl+J (Downloads) to see where files were saved. Configure the default
+      download folder in edge://settings/downloads.
+
+  - situation: PDF opened in Edge's built-in viewer instead of a separate app
+    avoid: not realizing Edge handles PDF files natively and may open them in the tab
+    instead: >
+      In the Edge PDF viewer, use the toolbar to save, print, or rotate the PDF.
+      To always open PDFs in another app, change the default PDF handler in
+      Windows Settings > Default apps.
+
+  - situation: Ctrl+F find bar not finding text visible on page
+    avoid: assuming all visible text is searchable — some content is in iframes or images
+    instead: >
+      Text in iframes may require clicking inside the frame first, then Ctrl+F.
+      Text in images is not searchable via Ctrl+F. Use the page's own search if available.
+
+  - situation: tab crashes or shows error without warning
+    avoid: losing work in a form or text editor when a tab crashes
+    instead: >
+      Use Ctrl+Shift+T to reopen the crashed tab — Edge may restore the page.
+      For important text entry, type in a separate text editor and paste into the form.
+
+navigation:
+  - target: address bar
+    method: "Ctrl+L (instantly focuses; current URL is selected)"
+    notes: Type to search (uses Bing by default) or enter a URL directly.
+
+  - target: Edge internal settings pages
+    method: "Ctrl+L then type edge:// URL (e.g., edge://settings, edge://downloads)"
+    notes: "Common: edge://flags, edge://extensions, edge://history, edge://favorites."
+
+  - target: text on current page
+    method: "Ctrl+F then type search term; Enter/Shift+Enter cycles matches"
+    notes: F3 also cycles to next match; Escape closes find bar.
+
+  - target: favorites / bookmarks
+    method: "Ctrl+Shift+O to open Favorites manager"
+    notes: Favorites are organized in folders; use search box in Favorites to find by name.
+
+  - target: specific tab
+    method: "Ctrl+1 through Ctrl+8, Ctrl+9 for last tab"
+    notes: Also use Ctrl+Tab to cycle sequentially.
+
+  - target: downloads
+    method: "Ctrl+J or navigate to edge://downloads"
+    notes: Shows download history; click 'Open file' or 'Show in folder'.
+
+  - target: extensions
+    method: "Navigate to edge://extensions or click Extensions icon in toolbar"
+    notes: Toggle extensions on/off from this page.
+
+common_tasks:
+  - name: navigate to a URL
+    steps:
+      - "Press Ctrl+L to focus the address bar"
+      - "Type the URL or search query"
+      - "Press Enter"
+
+  - name: download a file
+    steps:
+      - "Click the download link"
+      - "If prompted, click Save or Keep"
+      - "Press Ctrl+J to view download progress"
+      - "Click the completed file to open it"
+
+  - name: open a link in a new tab
+    steps:
+      - "Ctrl+click the link (opens in new background tab)"
+      - "Or middle-click the link"
+      - "Switch to the tab with Ctrl+Tab when ready"
+
+  - name: clear browsing data
+    steps:
+      - "Press Ctrl+Shift+Delete to open Clear Browsing Data dialog"
+      - "Select time range"
+      - "Check items to clear (cookies, cached images, history)"
+      - "Click Clear now"
+
+  - name: use Immersive Reader for cleaner reading
+    steps:
+      - "Navigate to an article or text-heavy page"
+      - "Press F9 or click the Immersive Reader icon in the address bar"
+      - "Page displays in distraction-free reading mode"
+      - "Press F9 again or click Exit to return to normal view"

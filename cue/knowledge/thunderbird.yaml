@@ -1,0 +1,201 @@
+app_name: Thunderbird
+
+shortcuts:
+  - action: compose new message
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: reply to selected message
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: reply all
+    keys: "Ctrl+Shift+R"
+    reliability: 1.0
+  - action: forward message
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: send message (from compose window)
+    keys: "Ctrl+Enter"
+    reliability: 1.0
+  - action: get new messages
+    keys: "Ctrl+T or F5"
+    reliability: 0.9
+  - action: open find / search messages
+    keys: "Ctrl+Shift+K (Quick Filter) or Ctrl+Shift+F (Advanced Search)"
+    reliability: 1.0
+  - action: quick filter bar toggle
+    keys: "Ctrl+Shift+K"
+    reliability: 1.0
+  - action: delete selected message
+    keys: "Delete"
+    reliability: 1.0
+  - action: permanently delete (skip trash)
+    keys: "Shift+Delete"
+    reliability: 1.0
+  - action: mark message as read
+    keys: "M"
+    reliability: 1.0
+  - action: mark message as unread
+    keys: "Shift+M"
+    reliability: 1.0
+  - action: mark message as starred / flagged
+    keys: "S"
+    reliability: 1.0
+  - action: archive message
+    keys: "A"
+    reliability: 1.0
+  - action: move message to folder (dialog)
+    keys: "Shift+Ctrl+M"
+    reliability: 0.9
+  - action: open message in new window
+    keys: "Ctrl+O or Enter (with message selected)"
+    reliability: 0.9
+  - action: close current tab or window
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: go to next message
+    keys: "F or N"
+    reliability: 1.0
+  - action: go to previous message
+    keys: "B or P"
+    reliability: 1.0
+  - action: go to next unread message
+    keys: "Ctrl+]"
+    reliability: 0.9
+  - action: select all messages in folder
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: undo last action
+    keys: "Ctrl+Z"
+    reliability: 0.9
+  - action: open address book
+    keys: "Ctrl+Shift+B"
+    reliability: 1.0
+  - action: add sender to address book
+    keys: "Ctrl+Shift+A (right-click sender > Add to Address Book)"
+    reliability: 0.8
+  - action: open account settings
+    keys: "Alt+T then S (Tools > Account Settings)"
+    reliability: 0.9
+  - action: collapse / expand folder tree
+    keys: "Left/Right arrow when folder is selected"
+    reliability: 0.9
+  - action: print message
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: save message as file
+    keys: "Ctrl+S"
+    reliability: 0.9
+
+pitfalls:
+  - situation: pressing Enter on a message in the message list to open it
+    avoid: pressing Enter — in some views it activates Reply instead of opening
+    instead: >
+      Double-click the message to open it in a new tab/window, or
+      press Ctrl+O to open. Single-click selects and shows preview in the reading pane.
+
+  - situation: accidentally sending an email with Ctrl+Enter during composition
+    avoid: pressing Ctrl+Enter to add a new paragraph — it sends the email immediately
+    instead: >
+      Press Enter (without Ctrl) for new paragraphs in the compose window.
+      Ctrl+Enter is the send shortcut. If accidentally triggered, check Sent folder
+      and recall if the email server supports it.
+
+  - situation: searching for messages but getting no results
+    avoid: typing in the wrong search box (Quick Filter vs. Global Search)
+    instead: >
+      Ctrl+Shift+K opens Quick Filter (filters current folder). Ctrl+Shift+F opens
+      the full Advanced Search dialog that can search all folders and accounts.
+      Use Advanced Search for cross-folder searching.
+
+  - situation: moving messages by dragging to wrong folder
+    avoid: drag-and-drop when the folder tree is long — easy to drop in wrong folder
+    instead: >
+      Select message(s), press Ctrl+Shift+M (or right-click > Move To) to open
+      the Move Message dialog, then type the folder name to filter and select it.
+
+  - situation: attachments not included when forwarding inline
+    avoid: assuming forward always includes attachments — inline forwarding may strip them
+    instead: >
+      When forwarding, check that the attachment list shows at the bottom of the compose
+      window. If missing, reforward using "Forward As Attachment" from the Message menu.
+
+  - situation: HTML email displays incorrectly or shows raw HTML
+    avoid: switching display mode that breaks email rendering
+    instead: >
+      Use View > Message Body As > Original HTML for normal rendering.
+      If plain text is forced, check View menu for the display setting.
+
+navigation:
+  - target: inbox of specific account
+    method: "Click the account name in the left folder tree, then click Inbox"
+    notes: Accounts are listed in the left pane; click arrow to expand folder tree.
+
+  - target: global inbox (unified inbox)
+    method: "Click 'Local Folders' or the unified account at top of folder list"
+    notes: Thunderbird can show a unified inbox combining all accounts.
+
+  - target: message search (current folder)
+    method: "Ctrl+Shift+K to activate Quick Filter bar, then type search term"
+    notes: Filters messages in current folder in real time.
+
+  - target: advanced search (all accounts)
+    method: "Ctrl+Shift+F to open Search Messages dialog"
+    notes: Set folder scope to 'All Folders' for cross-account searching.
+
+  - target: address book
+    method: "Ctrl+Shift+B"
+    notes: Opens the Address Book window; search contacts there.
+
+  - target: specific folder
+    method: "Click folder name in left panel, or use keyboard: click account, arrow keys to expand"
+    notes: Press Left/Right arrows to collapse/expand folders in the tree.
+
+  - target: sent messages
+    method: "Expand account in folder tree, click 'Sent' folder"
+    notes: Each account has its own Sent folder.
+
+  - target: message attachments
+    method: "Look at the attachment bar below message header in reading pane"
+    notes: Double-click an attachment to open it; right-click to Save As.
+
+common_tasks:
+  - name: compose and send a new email
+    steps:
+      - "Press Ctrl+N to open compose window"
+      - "Type recipient address in To field; press Tab"
+      - "Add Subject line; press Tab"
+      - "Type the message body"
+      - "Add attachments via Attach button or Ctrl+Shift+A if needed"
+      - "Press Ctrl+Enter to send"
+
+  - name: search for a message across all folders
+    steps:
+      - "Press Ctrl+Shift+F to open Advanced Search"
+      - "Set the search location to 'All Folders' or a specific account"
+      - "Enter search terms in Subject or Body fields"
+      - "Click Search"
+      - "Double-click a result to open the message"
+
+  - name: move messages to a folder
+    steps:
+      - "Select one or more messages in the message list"
+      - "Right-click and choose Move To, or press Ctrl+Shift+M"
+      - "Navigate the folder tree in the dialog or type to filter"
+      - "Select the destination folder and confirm"
+
+  - name: set up an email filter rule
+    steps:
+      - "Press Alt+T to open Tools menu"
+      - "Choose Message Filters"
+      - "Select the account and click New"
+      - "Define the condition (e.g., From contains X)"
+      - "Set the action (e.g., Move to Folder Y)"
+      - "Click OK and then Run Now if desired"
+
+  - name: reply to an email with all recipients
+    steps:
+      - "Select or open the message"
+      - "Press Ctrl+Shift+R for Reply All"
+      - "Review To and Cc fields to verify recipients"
+      - "Type reply text"
+      - "Press Ctrl+Enter to send"

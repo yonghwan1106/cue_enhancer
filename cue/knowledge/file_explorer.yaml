@@ -1,0 +1,201 @@
+app_name: Windows File Explorer
+
+shortcuts:
+  - action: open File Explorer
+    keys: "Win+E"
+    reliability: 1.0
+  - action: focus address bar (path entry)
+    keys: "Ctrl+L or Alt+D or F4"
+    reliability: 1.0
+  - action: go up one folder level
+    keys: "Alt+Up"
+    reliability: 1.0
+  - action: go back in navigation history
+    keys: "Alt+Left or Backspace"
+    reliability: 1.0
+  - action: go forward in navigation history
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: open new File Explorer window
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: open new tab (Windows 11)
+    keys: "Ctrl+T"
+    reliability: 0.9
+  - action: close current tab (Windows 11)
+    keys: "Ctrl+W"
+    reliability: 0.9
+  - action: refresh current folder
+    keys: "F5"
+    reliability: 1.0
+  - action: toggle navigation pane (left panel)
+    keys: "Alt+P (View > Navigation Pane)"
+    reliability: 0.8
+  - action: toggle preview pane
+    keys: "Alt+P (second press or View > Preview Pane)"
+    reliability: 0.8
+  - action: copy selected item(s)
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut selected item(s)
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste item(s)
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: move to Recycle Bin
+    keys: "Delete"
+    reliability: 1.0
+  - action: permanently delete (skip Recycle Bin)
+    keys: "Shift+Delete"
+    reliability: 1.0
+  - action: rename selected item
+    keys: "F2"
+    reliability: 1.0
+  - action: select all items in folder
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: open selected item / folder
+    keys: "Enter"
+    reliability: 1.0
+  - action: open item properties
+    keys: "Alt+Enter"
+    reliability: 1.0
+  - action: create new folder
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: search files in current folder
+    keys: "Ctrl+F or F3"
+    reliability: 1.0
+  - action: switch to Extra Large Icons view
+    keys: "Ctrl+Shift+1"
+    reliability: 0.9
+  - action: switch to Details view
+    keys: "Ctrl+Shift+6"
+    reliability: 0.9
+  - action: switch to List view
+    keys: "Ctrl+Shift+5"
+    reliability: 0.9
+  - action: show / hide file extensions (toggle)
+    keys: "View menu > File name extensions checkbox"
+    reliability: 0.9
+  - action: show / hide hidden files
+    keys: "View menu > Hidden items checkbox"
+    reliability: 0.9
+  - action: open command prompt here
+    keys: "Shift+right-click in folder > Open in Terminal or Command Prompt"
+    reliability: 0.9
+  - action: undo last file operation
+    keys: "Ctrl+Z"
+    reliability: 0.9
+  - action: copy file path to clipboard
+    keys: "Shift+right-click > Copy as path"
+    reliability: 1.0
+
+pitfalls:
+  - situation: trying to type a path in the breadcrumb navigation bar
+    avoid: clicking the breadcrumb text — it shows folder names as clickable segments
+    instead: >
+      Press Ctrl+L or Alt+D or F4 to convert the breadcrumb bar into a text field.
+      Then type or paste the full path (e.g., C:\Users\user\Documents) and press Enter.
+
+  - situation: deleting files thinking they go to Recycle Bin but they are permanently deleted
+    avoid: pressing Shift+Delete or deleting from a network drive or USB drive
+    instead: >
+      Files deleted from removable drives and network locations bypass the Recycle Bin.
+      Use Delete (without Shift) for local files and verify in Recycle Bin before emptying.
+
+  - situation: drag-and-drop moves a file to the wrong folder accidentally
+    avoid: imprecise drag operations especially to folders in the tree panel
+    instead: >
+      Use Cut (Ctrl+X) and Paste (Ctrl+V) for reliable file moves. Or hold Ctrl
+      while dragging to copy instead of move. Press Ctrl+Z to undo a misplaced move.
+
+  - situation: file extension is hidden, causing wrong double-click action
+    avoid: double-clicking a file without knowing its true extension (e.g., .exe vs .txt)
+    instead: >
+      Enable "File name extensions" in View menu to see all extensions.
+      Right-click > Properties also shows the real file type and extension.
+
+  - situation: search finds no results because it only searches current folder
+    avoid: expecting File Explorer search to search all drives by default
+    instead: >
+      After typing in the search box, use the Search tab that appears in the ribbon
+      to change scope (This PC, All Subfolders, etc.). For full-drive search, navigate
+      to This PC first then search.
+
+  - situation: paste operation pastes into wrong subfolder because wrong folder is active
+    avoid: navigating and pasting without verifying the current folder in the address bar
+    instead: >
+      Always check the address bar to confirm your current location before pasting.
+      The folder highlighted in the left tree panel is not always the active destination.
+
+navigation:
+  - target: specific folder by path
+    method: "Ctrl+L then type path (e.g., C:\\Users\\user\\Downloads) then Enter"
+    notes: Tab completion works for partial paths; Escape cancels without navigating.
+
+  - target: Desktop
+    method: "Click Desktop in the left navigation pane under Quick Access"
+    notes: Also accessible via Win+D to show desktop, then open any folder from there.
+
+  - target: This PC (all drives)
+    method: "Click 'This PC' in the left navigation pane"
+    notes: Shows all local, network, and removable drives.
+
+  - target: Quick Access (pinned folders)
+    method: "Click 'Quick Access' at top of left pane"
+    notes: Pin frequently used folders by right-clicking them > Pin to Quick Access.
+
+  - target: network locations
+    method: "Click 'Network' in left pane, or type \\\\servername in address bar"
+    notes: Map network drives via right-click > Map network drive in This PC.
+
+  - target: recently accessed files
+    method: "Quick Access shows recent files below pinned folders"
+    notes: Recent files are listed automatically; right-click to remove from list.
+
+  - target: file search
+    method: "Click in the search box (top right) or press Ctrl+F then type"
+    notes: Searches the current folder and subfolders; use Search tab to change scope.
+
+  - target: Recycle Bin
+    method: "Click Recycle Bin on Desktop or type 'Recycle Bin' in address bar"
+    notes: Right-click Recycle Bin > Restore to recover deleted files.
+
+common_tasks:
+  - name: navigate to a specific folder
+    steps:
+      - "Press Ctrl+L to activate the address bar"
+      - "Type the full path (e.g., C:\\Projects\\myapp\\src)"
+      - "Press Tab for path auto-completion if needed"
+      - "Press Enter to navigate"
+
+  - name: copy files to another location
+    steps:
+      - "Navigate to the source folder"
+      - "Select files (click, Ctrl+click for multiple, Shift+click for range)"
+      - "Press Ctrl+C to copy"
+      - "Navigate to the destination folder"
+      - "Press Ctrl+V to paste"
+
+  - name: create a new folder
+    steps:
+      - "Navigate to the parent folder"
+      - "Press Ctrl+Shift+N"
+      - "Type the folder name in the inline rename field"
+      - "Press Enter to confirm"
+
+  - name: rename a file
+    steps:
+      - "Click once to select the file"
+      - "Press F2 to enter rename mode"
+      - "Type the new name (or use Ctrl+A to select all and retype)"
+      - "Press Enter to confirm"
+
+  - name: show hidden files and extensions
+    steps:
+      - "Open View menu in the ribbon (or View tab in Windows 11)"
+      - "Check 'Hidden items' to show hidden files"
+      - "Check 'File name extensions' to show extensions"
+      - "Settings persist across sessions"

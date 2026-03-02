@@ -155,6 +155,19 @@ class BenchmarkConfig(BaseModel):
     save_traces: bool = True
 
 
+class OmniParserConfig(BaseModel):
+    """OmniParser V2 integration configuration."""
+
+    enabled: bool = False  # opt-in; requires model weights
+    model_path: str = ""  # path to OmniParser V2 weights
+    device: str = "cpu"  # cpu | cuda | mps
+    confidence_threshold: float = 0.5
+    max_elements: int = 100
+    batch_size: int = 1
+    cache_ttl_seconds: int = 5
+    fallback_to_opencv: bool = True  # use OpenCV if OmniParser unavailable
+
+
 class AgentConfig(BaseModel):
     """Main agent loop configuration."""
 
@@ -185,6 +198,7 @@ class CUEConfig(BaseSettings):
     memory: MemoryConfig = Field(default_factory=MemoryConfig)
     efficiency: EfficiencyConfig = Field(default_factory=EfficiencyConfig)
     benchmark: BenchmarkConfig = Field(default_factory=BenchmarkConfig)
+    omniparser: OmniParserConfig = Field(default_factory=OmniParserConfig)
     agent: AgentConfig = Field(default_factory=AgentConfig)
 
     @classmethod

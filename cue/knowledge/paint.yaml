@@ -1,0 +1,191 @@
+app_name: MS Paint
+
+shortcuts:
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: save file
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as
+    keys: "Ctrl+Shift+S"
+    reliability: 1.0
+  - action: new canvas
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: print
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: select all
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: delete selected area
+    keys: "Delete"
+    reliability: 1.0
+  - action: invert selection
+    keys: "Ctrl+Shift+I"
+    reliability: 0.9
+  - action: select pencil tool
+    keys: "Ctrl+P (or click in toolbar)"
+    reliability: 0.7
+  - action: select fill (bucket) tool
+    keys: "F (or click in toolbar)"
+    reliability: 0.7
+  - action: select text tool
+    keys: "A (or click in toolbar)"
+    reliability: 0.7
+  - action: select eraser tool
+    keys: "E (or click in toolbar)"
+    reliability: 0.7
+  - action: select color picker tool
+    keys: "I (or click in toolbar)"
+    reliability: 0.7
+  - action: select magnifier / zoom tool
+    keys: "Q (or click in toolbar)"
+    reliability: 0.7
+  - action: zoom in
+    keys: "Ctrl++ or Ctrl+Page Up"
+    reliability: 0.9
+  - action: zoom out
+    keys: "Ctrl+- or Ctrl+Page Down"
+    reliability: 0.9
+  - action: zoom to actual size (100%)
+    keys: "Ctrl+Shift+G (or View > Zoom > 100%)"
+    reliability: 0.8
+  - action: crop to selection
+    keys: "Ctrl+Shift+X (Paint 2024+) or Home tab > Crop"
+    reliability: 0.8
+  - action: resize canvas or image
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: rotate image 90 degrees right
+    keys: "Image menu > Rotate right 90°"
+    reliability: 0.8
+  - action: flip horizontal
+    keys: "Image menu > Flip horizontal"
+    reliability: 0.8
+  - action: full screen view
+    keys: "F11 (View > Full screen)"
+    reliability: 0.8
+  - action: show / hide gridlines
+    keys: "Ctrl+G"
+    reliability: 0.9
+  - action: show / hide rulers
+    keys: "Ctrl+R"
+    reliability: 0.9
+
+pitfalls:
+  - situation: pasting an image results in a floating selection that cannot be edited normally
+    avoid: trying to draw on the canvas while the pasted image is still a floating selection
+    instead: >
+      After pasting with Ctrl+V, click elsewhere on the canvas or press Escape to
+      deselect and anchor the pasted content. Then you can draw on the full canvas.
+
+  - situation: saving a file as PNG but getting a .bmp or wrong format
+    avoid: pressing Ctrl+S without checking the file format — Paint saves in the last-used format
+    instead: >
+      Use Save As (Ctrl+Shift+S) to explicitly choose the format (PNG, JPEG, BMP, GIF).
+      PNG is recommended for screenshots and graphics; JPEG for photos.
+
+  - situation: text tool creates a text box but font / size cannot be changed after deselection
+    avoid: clicking outside the text box to finish — once deselected, text is rasterized
+    instead: >
+      Set font, size, and color BEFORE typing or while the text box is still active.
+      Once you click outside the text box or switch tools, the text becomes pixels
+      and cannot be edited. Undo (Ctrl+Z) to go back if needed.
+
+  - situation: fill tool floods the wrong area due to anti-aliased edges
+    avoid: using bucket fill on anti-aliased or JPEG-compressed images — color variation at edges causes bleed
+    instead: >
+      Zoom in to check edges before filling. Increase the tolerance if the tool has
+      a tolerance setting (Paint 2024+). For precise fills, outline the area cleanly
+      with the pencil first, then fill.
+
+  - situation: canvas size and image size are confused when resizing
+    avoid: using Resize (Ctrl+W) expecting to add canvas space — it scales the image by default
+    instead: >
+      In the Resize dialog, choose "Pixels" and uncheck "Maintain aspect ratio" if needed.
+      To extend the canvas without scaling the image, drag the canvas handles
+      (white squares at the edges) in the workspace area.
+
+  - situation: eraser removes more than intended due to large brush size
+    avoid: using the eraser without checking its size in the toolbar
+    instead: >
+      Select the Eraser tool and check the size options in the top toolbar.
+      Use a smaller size for precision. Ctrl+Z to undo oversized eraser strokes.
+
+navigation:
+  - target: specific tool
+    method: "Click the tool icon in the toolbar on the left (or Home tab in ribbon version)"
+    notes: Keyboard shortcuts for tools vary by Paint version; toolbar click is most reliable.
+
+  - target: color palette
+    method: "Click a color in the palette at the top to set foreground color"
+    notes: Right-click a color in the palette to set the background/secondary color.
+
+  - target: custom color picker
+    method: "Click 'Edit colors' in the Colors section of the ribbon"
+    notes: Allows entering exact RGB or hex values for precise colors.
+
+  - target: specific zoom level
+    method: "View > Zoom > choose percentage, or use the zoom slider at bottom-right"
+    notes: Ctrl++ and Ctrl+- for quick zoom in/out steps.
+
+  - target: canvas resize handles
+    method: "Look for small white squares at the edges and corners of the canvas"
+    notes: Drag these to resize the canvas area without scaling the image content.
+
+common_tasks:
+  - name: open an image, make edits, and save as PNG
+    steps:
+      - "Press Ctrl+O to open the image file"
+      - "Make edits using paint tools"
+      - "Press Ctrl+Shift+S to open Save As"
+      - "Select 'PNG (*.png)' from the file type dropdown"
+      - "Enter filename and click Save"
+
+  - name: crop an image to a specific region
+    steps:
+      - "Press Ctrl+A then click the Rectangle Select tool"
+      - "Click and drag to draw the crop region on the image"
+      - "Click 'Crop' in the Home tab ribbon (or Ctrl+Shift+X in newer Paint)"
+      - "Save the cropped image with Ctrl+S"
+
+  - name: resize an image to specific pixel dimensions
+    steps:
+      - "Press Ctrl+W to open the Resize and Skew dialog"
+      - "Select 'Pixels' radio button"
+      - "Uncheck 'Maintain aspect ratio' if needed"
+      - "Enter the desired width and height"
+      - "Click OK"
+      - "Save with Ctrl+S"
+
+  - name: add text to an image
+    steps:
+      - "Select the Text tool (A icon in toolbar)"
+      - "Set font, size, and color in the toolbar before clicking"
+      - "Click on the canvas where text should appear"
+      - "Type the text"
+      - "Click outside the text box to anchor it (cannot be edited after)"
+
+  - name: draw a straight line
+    steps:
+      - "Select the Line tool from the Shapes section"
+      - "Hold Shift while drawing to constrain to 45-degree angles (horizontal, vertical, diagonal)"
+      - "Click and drag to draw the line"
+      - "Release mouse button to complete"

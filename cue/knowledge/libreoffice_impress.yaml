@@ -1,0 +1,227 @@
+app_name: LibreOffice Impress
+
+shortcuts:
+  - action: save presentation
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as (choose format)
+    keys: "Ctrl+Shift+S"
+    reliability: 1.0
+  - action: new presentation
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: select all objects on slide
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: find
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: toggle bold
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: toggle italic
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: toggle underline
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: insert new slide
+    keys: "Ctrl+M"
+    reliability: 1.0
+  - action: duplicate current slide
+    keys: "Ctrl+Shift+D (right-click > Insert Slide as alternative)"
+    reliability: 0.8
+  - action: delete current slide
+    keys: "Delete (with slide selected in panel)"
+    reliability: 1.0
+  - action: start slideshow from beginning
+    keys: "F5"
+    reliability: 1.0
+  - action: start slideshow from current slide
+    keys: "Shift+F5"
+    reliability: 1.0
+  - action: end slideshow
+    keys: "Escape"
+    reliability: 1.0
+  - action: next slide (in panel or normal view)
+    method: "Page Down"
+    keys: "Page Down"
+    reliability: 1.0
+  - action: previous slide (in panel or normal view)
+    keys: "Page Up"
+    reliability: 1.0
+  - action: move slide up in order
+    keys: "Ctrl+Up (in Slide Panel)"
+    reliability: 0.9
+  - action: move slide down in order
+    keys: "Ctrl+Down (in Slide Panel)"
+    reliability: 0.9
+  - action: group selected objects
+    keys: "Ctrl+Shift+G"
+    reliability: 1.0
+  - action: ungroup objects
+    keys: "Ctrl+Alt+Shift+G"
+    reliability: 0.9
+  - action: enter text edit mode on selected object
+    keys: "F2 or Enter"
+    reliability: 1.0
+  - action: exit text edit mode
+    keys: "Escape"
+    reliability: 1.0
+  - action: align center horizontally
+    keys: "Ctrl+E (in text mode)"
+    reliability: 1.0
+  - action: zoom to fit slide
+    keys: "View menu > Entire Page or press G"
+    reliability: 0.85
+  - action: open slide layout panel
+    keys: "View > Master Slide or F11"
+    reliability: 0.8
+  - action: insert hyperlink
+    keys: "Ctrl+K"
+    reliability: 1.0
+  - action: check spelling
+    keys: "F7"
+    reliability: 1.0
+
+pitfalls:
+  - situation: clicking on a slide element but selecting the slide instead
+    avoid: single-clicking on text in a text box may select the box not enter text
+    instead: >
+      Single-click selects the object (shows resize handles). Press F2 or
+      double-click to enter text edit mode (cursor appears). Escape returns
+      to object selection mode; Escape again deselects all.
+
+  - situation: saving as .pptx triggers format dialog
+    avoid: pressing Enter which may save as ODP (ODF format) by mistake
+    instead: >
+      Use Ctrl+Shift+S and explicitly select "PowerPoint 2007-365 (.pptx)"
+      from the file type dropdown before saving. If a format warning dialog
+      appears, click "Keep Current Format".
+
+  - situation: applying layout changes to one slide instead of all
+    avoid: right-clicking a layout in the panel — it only affects selected slides
+    instead: >
+      If you want consistent layouts, use Slide > Slide Layout and apply
+      individually, or use Master Slides via View > Master Slide for global changes.
+
+  - situation: accidentally starting the slideshow when pressing F5 intending F4
+    avoid: pressing F5 which starts a fullscreen slideshow, making the UI disappear
+    instead: Press Escape immediately to exit slideshow. Then use the correct key.
+
+  - situation: text box resizes unexpectedly when editing text
+    avoid: typing without checking if the text box is set to auto-resize
+    instead: >
+      Right-click the text box > Text to control resize behavior.
+      "Fit height to text" is often set by default and will expand the box.
+
+  - situation: moving objects with arrow keys when in text edit mode
+    avoid: pressing arrow keys expecting to move the text box — they move the cursor
+    instead: >
+      Press Escape once to exit text edit mode (object selection mode), then
+      use arrow keys to nudge the object, or Ctrl+arrow for larger moves.
+
+  - situation: inserting an image but it covers other objects and cannot be clicked
+    avoid: inserting large images that obscure other elements on the slide
+    instead: >
+      After inserting, right-click the image > Position and Size (F4) to set
+      exact position, or use Arrange > Send to Back to layer it correctly.
+
+navigation:
+  - target: specific slide by number
+    method: "Click slide thumbnail in the Slides panel on the left"
+    notes: Click once to navigate; the main area shows the selected slide.
+
+  - target: Slides panel (slide overview)
+    method: "View > Slide Panel (if hidden) or look for left panel"
+    notes: Shows thumbnails; drag to reorder slides.
+
+  - target: Outline view (all slide text)
+    method: "View > Outline"
+    notes: Shows all text across slides; useful for editing titles and bullet points.
+
+  - target: Slide Sorter view
+    method: "View > Slide Sorter"
+    notes: Shows all slides as thumbnails for reordering; double-click to edit.
+
+  - target: Notes panel for current slide
+    method: "Click 'Click to add notes' area below slide in Normal view"
+    notes: Speaker notes are shown here; not visible in slideshow by default.
+
+  - target: Master Slide editor
+    method: "View > Master Slide"
+    notes: Edits the template applied to all slides; Escape or Close Master View to exit.
+
+  - target: object on slide
+    method: "Press Tab to cycle through objects on the current slide"
+    notes: Tab selects next object; Shift+Tab cycles in reverse. Press Enter/F2 to edit.
+
+  - target: Insert menu for images/shapes/tables
+    method: "Alt+I"
+    notes: Access Image, Shape, Table, Text Box, and Hyperlink from Insert menu.
+
+common_tasks:
+  - name: add a new slide with a layout
+    steps:
+      - "In the Slides panel, right-click after the slide where you want to insert"
+      - "Choose 'New Slide' or press Ctrl+M"
+      - "Right-click the new slide > Slide Layout"
+      - "Select the desired layout (Title, Content, Blank, etc.)"
+
+  - name: insert an image onto a slide
+    steps:
+      - "Navigate to the target slide"
+      - "Press Alt+I to open Insert menu"
+      - "Choose Image > From File"
+      - "Browse to the image file and click Open"
+      - "Drag or resize the image to desired position and size"
+
+  - name: reorder slides
+    steps:
+      - "Switch to View > Slide Sorter for easier overview"
+      - "Click the slide thumbnail to select it"
+      - "Drag it to the new position, OR"
+      - "In Normal view, drag the thumbnail in the Slides panel"
+
+  - name: run spell check on all slides
+    steps:
+      - "Press F7 to open spell check dialog"
+      - "Impress checks text in all text boxes across all slides"
+      - "Review each suggestion and choose Ignore, Change, or Add to dictionary"
+      - "Press Close when done"
+
+  - name: export presentation as PDF
+    steps:
+      - "Press Alt+F to open File menu"
+      - "Navigate to Export As > Export as PDF"
+      - "Set slide range and quality options"
+      - "Click Export"
+      - "Choose save location and filename, then click Save"
+
+  - name: start and navigate slideshow
+    steps:
+      - "Press F5 to start from the beginning (Shift+F5 for current slide)"
+      - "Click or press Space/Enter/Right arrow to advance"
+      - "Press Left arrow or Backspace to go back"
+      - "Press Escape to exit slideshow"

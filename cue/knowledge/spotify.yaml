@@ -1,0 +1,193 @@
+app_name: Spotify
+
+shortcuts:
+  - action: play / pause toggle
+    keys: "Space"
+    reliability: 1.0
+  - action: next track
+    keys: "Ctrl+Right"
+    reliability: 1.0
+  - action: previous track
+    keys: "Ctrl+Left"
+    reliability: 1.0
+  - action: volume up
+    keys: "Ctrl+Up"
+    reliability: 1.0
+  - action: volume down
+    keys: "Ctrl+Down"
+    reliability: 1.0
+  - action: mute / unmute
+    keys: "Ctrl+Shift+Down (or click speaker icon)"
+    reliability: 0.8
+  - action: seek forward 15 seconds
+    keys: "Shift+Right"
+    reliability: 0.9
+  - action: seek backward 15 seconds
+    keys: "Shift+Left"
+    reliability: 0.9
+  - action: toggle shuffle
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: toggle repeat (off / context / track)
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: focus search bar
+    keys: "Ctrl+F or Ctrl+L"
+    reliability: 1.0
+  - action: go to home
+    keys: "Alt+Home or click Home in sidebar"
+    reliability: 0.9
+  - action: go back in navigation
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: go forward in navigation
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: like / save current track (add to Liked Songs)
+    keys: "Alt+Shift+B"
+    reliability: 0.8
+  - action: open Now Playing view
+    keys: "Ctrl+Shift+N (or click track title)"
+    reliability: 0.8
+  - action: toggle queue view
+    keys: "Ctrl+Q"
+    reliability: 0.9
+  - action: toggle lyrics view
+    keys: "Ctrl+Shift+L (or click microphone icon)"
+    reliability: 0.8
+  - action: toggle fullscreen
+    keys: "Ctrl+Shift+F"
+    reliability: 0.9
+  - action: create new playlist
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: open Spotify preferences / settings
+    keys: "Ctrl+P"
+    reliability: 0.9
+  - action: log out
+    keys: "File menu > Log Out (no standard shortcut)"
+    reliability: 0.8
+  - action: zoom in
+    keys: "Ctrl+="
+    reliability: 0.9
+  - action: zoom out
+    keys: "Ctrl+-"
+    reliability: 0.9
+  - action: reset zoom
+    keys: "Ctrl+0"
+    reliability: 0.9
+  - action: copy song link to clipboard
+    keys: "Right-click track > Share > Copy Song Link"
+    reliability: 1.0
+
+pitfalls:
+  - situation: Space bar not toggling play/pause when a text input is focused
+    avoid: pressing Space expecting playback control when the search bar is active
+    instead: >
+      Press Escape to unfocus the search bar or any text input field, then press
+      Space to toggle play/pause. Spotify media keys on the keyboard work regardless
+      of focus: use the media play/pause key if available.
+
+  - situation: pressing Ctrl+F opens find-in-page in some browsers/web player but searches Spotify in the app
+    avoid: expecting Ctrl+F to find text in the current view in the desktop app
+    instead: >
+      Ctrl+F and Ctrl+L focus Spotify's own search bar, not a browser find function.
+      Type the track, artist, or album name to search the Spotify catalog.
+
+  - situation: adding a song to a playlist but it goes to the wrong playlist
+    avoid: clicking "Add to playlist" and selecting hastily from a long list
+    instead: >
+      Right-click the track > Add to playlist > scroll carefully and select the
+      correct playlist. Verify the playlist name before clicking. Use the search
+      box within the playlist menu if available to filter by name.
+
+  - situation: shuffle mode causes same songs to repeat or skip preferred tracks
+    avoid: assuming shuffle is truly random — Spotify's shuffle favors certain tracks
+    instead: >
+      Toggle shuffle off (Ctrl+S) and manually queue tracks if you need a specific
+      order. Use the Queue view (Ctrl+Q) to see and manage the upcoming play order.
+      Adding songs to queue (right-click > Add to queue) overrides shuffle for those tracks.
+
+  - situation: downloaded songs not available offline when expected
+    avoid: assuming a playlist is available offline without explicitly downloading it
+    instead: >
+      Open the playlist, click the Download toggle (downward arrow icon) to enable
+      offline download. A green download icon appears when fully downloaded.
+      Offline mode must be enabled in Settings for downloads to be used.
+
+  - situation: Spotify taking too long to load or search returning stale results
+    avoid: clicking repeatedly assuming Spotify is not responding
+    instead: >
+      Check internet connection. Use Ctrl+Shift+Delete or Settings > Clear Cache
+      if the app is sluggish. Restart the app if search results appear stale.
+      Spotify caches data; a restart clears in-memory state.
+
+navigation:
+  - target: search
+    method: "Ctrl+F or Ctrl+L to focus the search bar, then type"
+    notes: Searches artists, albums, tracks, playlists, and podcasts simultaneously.
+
+  - target: Home
+    method: "Click Home in the left sidebar or press Alt+Home"
+    notes: Shows personalized recommendations, recently played, and featured content.
+
+  - target: Your Library
+    method: "Click 'Your Library' in the left sidebar"
+    notes: Contains Liked Songs, playlists, albums, artists, and podcasts you follow.
+
+  - target: specific playlist
+    method: "Click playlist name in left sidebar under Your Library"
+    notes: Pin frequently used playlists to top with right-click > Pin playlist.
+
+  - target: queue (upcoming tracks)
+    method: "Ctrl+Q or click the queue icon (≡) near the Now Playing bar"
+    notes: Shows currently playing, next up, and queued tracks; drag to reorder.
+
+  - target: Now Playing / full-screen player
+    method: "Click the track artwork in the bottom-left, or press Ctrl+Shift+N"
+    notes: Shows album art, track info, and lyrics toggle.
+
+  - target: artist page
+    method: "Click artist name link in the Now Playing bar or search results"
+    notes: Shows discography, popular songs, related artists, and upcoming events.
+
+  - target: settings
+    method: "Ctrl+P or click profile icon > Settings"
+    notes: Audio quality, downloads folder, offline mode, crossfade are all in Settings.
+
+common_tasks:
+  - name: search and play a specific song
+    steps:
+      - "Press Ctrl+F to focus the search bar"
+      - "Type the song title or artist name"
+      - "Press Enter or click the search result"
+      - "Double-click the track in the results to play it"
+
+  - name: add a song to a playlist
+    steps:
+      - "Find the track in search results or your library"
+      - "Right-click the track"
+      - "Choose 'Add to playlist'"
+      - "Select the target playlist from the submenu"
+
+  - name: create a new playlist and add songs
+    steps:
+      - "Press Ctrl+N to create a new playlist"
+      - "Type the playlist name and press Enter"
+      - "Search for songs with Ctrl+F"
+      - "Right-click a track > Add to playlist > select the new playlist"
+      - "Or drag tracks from search results into the playlist in the sidebar"
+
+  - name: queue a track to play next
+    steps:
+      - "Find the track in search results or a playlist"
+      - "Right-click the track"
+      - "Choose 'Add to queue' to play it after the current track"
+      - "Press Ctrl+Q to verify it appears in the queue"
+
+  - name: download a playlist for offline listening
+    steps:
+      - "Open the playlist"
+      - "Click the Download button (downward arrow / cloud icon) at the top of the playlist"
+      - "Wait for the download to complete (progress shown by track icons turning green)"
+      - "Go to Settings and enable 'Offline mode' when you need to listen without internet"

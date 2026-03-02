@@ -1,0 +1,227 @@
+app_name: GIMP
+
+shortcuts:
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: open as new layer
+    keys: "Ctrl+Alt+O (File > Open as Layers)"
+    reliability: 0.9
+  - action: save file (GIMP native .xcf)
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: export/overwrite as original format (jpg/png)
+    keys: "Ctrl+Shift+E (File > Export As) or Ctrl+E to overwrite"
+    reliability: 0.9
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: undo history (multiple levels)
+    keys: "Ctrl+Z repeatedly"
+    reliability: 1.0
+  - action: copy selection
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut selection
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: paste as new layer
+    keys: "Ctrl+Shift+V (Edit > Paste as > New Layer)"
+    reliability: 0.9
+  - action: select paint brush tool
+    keys: "P"
+    reliability: 1.0
+  - action: select eraser tool
+    keys: "Shift+E"
+    reliability: 1.0
+  - action: select move tool
+    keys: "M"
+    reliability: 1.0
+  - action: select scale tool
+    keys: "Shift+T"
+    reliability: 1.0
+  - action: select crop tool
+    keys: "Shift+C"
+    reliability: 1.0
+  - action: select rectangle select tool
+    keys: "R"
+    reliability: 1.0
+  - action: select free select (lasso) tool
+    keys: "F"
+    reliability: 1.0
+  - action: select fuzzy select (magic wand)
+    keys: "U"
+    reliability: 1.0
+  - action: select text tool
+    keys: "T"
+    reliability: 1.0
+  - action: select color picker / eyedropper
+    keys: "O"
+    reliability: 1.0
+  - action: select bucket fill tool
+    keys: "Shift+B"
+    reliability: 1.0
+  - action: select zoom tool
+    keys: "Z"
+    reliability: 1.0
+  - action: zoom in
+    keys: "Ctrl++ or + key"
+    reliability: 1.0
+  - action: zoom out
+    keys: "Ctrl+- or - key"
+    reliability: 1.0
+  - action: zoom to fit window
+    keys: "Shift+Ctrl+E"
+    reliability: 1.0
+  - action: zoom to 100%
+    keys: "Ctrl+Shift+J or press 1"
+    reliability: 0.9
+  - action: select all
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: deselect all
+    keys: "Ctrl+Shift+A or Shift+Ctrl+A"
+    reliability: 1.0
+  - action: invert selection
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: flatten image (merge all layers)
+    keys: "Image > Flatten Image (no default shortcut)"
+    reliability: 0.8
+  - action: open layers panel
+    keys: "Ctrl+L (Windows > Dockable Dialogs > Layers)"
+    reliability: 0.9
+  - action: new layer
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: anchor floating selection
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: toggle guides visibility
+    keys: "Shift+Ctrl+T"
+    reliability: 0.8
+  - action: show / hide all docks
+    keys: "Tab"
+    reliability: 1.0
+  - action: scale image dialog
+    keys: "Image > Scale Image (no default shortcut)"
+    reliability: 0.8
+
+pitfalls:
+  - situation: saving a file with Ctrl+S saves as .xcf (GIMP native format) not jpg/png
+    avoid: using Ctrl+S expecting to overwrite the original jpeg or png
+    instead: >
+      Use File > Export As (Ctrl+Shift+E) to save in jpg/png/other formats.
+      Use File > Overwrite (Ctrl+E) to overwrite the original imported file with the
+      same format. Ctrl+S only saves .xcf project files.
+
+  - situation: pasting an image results in a floating selection that cannot be edited as a layer
+    avoid: trying to use paint tools on a floating selection
+    instead: >
+      After pasting with Ctrl+V, the paste appears as a "Floating Selection" layer.
+      Press Ctrl+Shift+N to anchor it as a new layer, or press Ctrl+H to anchor
+      it into the layer below. Then you can edit it normally.
+
+  - situation: tool options changing unexpectedly when switching tools
+    avoid: not noticing that each tool has its own independent settings in Tool Options
+    instead: >
+      Check the Tool Options panel (below the Toolbox) each time you switch tools.
+      Settings like opacity, mode, and size are per-tool and remember last values.
+
+  - situation: cannot paint because selection is active in the wrong area
+    avoid: painting and seeing no effect because paint is clipped to a selection region
+    instead: >
+      Press Ctrl+Shift+A to deselect all. A marching-ants border around the canvas
+      means a selection is active. Check Select menu to confirm no selection exists.
+
+  - situation: layer is not visible or locked and edits have no effect
+    avoid: editing a layer without noticing it is hidden (eye icon off) or locked
+    instead: >
+      Open the Layers panel (Windows > Dockable Dialogs > Layers). Verify the
+      eye icon is visible for your layer and there is no lock icon active.
+      Click the eye to toggle visibility.
+
+  - situation: transform tool (scale/rotate) applies to wrong layer
+    avoid: using Scale or Rotate and affecting a different layer than intended
+    instead: >
+      Always check which layer is selected (highlighted blue) in the Layers panel
+      before applying any transform. Click the correct layer in the panel first.
+
+navigation:
+  - target: specific tool
+    method: "Single-letter keyboard shortcut (P=Brush, R=Rect, M=Move, T=Text, Z=Zoom)"
+    notes: Toolbox is also clickable; hover over tools to see shortcuts in tooltips.
+
+  - target: layers panel
+    method: "Windows > Dockable Dialogs > Layers, or Ctrl+L"
+    notes: Shows all layers; click to select, drag to reorder, eye icon to toggle visibility.
+
+  - target: image canvas at specific zoom
+    method: "Press + or - to zoom, or type zoom percentage in the status bar at bottom"
+    notes: Press Shift+Ctrl+E to zoom to fit window; press 1 for 100% zoom.
+
+  - target: Script-Fu / automation console
+    method: "Filters > Script-Fu > Console"
+    notes: Used to run GIMP automation scripts; useful for batch operations.
+
+  - target: Undo History
+    method: "Windows > Dockable Dialogs > Undo History"
+    notes: Shows all undo steps; click any step to revert to that state.
+
+  - target: color picker (sample color from canvas)
+    method: "Press O to switch to Color Picker tool, then click the canvas"
+    notes: Sampled color becomes the foreground color in the toolbox.
+
+  - target: Image menu (resize, crop, rotate image)
+    method: "Alt+I to open Image menu"
+    notes: Scale Image, Canvas Size, Rotate are all in the Image menu.
+
+common_tasks:
+  - name: open an image and export as PNG
+    steps:
+      - "Press Ctrl+O to open the image file"
+      - "Make edits as needed"
+      - "Press Ctrl+Shift+E (File > Export As)"
+      - "Change file extension to .png in the filename"
+      - "Click Export"
+      - "Adjust PNG settings if needed and click Export again"
+
+  - name: crop an image to a specific region
+    steps:
+      - "Press Shift+C to select the Crop tool"
+      - "Click and drag on the canvas to draw the crop region"
+      - "Adjust the selection handles if needed"
+      - "Press Enter to apply the crop"
+
+  - name: resize an image (scale)
+    steps:
+      - "Open Image menu (click Image in menu bar)"
+      - "Choose Scale Image"
+      - "Enter the new width or height (link icon keeps aspect ratio)"
+      - "Choose interpolation quality (Cubic recommended)"
+      - "Click Scale"
+      - "Export the file with Ctrl+Shift+E"
+
+  - name: add text to an image
+    steps:
+      - "Press T to select the Text tool"
+      - "Click on the canvas where text should appear"
+      - "Type the text in the text editor box that appears"
+      - "Set font, size, and color in Tool Options panel"
+      - "Click outside the text box or switch tools to finish"
+      - "The text appears as a separate layer in the Layers panel"
+
+  - name: remove background using fuzzy select
+    steps:
+      - "Press U to select the Fuzzy Select (magic wand) tool"
+      - "Click on the background area to select it"
+      - "Adjust threshold in Tool Options for better selection"
+      - "Press Ctrl+Shift+A and refine with Shift+click to add to selection"
+      - "Press Delete to remove the selected background"
+      - "Press Ctrl+Shift+A to deselect"

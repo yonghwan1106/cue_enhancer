@@ -1,0 +1,185 @@
+app_name: Windows Terminal
+
+shortcuts:
+  - action: open new tab (default profile)
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: open new tab with specific profile
+    keys: "Ctrl+Shift+1 through Ctrl+Shift+9 (by profile order)"
+    reliability: 0.9
+  - action: close current tab
+    keys: "Ctrl+Shift+W"
+    reliability: 1.0
+  - action: open new window
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: switch to next tab
+    keys: "Ctrl+Tab"
+    reliability: 1.0
+  - action: switch to previous tab
+    keys: "Ctrl+Shift+Tab"
+    reliability: 1.0
+  - action: switch to tab by number
+    keys: "Ctrl+Alt+1 through Ctrl+Alt+9"
+    reliability: 0.9
+  - action: copy selected text
+    keys: "Ctrl+C (or Ctrl+Shift+C)"
+    reliability: 1.0
+  - action: paste clipboard text
+    keys: "Ctrl+V (or Ctrl+Shift+V)"
+    reliability: 1.0
+  - action: find in terminal output
+    keys: "Ctrl+Shift+F"
+    reliability: 1.0
+  - action: zoom in (increase font size)
+    keys: "Ctrl+="
+    reliability: 1.0
+  - action: zoom out (decrease font size)
+    keys: "Ctrl+-"
+    reliability: 1.0
+  - action: reset zoom to default
+    keys: "Ctrl+0"
+    reliability: 1.0
+  - action: scroll up (one page)
+    keys: "Shift+Page Up"
+    reliability: 1.0
+  - action: scroll down (one page)
+    keys: "Shift+Page Down"
+    reliability: 1.0
+  - action: scroll to top of history
+    keys: "Ctrl+Shift+Home"
+    reliability: 0.9
+  - action: scroll to bottom
+    keys: "Ctrl+Shift+End"
+    reliability: 0.9
+  - action: split pane horizontally (side by side)
+    keys: "Alt+Shift+D (or Alt+Shift+Plus)"
+    reliability: 0.9
+  - action: split pane vertically (top/bottom)
+    keys: "Alt+Shift+Minus"
+    reliability: 0.9
+  - action: move focus to next pane
+    keys: "Alt+Arrow key"
+    reliability: 0.9
+  - action: close current pane
+    keys: "Ctrl+Shift+W"
+    reliability: 1.0
+  - action: open settings (GUI)
+    keys: "Ctrl+,"
+    reliability: 1.0
+  - action: open settings JSON
+    keys: "Ctrl+Shift+,"
+    reliability: 1.0
+  - action: toggle fullscreen
+    keys: "F11 or Alt+Enter"
+    reliability: 1.0
+  - action: interrupt running process (SIGINT)
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: send EOF to process
+    keys: "Ctrl+Z then Enter (in cmd) or Ctrl+D (in bash/WSL)"
+    reliability: 0.9
+  - action: search command history (bash/PowerShell)
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: clear screen (shell command)
+    keys: "Ctrl+L (bash/WSL) or type 'cls' (cmd) or 'Clear-Host' (PowerShell)"
+    reliability: 0.9
+  - action: rename current tab
+    keys: "Double-click tab title"
+    reliability: 0.9
+
+pitfalls:
+  - situation: Ctrl+C not copying text — it sends interrupt to running process
+    avoid: pressing Ctrl+C to copy when a process is running — kills the process
+    instead: >
+      Select text first, then right-click to copy (or Ctrl+Shift+C if configured).
+      Windows Terminal can be configured to use Ctrl+C for copy when there is a
+      selection, but by default Ctrl+C sends SIGINT. Check settings.json for
+      copyOnSelect and actions configuration.
+
+  - situation: paste causing multi-line command execution without review
+    avoid: pasting multi-line text directly into the shell prompt
+    instead: >
+      Windows Terminal shows a "Paste anyway?" warning for multi-line pastes if
+      configured. Review the pasted content before pressing Enter. Paste into a text
+      editor first to review, then copy individual lines to paste into terminal.
+
+  - situation: profile opens in wrong starting directory
+    avoid: assuming all profiles start in the home directory
+    instead: >
+      Set the starting directory in Settings > Profile > Starting Directory.
+      Use %USERPROFILE% for home directory. Or open a new tab from File Explorer
+      by Shift+right-clicking in a folder and choosing "Open in Terminal".
+
+  - situation: colors or fonts look wrong after changing settings
+    avoid: editing settings.json incorrectly — invalid JSON breaks the settings file
+    instead: >
+      Use the GUI settings (Ctrl+,) for most changes to avoid JSON syntax errors.
+      If settings.json is corrupted, Windows Terminal will show an error;
+      use Ctrl+Shift+, to open it and fix the JSON syntax.
+
+  - situation: terminal history (scrollback) not long enough
+    avoid: running commands and losing output that scrolled off the buffer
+    instead: >
+      Increase scrollback buffer in Settings > Profile > Scrollback buffer size.
+      Set a large value (e.g., 10000 lines) to retain more history.
+      Use Ctrl+Shift+F to search within the scrollback buffer.
+
+navigation:
+  - target: specific shell profile (PowerShell, cmd, WSL, etc.)
+    method: "Click the dropdown arrow next to the + tab button to choose a profile"
+    notes: Or use Ctrl+Shift+1-9 to open profiles by their order in settings.
+
+  - target: settings
+    method: "Ctrl+, for GUI settings or Ctrl+Shift+, for settings.json"
+    notes: Settings are stored at %LOCALAPPDATA%\\Packages\\...\\LocalState\\settings.json.
+
+  - target: specific tab
+    method: "Ctrl+Alt+1-9 to jump to tab by index, or click tab"
+    notes: Tab titles can be renamed by double-clicking them.
+
+  - target: text in scrollback buffer
+    method: "Ctrl+Shift+F to open find bar"
+    notes: Searches the visible scrollback; Enter cycles matches.
+
+  - target: split pane
+    method: "Alt+Shift+D for horizontal split; use Alt+Arrow to move between panes"
+    notes: Panes run independent shell sessions; useful for monitoring while working.
+
+  - target: previous commands in shell
+    method: "Up/Down arrow keys in bash/PowerShell; Ctrl+R for history search"
+    notes: F7 in cmd.exe opens a history dialog popup.
+
+common_tasks:
+  - name: open a new tab with a specific shell
+    steps:
+      - "Click the dropdown arrow (v) next to the + button in the tab bar"
+      - "Select the desired profile (PowerShell, Command Prompt, Ubuntu, etc.)"
+      - "Or press Ctrl+Shift+1 for the first profile, Ctrl+Shift+2 for the second, etc."
+
+  - name: split the terminal into two panes
+    steps:
+      - "Press Alt+Shift+D to split the current pane side by side"
+      - "Or Alt+Shift+Minus to split top and bottom"
+      - "Each pane runs an independent shell"
+      - "Use Alt+Arrow keys to move focus between panes"
+
+  - name: search command history
+    steps:
+      - "In bash or PowerShell, press Ctrl+R"
+      - "Type a substring of the command to search"
+      - "Press Ctrl+R again to cycle to older matches"
+      - "Press Enter to execute the found command"
+
+  - name: copy terminal output
+    steps:
+      - "Click and drag to select the output text"
+      - "Right-click to copy, or press Ctrl+Shift+C"
+      - "Paste into another application with Ctrl+V"
+
+  - name: open terminal in a specific folder
+    steps:
+      - "Open File Explorer and navigate to the target folder"
+      - "Click in the address bar, type 'wt' and press Enter to open Windows Terminal there"
+      - "Or Shift+right-click in the folder > 'Open in Terminal'"

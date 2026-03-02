@@ -288,6 +288,136 @@ def _display_ablation_results(
     console.print(contrib_table)
 
 
+@app.command("platform-info")
+def platform_info() -> None:
+    """Show detected platform and capabilities."""
+    import platform
+
+    from cue.config import OmniParserConfig
+    from cue.types import PlatformInfo
+
+    os_name = sys.platform
+    os_ver = platform.version()
+
+    # Detect accessibility backend
+    if os_name == "linux":
+        a11y = "atspi"
+    elif os_name == "darwin":
+        a11y = "ax"
+    elif os_name == "win32":
+        a11y = "uia"
+    else:
+        a11y = "unknown"
+
+    # Check OmniParser configuration
+    cfg = CUEConfig.load()
+    omni_cfg: OmniParserConfig = cfg.omniparser
+    omni_status = (
+        f"[green]configured[/green] ({omni_cfg.model_path})"
+        if omni_cfg.enabled and omni_cfg.model_path
+        else "[yellow]not configured[/yellow]"
+    )
+
+    info = PlatformInfo(
+        os_name=os_name,
+        os_version=os_ver,
+        a11y_backend=a11y,
+    )
+
+    table = Table(title="Platform Info", show_lines=True)
+    table.add_column("Property", style="cyan")
+    table.add_column("Value", style="green")
+    table.add_row("OS", info.os_name)
+    table.add_row("Version", info.os_version)
+    table.add_row("A11y Backend", info.a11y_backend)
+    table.add_row("OmniParser", omni_status)
+    console.print(table)
+
+
+@app.command("knowledge")
+def knowledge(
+    app_name: str = typer.Argument("", help="App name to show details for (leave empty to list all)"),
+) -> None:
+    """List available app knowledge or show details for a specific app."""
+    from pathlib import Path
+
+    from cue.planning.knowledge import AppKnowledgeBase
+
+    knowledge_dir = Path(__file__).parent / "knowledge"
+
+    if not app_name:
+        # List all available YAML files
+        yaml_files = sorted(knowledge_dir.glob("*.yaml"))
+        if not yaml_files:
+            console.print("[yellow]No knowledge files found.[/yellow]")
+            return
+        table = Table(title="Available App Knowledge", show_lines=True)
+        table.add_column("File", style="cyan")
+        table.add_column("App Name", style="green")
+        import yaml
+        for path in yaml_files:
+            with open(path, encoding="utf-8") as fh:
+                data = yaml.safe_load(fh) or {}
+            table.add_row(path.name, data.get("app_name", path.stem))
+        console.print(table)
+        return
+
+    # Show details for the requested app
+    kb = AppKnowledgeBase()
+    kb.load_all(knowledge_dir)
+    app_knowledge = kb.get_knowledge(app_name)
+
+    if app_knowledge is None:
+        console.print(f"[red]No knowledge found for: {app_name}[/red]")
+        raise typer.Exit(1)
+
+    console.print(Panel(
+        f"[bold]App:[/bold] {app_knowledge.app_name}",
+        title="App Knowledge",
+        border_style="blue",
+    ))
+
+    # Shortcuts
+    if app_knowledge.shortcuts:
+        sc_table = Table(title="Shortcuts", show_lines=True)
+        sc_table.add_column("Action", style="cyan")
+        sc_table.add_column("Keys", style="green")
+        sc_table.add_column("Reliability", style="white")
+        for sc in app_knowledge.shortcuts:
+            sc_table.add_row(sc.action, sc.keys, f"{sc.reliability:.0%}")
+        console.print(sc_table)
+
+    # Pitfalls
+    if app_knowledge.pitfalls:
+        pt_table = Table(title="Pitfalls", show_lines=True)
+        pt_table.add_column("Situation", style="cyan")
+        pt_table.add_column("Avoid", style="red")
+        pt_table.add_column("Instead", style="green")
+        for pt in app_knowledge.pitfalls:
+            pt_table.add_row(pt.situation, pt.avoid, pt.instead)
+        console.print(pt_table)
+
+    # Navigation
+    if app_knowledge.navigation:
+        nav_table = Table(title="Direct Navigation", show_lines=True)
+        nav_table.add_column("Target", style="cyan")
+        nav_table.add_column("Method", style="green")
+        nav_table.add_column("Notes", style="white")
+        for nav in app_knowledge.navigation:
+            nav_table.add_row(nav.target, nav.method, nav.notes)
+        console.print(nav_table)
+
+    # Common tasks
+    if app_knowledge.common_tasks:
+        ct_table = Table(title="Common Tasks", show_lines=True)
+        ct_table.add_column("Task", style="cyan")
+        ct_table.add_column("Steps", style="green")
+        for task in app_knowledge.common_tasks:
+            steps = "\n".join(f"{i+1}. {s}" for i, s in enumerate(task.get("steps", [])))
+            ct_table.add_row(task.get("name", ""), steps)
+        console.print(ct_table)
+
+
 def _display_config(cfg: CUEConfig) -> None:
     """Display configuration in a rich table."""
     table = Table(title="CUE Configuration", show_lines=True)

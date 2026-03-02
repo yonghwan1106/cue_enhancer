@@ -1,0 +1,245 @@
+app_name: LibreOffice Writer
+
+shortcuts:
+  - action: save file
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as (choose format)
+    keys: "Ctrl+Shift+S"
+    reliability: 1.0
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: new document
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: print document
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: paste special (unformatted text)
+    keys: "Ctrl+Shift+V"
+    reliability: 1.0
+  - action: select all
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: find (without replace)
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: toggle bold
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: toggle italic
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: toggle underline
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: toggle strikethrough
+    keys: "Alt+H then 4 (via Format menu) or Ctrl+Alt+5 in some builds"
+    reliability: 0.7
+  - action: align left
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: align center
+    keys: "Ctrl+E"
+    reliability: 1.0
+  - action: align right
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: justify text
+    keys: "Ctrl+J"
+    reliability: 1.0
+  - action: increase font size
+    keys: "Ctrl+]"
+    reliability: 0.9
+  - action: decrease font size
+    keys: "Ctrl+["
+    reliability: 0.9
+  - action: insert page break
+    keys: "Ctrl+Enter"
+    reliability: 1.0
+  - action: go to beginning of document
+    keys: "Ctrl+Home"
+    reliability: 1.0
+  - action: go to end of document
+    keys: "Ctrl+End"
+    reliability: 1.0
+  - action: go to beginning of line
+    keys: "Home"
+    reliability: 1.0
+  - action: go to end of line
+    keys: "End"
+    reliability: 1.0
+  - action: open styles panel
+    keys: "F11"
+    reliability: 1.0
+  - action: apply Heading 1 style
+    keys: "Ctrl+1"
+    reliability: 1.0
+  - action: apply Heading 2 style
+    keys: "Ctrl+2"
+    reliability: 1.0
+  - action: apply Heading 3 style
+    keys: "Ctrl+3"
+    reliability: 1.0
+  - action: apply Default Paragraph style
+    keys: "Ctrl+0"
+    reliability: 1.0
+  - action: insert comment / annotation
+    keys: "Ctrl+Alt+C"
+    reliability: 0.9
+  - action: toggle track changes
+    keys: "Ctrl+Shift+C"
+    reliability: 1.0
+  - action: show Navigator
+    keys: "F5"
+    reliability: 1.0
+  - action: insert hyperlink
+    keys: "Ctrl+K"
+    reliability: 1.0
+  - action: check spelling
+    keys: "F7"
+    reliability: 1.0
+  - action: open word count dialog
+    keys: "Ctrl+Shift+G"
+    reliability: 0.9
+
+pitfalls:
+  - situation: saving in .docx format triggers "Keep Current Format" dialog
+    avoid: pressing Enter blindly — it may default to ODF format conversion
+    instead: >
+      Read the dialog carefully. Press "Keep Current Format" (or the button
+      labeled with .docx) to preserve Word compatibility. Use Tab to navigate
+      buttons before pressing Space/Enter to confirm.
+
+  - situation: applying a heading style while the cursor is mid-sentence
+    avoid: assuming Ctrl+1 styles only the selected text — it applies to the whole paragraph
+    instead: >
+      Heading styles apply to the entire paragraph. Place cursor anywhere
+      in the target paragraph (no selection needed) before pressing Ctrl+1/2/3.
+
+  - situation: pasting formatted text from a website or other source
+    avoid: Ctrl+V which preserves source formatting and may break document style
+    instead: >
+      Use Ctrl+Shift+V (Paste Special) and choose "Unformatted Text" to paste
+      plain text that inherits the document's current paragraph style.
+
+  - situation: track changes is active and edits are being recorded unexpectedly
+    avoid: making edits without noticing the "Recording Changes" indicator in the status bar
+    instead: >
+      Check the Edit menu or status bar for "Recording Changes" state.
+      Press Ctrl+Shift+C to toggle it off before making edits you don't want tracked.
+
+  - situation: find toolbar is open and keyboard shortcuts misbehave
+    avoid: using Ctrl+G or other shortcuts while find bar has focus
+    instead: Press Escape to close the find toolbar first, then use document shortcuts.
+
+  - situation: trying to edit inside a header or footer from the main body
+    avoid: clicking near the top/bottom of the page margin expecting to enter header/footer
+    instead: >
+      Double-click inside the header or footer area to enter it, or use
+      Insert > Header and Footer menu. Double-click the main body area to exit.
+
+  - situation: document shows fields (like date, filename) as grey shaded blocks
+    avoid: trying to type over field shading — it will not behave like normal text
+    instead: >
+      To update fields press F9. To delete a field click it once to select
+      then press Delete. To insert fields use Insert > Field menu.
+
+navigation:
+  - target: specific page by number
+    method: "Click page number in status bar at bottom, or use Navigator (F5)"
+    notes: The Navigator shows all headings, images, and tables for quick jumping.
+
+  - target: heading or section
+    method: "F5 to open Navigator, expand Headings, double-click target"
+    notes: Navigator is the fastest way to jump between document sections.
+
+  - target: find specific text
+    method: "Ctrl+F then type search term, Enter cycles matches"
+    notes: Escape closes find toolbar; results stay highlighted briefly.
+
+  - target: styles panel
+    method: "F11"
+    notes: Shows all paragraph, character, and page styles; double-click to apply.
+
+  - target: beginning / end of document
+    method: "Ctrl+Home or Ctrl+End"
+    notes: Reliable jump regardless of current cursor position.
+
+  - target: Format menu
+    method: "Alt+O"
+    notes: Opens Format menu for character, paragraph, and page formatting options.
+
+  - target: Insert menu
+    method: "Alt+I"
+    notes: Access tables, images, hyperlinks, headers/footers via Insert menu.
+
+  - target: Table of Contents (jump to entry)
+    method: "Ctrl+click on TOC entry"
+    notes: TOC entries are hyperlinks by default; Ctrl+click navigates to the heading.
+
+common_tasks:
+  - name: apply a heading style to a paragraph
+    steps:
+      - "Place cursor anywhere inside the target paragraph"
+      - "Press Ctrl+1 for Heading 1, Ctrl+2 for Heading 2, Ctrl+3 for Heading 3"
+      - "Verify the style name shows in the Paragraph Style dropdown at top-left"
+
+  - name: find and replace text
+    steps:
+      - "Press Ctrl+H to open Find & Replace dialog"
+      - "Type the search term in the 'Search For' field"
+      - "Press Tab and type the replacement in 'Replace With'"
+      - "Click 'Replace All' or press Alt+A"
+      - "Review the count of replacements shown"
+      - "Press Escape or Close"
+
+  - name: save as a .docx file
+    steps:
+      - "Press Ctrl+Shift+S to open Save As dialog"
+      - "In the 'File Type' dropdown select 'Word 2007-365 (.docx)'"
+      - "Enter filename"
+      - "Click Save"
+      - "If format dialog appears, click 'Keep Current Format'"
+
+  - name: insert a table
+    steps:
+      - "Place cursor at insertion point"
+      - "Press Alt+I to open Insert menu"
+      - "Press T for Table"
+      - "Set number of rows and columns in the dialog"
+      - "Press Enter to insert"
+
+  - name: check word count
+    steps:
+      - "Press Ctrl+Shift+G to open Word Count dialog"
+      - "Read the Words count (full document or selection)"
+      - "Press Close or Escape"
+
+  - name: export as PDF
+    steps:
+      - "Press Alt+F to open File menu"
+      - "Navigate to Export As > Export as PDF"
+      - "Adjust PDF options if needed"
+      - "Click Export"
+      - "Choose save location and filename"
+      - "Click Save"

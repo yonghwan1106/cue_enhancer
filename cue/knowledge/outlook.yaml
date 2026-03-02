@@ -1,0 +1,209 @@
+app_name: Microsoft Outlook
+
+shortcuts:
+  - action: compose new email
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: reply to selected message
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: reply all
+    keys: "Ctrl+Shift+R"
+    reliability: 1.0
+  - action: forward message
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: send message (from compose window)
+    keys: "Ctrl+Enter or Alt+S"
+    reliability: 1.0
+  - action: delete selected message
+    keys: "Delete"
+    reliability: 1.0
+  - action: permanently delete (skip deleted items)
+    keys: "Shift+Delete"
+    reliability: 1.0
+  - action: mark message as read
+    keys: "Ctrl+Q"
+    reliability: 1.0
+  - action: mark message as unread
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: flag message for follow-up
+    keys: "Insert (with message selected)"
+    reliability: 0.8
+  - action: search messages (Search bar focus)
+    keys: "Ctrl+E or F3"
+    reliability: 1.0
+  - action: open address book / contacts
+    keys: "Ctrl+Shift+B"
+    reliability: 1.0
+  - action: go to inbox
+    keys: "Ctrl+Shift+I"
+    reliability: 1.0
+  - action: go to outbox
+    keys: "Ctrl+Shift+O"
+    reliability: 0.9
+  - action: switch to Mail view
+    keys: "Ctrl+1"
+    reliability: 1.0
+  - action: switch to Calendar view
+    keys: "Ctrl+2"
+    reliability: 1.0
+  - action: switch to Contacts/People view
+    keys: "Ctrl+3"
+    reliability: 1.0
+  - action: switch to Tasks view
+    keys: "Ctrl+4"
+    reliability: 1.0
+  - action: create new calendar event
+    keys: "Ctrl+Shift+A"
+    reliability: 1.0
+  - action: create new contact
+    keys: "Ctrl+Shift+C"
+    reliability: 1.0
+  - action: create new task
+    keys: "Ctrl+Shift+K"
+    reliability: 1.0
+  - action: send and receive all (sync email)
+    keys: "F9"
+    reliability: 1.0
+  - action: open message in new window
+    keys: "Enter (with message selected in list)"
+    reliability: 0.9
+  - action: move message to folder
+    keys: "Ctrl+Shift+V"
+    reliability: 1.0
+  - action: find / replace in compose window
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: check spelling in compose window
+    keys: "F7"
+    reliability: 1.0
+  - action: attach file to email (in compose window)
+    keys: "Alt+H then A then F (Insert > Attach File)"
+    reliability: 0.8
+  - action: print selected message
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: undo in compose window
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: next message in reading list
+    keys: "Ctrl+. (period)"
+    reliability: 0.9
+  - action: previous message in reading list
+    keys: "Ctrl+, (comma)"
+    reliability: 0.9
+
+pitfalls:
+  - situation: Ctrl+Enter sends the email immediately during composition
+    avoid: pressing Ctrl+Enter while writing when meaning to insert a line break
+    instead: >
+      Press Enter (without Ctrl) for line breaks in email body. Ctrl+Enter sends.
+      If sent accidentally, immediately press Ctrl+Z in the compose window (if still open),
+      or use Recall This Message from the Sent Items if on Exchange/Microsoft 365.
+
+  - situation: Forward shortcut (Ctrl+F) conflicts with Find in other apps
+    avoid: expecting Ctrl+F to find text — it forwards the email in Outlook
+    instead: >
+      In Outlook mail view, Ctrl+F forwards the selected message. To search email content,
+      use Ctrl+E or F3 to focus the search bar. In compose window, Ctrl+F does find.
+
+  - situation: reply sending to external distribution list exposes all member addresses
+    avoid: Reply All on a message sent to a large DL — may spam the entire list
+    instead: >
+      Check the To and Cc fields in the Reply All window before sending.
+      Remove addresses that should not receive your reply. Consider Reply (Ctrl+R)
+      instead of Reply All unless all recipients genuinely need your response.
+
+  - situation: attachment not included because link was pasted instead of attached
+    avoid: dragging a file shortcut or pasting a file path — Outlook may insert a link
+    instead: >
+      Use Insert > Attach File, or drag the actual file (not a shortcut) from
+      File Explorer into the compose window. Verify the attachment appears in the
+      attachment area below the subject line.
+
+  - situation: calendar event created in wrong time zone
+    avoid: creating events without checking time zone when working across time zones
+    instead: >
+      In the event window, go to the Time Zone button in the Meeting tab to set
+      the correct time zone for the event. This is critical for meetings with
+      international participants.
+
+  - situation: search returns no results because wrong folder scope is selected
+    avoid: searching with scope limited to current folder when message is in another folder
+    instead: >
+      After pressing Ctrl+E, check the search scope in the ribbon — click
+      "All Mailboxes" or "All Outlook Items" to search everywhere. The default
+      scope may be "Current Folder" only.
+
+navigation:
+  - target: inbox
+    method: "Ctrl+Shift+I or Ctrl+1 then click Inbox in the folder pane"
+    notes: Folder pane on the left shows all mail folders; click to navigate.
+
+  - target: specific mail folder
+    method: "Click folder name in the left folder pane"
+    notes: Use arrow keys to navigate the folder tree if it is focused.
+
+  - target: search results
+    method: "Ctrl+E to focus search, type query, press Enter"
+    notes: Results appear in message list; use ribbon to change scope.
+
+  - target: calendar
+    method: "Ctrl+2 or click Calendar icon in the navigation bar"
+    notes: Switch between Day, Week, Work Week, and Month views in the View tab.
+
+  - target: contacts / people
+    method: "Ctrl+3 or click People icon in the navigation bar"
+    notes: Search contacts with Ctrl+E when in People view.
+
+  - target: message in conversation thread
+    method: "Expand conversation by clicking the arrow left of the subject"
+    notes: Conversations group related messages; click to expand/collapse thread.
+
+  - target: next unread message
+    method: "Ctrl+. to go to next message, or press Space in reading pane to scroll"
+    notes: Pressing Space in the reading pane scrolls down; when at bottom, moves to next message.
+
+common_tasks:
+  - name: compose and send an email
+    steps:
+      - "Press Ctrl+N to open compose window"
+      - "Type recipient in To field; Outlook auto-completes from address book"
+      - "Press Tab to move to Subject, type subject"
+      - "Press Tab to move to body, type message"
+      - "Attach files if needed via Insert > Attach File"
+      - "Press Ctrl+Enter to send"
+
+  - name: search for an email
+    steps:
+      - "Press Ctrl+E or F3 to focus the search bar"
+      - "Type search terms (sender name, subject, keywords)"
+      - "Press Enter to search"
+      - "Use ribbon options to narrow scope (All Mailboxes, This Folder, etc.)"
+      - "Click a result to open it in the reading pane"
+
+  - name: move messages to a folder
+    steps:
+      - "Select one or more messages in the message list"
+      - "Press Ctrl+Shift+V to open Move Items dialog"
+      - "Select the destination folder"
+      - "Click OK"
+
+  - name: create a calendar event
+    steps:
+      - "Press Ctrl+2 to switch to Calendar view"
+      - "Click the desired date/time slot"
+      - "Press Ctrl+Shift+A for a new appointment, or double-click the time slot"
+      - "Enter subject, location, start and end times"
+      - "Set recurrence if needed (Recurrence button)"
+      - "Click Save & Close"
+
+  - name: set up an email rule
+    steps:
+      - "Go to File > Manage Rules & Alerts (or Home tab > Rules)"
+      - "Click New Rule"
+      - "Choose a template (e.g., Move messages from someone to a folder)"
+      - "Follow the wizard to define conditions and actions"
+      - "Click Finish and OK"

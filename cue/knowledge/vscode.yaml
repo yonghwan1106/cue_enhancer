@@ -1,0 +1,275 @@
+app_name: Visual Studio Code
+
+shortcuts:
+  - action: open command palette
+    keys: "Ctrl+Shift+P or F1"
+    reliability: 1.0
+  - action: open file (quick open)
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: open new file
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: save file
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save all files
+    keys: "Ctrl+K then S"
+    reliability: 1.0
+  - action: save as
+    keys: "Ctrl+Shift+S"
+    reliability: 1.0
+  - action: close current editor tab
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: close all editor tabs
+    keys: "Ctrl+K then W"
+    reliability: 1.0
+  - action: reopen last closed editor
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Shift+Z or Ctrl+Y"
+    reliability: 1.0
+  - action: copy line (no selection needed)
+    keys: "Ctrl+C (with no selection)"
+    reliability: 1.0
+  - action: cut line (no selection needed)
+    keys: "Ctrl+X (with no selection)"
+    reliability: 1.0
+  - action: duplicate line down
+    keys: "Shift+Alt+Down"
+    reliability: 1.0
+  - action: move line up
+    keys: "Alt+Up"
+    reliability: 1.0
+  - action: move line down
+    keys: "Alt+Down"
+    reliability: 1.0
+  - action: delete current line
+    keys: "Ctrl+Shift+K"
+    reliability: 1.0
+  - action: comment / uncomment line or selection
+    keys: "Ctrl+/"
+    reliability: 1.0
+  - action: block comment toggle
+    keys: "Shift+Alt+A"
+    reliability: 1.0
+  - action: find in current file
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: find and replace in current file
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: search across all files (global search)
+    keys: "Ctrl+Shift+F"
+    reliability: 1.0
+  - action: go to line number
+    keys: "Ctrl+G"
+    reliability: 1.0
+  - action: go to symbol in file
+    keys: "Ctrl+Shift+O"
+    reliability: 1.0
+  - action: go to symbol in workspace
+    keys: "Ctrl+T"
+    reliability: 1.0
+  - action: go to definition
+    keys: "F12"
+    reliability: 1.0
+  - action: peek definition
+    keys: "Alt+F12"
+    reliability: 1.0
+  - action: go to references
+    keys: "Shift+F12"
+    reliability: 1.0
+  - action: rename symbol
+    keys: "F2"
+    reliability: 1.0
+  - action: trigger IntelliSense / code completion
+    keys: "Ctrl+Space"
+    reliability: 1.0
+  - action: show hover information
+    keys: "Ctrl+K then Ctrl+I"
+    reliability: 0.9
+  - action: format document
+    keys: "Shift+Alt+F"
+    reliability: 1.0
+  - action: format selection
+    keys: "Ctrl+K then Ctrl+F"
+    reliability: 1.0
+  - action: open integrated terminal
+    keys: "Ctrl+` (backtick)"
+    reliability: 1.0
+  - action: toggle sidebar visibility
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: toggle file explorer
+    keys: "Ctrl+Shift+E"
+    reliability: 1.0
+  - action: toggle source control panel
+    keys: "Ctrl+Shift+G"
+    reliability: 1.0
+  - action: toggle extensions panel
+    keys: "Ctrl+Shift+X"
+    reliability: 1.0
+  - action: split editor
+    keys: "Ctrl+\\"
+    reliability: 1.0
+  - action: switch between editor groups
+    keys: "Ctrl+1, Ctrl+2, Ctrl+3"
+    reliability: 1.0
+  - action: next editor tab
+    keys: "Ctrl+Tab"
+    reliability: 1.0
+  - action: add cursor above
+    keys: "Ctrl+Alt+Up"
+    reliability: 0.9
+  - action: add cursor below
+    keys: "Ctrl+Alt+Down"
+    reliability: 0.9
+  - action: select next occurrence of current word
+    keys: "Ctrl+D"
+    reliability: 1.0
+  - action: select all occurrences of current word
+    keys: "Ctrl+Shift+L"
+    reliability: 1.0
+  - action: indent line
+    keys: "Tab (or Ctrl+])"
+    reliability: 1.0
+  - action: outdent line
+    keys: "Shift+Tab (or Ctrl+[)"
+    reliability: 1.0
+  - action: fold code block
+    keys: "Ctrl+Shift+["
+    reliability: 1.0
+  - action: unfold code block
+    keys: "Ctrl+Shift+]"
+    reliability: 1.0
+  - action: fold all
+    keys: "Ctrl+K then Ctrl+0"
+    reliability: 1.0
+  - action: unfold all
+    keys: "Ctrl+K then Ctrl+J"
+    reliability: 1.0
+  - action: open keyboard shortcuts reference
+    keys: "Ctrl+K then Ctrl+S"
+    reliability: 1.0
+  - action: zoom in UI
+    keys: "Ctrl+="
+    reliability: 1.0
+  - action: zoom out UI
+    keys: "Ctrl+-"
+    reliability: 1.0
+
+pitfalls:
+  - situation: Ctrl+P opens Quick Open but starts with > showing command palette instead of file picker
+    avoid: typing a filename when > is in the input — it is in command mode
+    instead: >
+      Clear the > prefix by pressing Backspace to switch to file search mode.
+      Alternatively use Ctrl+Shift+P for the command palette explicitly, and
+      Ctrl+P (then immediately clear >) for file quick open.
+
+  - situation: find/replace in file when intending global search
+    avoid: using Ctrl+H for global search — it only searches the current file
+    instead: >
+      Use Ctrl+Shift+F for global search across the workspace (opens Search panel).
+      Ctrl+Shift+H opens global find and replace across all files.
+
+  - situation: multiple cursors added unintentionally with Ctrl+D
+    avoid: pressing Ctrl+D multiple times without noticing extra cursors being added
+    instead: >
+      Press Escape to remove all multiple cursors and return to single cursor.
+      Each Ctrl+D adds the next occurrence; use Ctrl+K then Ctrl+D to skip one.
+
+  - situation: formatter not running on Shift+Alt+F because no formatter is installed
+    avoid: assuming formatting will work without a language-specific formatter extension
+    instead: >
+      Install the appropriate formatter extension (Prettier, Black, etc.) from the
+      Extensions panel (Ctrl+Shift+X). Then set it as default formatter in settings.
+
+  - situation: integrated terminal not inheriting the correct shell or environment
+    avoid: running commands in the integrated terminal expecting the same env as your system terminal
+    instead: >
+      Set the default shell in VSCode settings (terminal.integrated.defaultProfile).
+      Use Ctrl+Shift+` to open a new terminal; the first terminal inherits the
+      login shell environment.
+
+  - situation: Go to Definition (F12) opens a new editor group instead of navigating in place
+    avoid: unexpected split-screen behavior from F12 navigation
+    instead: >
+      Press Escape to close the extra editor group. Use Alt+F12 for Peek Definition
+      (inline preview without navigation). Configure "editor.revealIfOpen" settings
+      to control navigation behavior.
+
+navigation:
+  - target: specific file by name
+    method: "Ctrl+P then type filename (fuzzy search)"
+    notes: Supports fuzzy matching; type partial name across path segments.
+
+  - target: specific line number in current file
+    method: "Ctrl+G then type line number"
+    notes: Can also use Ctrl+P then type ':' followed by line number.
+
+  - target: symbol / function in current file
+    method: "Ctrl+Shift+O then type symbol name"
+    notes: "'@' prefix in Quick Open also works; ':' groups symbols by type."
+
+  - target: global search results
+    method: "Ctrl+Shift+F to open search panel, type query"
+    notes: Results show file, line number, and context; click to open file at location.
+
+  - target: file explorer
+    method: "Ctrl+Shift+E"
+    notes: Shows workspace folder tree; Ctrl+B toggles entire sidebar.
+
+  - target: definition of a symbol
+    method: "Click symbol then press F12, or Ctrl+click"
+    notes: Alt+F12 shows peek (inline) without navigating away.
+
+  - target: problems / errors panel
+    method: "Ctrl+Shift+M"
+    notes: Lists all errors and warnings; click to jump to the issue location.
+
+  - target: integrated terminal
+    method: "Ctrl+` (backtick)"
+    notes: Toggles terminal panel; Ctrl+Shift+` creates a new terminal instance.
+
+common_tasks:
+  - name: open a file from the workspace
+    steps:
+      - "Press Ctrl+P to open Quick Open"
+      - "Type part of the filename"
+      - "Select from the dropdown list with arrow keys"
+      - "Press Enter to open"
+
+  - name: rename a symbol across the codebase
+    steps:
+      - "Place cursor on the symbol name"
+      - "Press F2 to trigger rename"
+      - "Type the new name"
+      - "Press Enter to apply to all occurrences"
+
+  - name: find and replace in all files
+    steps:
+      - "Press Ctrl+Shift+H to open global find and replace"
+      - "Type search term in the first box"
+      - "Type replacement in the second box"
+      - "Optionally filter by file pattern in the 'files to include' box"
+      - "Click Replace All or review matches first"
+
+  - name: run code in integrated terminal
+    steps:
+      - "Press Ctrl+` to open the terminal"
+      - "Type the run command (e.g., python main.py or npm start)"
+      - "Press Enter"
+      - "Review output in the terminal"
+
+  - name: stage and commit with source control
+    steps:
+      - "Press Ctrl+Shift+G to open Source Control panel"
+      - "Click the + icon next to files to stage them"
+      - "Type commit message in the text box at the top"
+      - "Press Ctrl+Enter to commit"

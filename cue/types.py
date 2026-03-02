@@ -723,3 +723,45 @@ class FailureRecord:
     screen_description: str = ""
     recovery_attempted: bool = False
     recovery_success: bool = False
+
+
+# ─── OmniParser Types (Phase 4) ──────────────────────────
+
+
+@dataclass
+class OmniParserElement:
+    """UI element detected by OmniParser V2."""
+
+    label: str = ""
+    bbox: tuple[int, int, int, int] = (0, 0, 0, 0)
+    element_type: str = "unknown"
+    confidence: float = 0.0
+    ocr_text: str = ""
+    icon_class: str = ""
+    is_interactive: bool = False
+
+
+@dataclass
+class OmniParserResult:
+    """Complete output from an OmniParser V2 inference pass."""
+
+    elements: list[OmniParserElement] = field(default_factory=list)
+    raw_boxes: list[tuple[int, int, int, int]] = field(default_factory=list)
+    latency_ms: float = 0.0
+    model_version: str = ""
+    screenshot_size: tuple[int, int] = (0, 0)
+
+    @property
+    def interactive_elements(self) -> list[OmniParserElement]:
+        return [e for e in self.elements if e.is_interactive]
+
+
+@dataclass
+class PlatformInfo:
+    """Runtime platform detection result."""
+
+    os_name: str = ""           # linux, win32, darwin
+    os_version: str = ""
+    a11y_backend: str = ""      # atspi, uia, ax
+    screenshot_method: str = ""  # scrot, win32api, screencapture
+    input_method: str = ""       # xdotool, win32api, cgevents

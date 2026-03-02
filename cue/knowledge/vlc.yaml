@@ -1,0 +1,189 @@
+app_name: VLC Media Player
+
+shortcuts:
+  - action: play / pause toggle
+    keys: "Space"
+    reliability: 1.0
+  - action: stop playback
+    keys: "S"
+    reliability: 1.0
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: open multiple files
+    keys: "Ctrl+Shift+O"
+    reliability: 0.9
+  - action: open folder / directory
+    keys: "Ctrl+F"
+    reliability: 0.9
+  - action: open network stream / URL
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: quit VLC
+    keys: "Ctrl+Q"
+    reliability: 1.0
+  - action: toggle fullscreen
+    keys: "F"
+    reliability: 1.0
+  - action: exit fullscreen
+    keys: "Escape"
+    reliability: 1.0
+  - action: toggle always on top
+    keys: "T"
+    reliability: 0.9
+  - action: seek forward 10 seconds
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: seek backward 10 seconds
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: seek forward 1 minute
+    keys: "Ctrl+Right"
+    reliability: 1.0
+  - action: seek backward 1 minute
+    keys: "Ctrl+Left"
+    reliability: 1.0
+  - action: seek forward 3 seconds (frame-accurate)
+    keys: "Shift+Right"
+    reliability: 0.9
+  - action: seek backward 3 seconds
+    keys: "Shift+Left"
+    reliability: 0.9
+  - action: next frame (when paused)
+    keys: "E"
+    reliability: 1.0
+  - action: volume up
+    keys: "Ctrl+Up"
+    reliability: 1.0
+  - action: volume down
+    keys: "Ctrl+Down"
+    reliability: 1.0
+  - action: mute / unmute
+    keys: "M"
+    reliability: 1.0
+  - action: next track in playlist
+    keys: "N"
+    reliability: 1.0
+  - action: previous track in playlist
+    keys: "P"
+    reliability: 1.0
+  - action: toggle playlist panel
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: increase playback speed
+    keys: "]"
+    reliability: 1.0
+  - action: decrease playback speed
+    keys: "["
+    reliability: 1.0
+  - action: reset playback speed to normal
+    keys: "="
+    reliability: 1.0
+  - action: take screenshot
+    keys: "Shift+S"
+    reliability: 1.0
+  - action: toggle subtitles on/off
+    keys: "V"
+    reliability: 1.0
+  - action: cycle audio track
+    keys: "B"
+    reliability: 1.0
+  - action: open Media Information dialog
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: show / hide controls (in fullscreen)
+    keys: "Move mouse to bottom of screen"
+    reliability: 0.9
+
+pitfalls:
+  - situation: pressing Space bar to pause when the VLC window is not focused
+    avoid: pressing Space without clicking VLC first — it may interact with the OS instead
+    instead: >
+      Click the VLC video area once to ensure focus, then press Space to pause.
+      Alternatively, click the pause button in the controls bar.
+
+  - situation: volume slider goes above 100% causing audio distortion
+    avoid: using Ctrl+Up past 100% — VLC allows up to 200% amplification which distorts audio
+    instead: >
+      Watch the volume percentage display in the status bar. Keep at or below 100%
+      for undistorted audio. Press M to mute and Ctrl+Down to reduce if too high.
+
+  - situation: subtitles are not displaying for a video that has subtitle tracks
+    avoid: assuming there are no subtitles when they may just be disabled
+    instead: >
+      Press V to cycle through subtitle tracks. Go to Subtitles > Sub Track menu
+      to see all available tracks. External .srt files can be loaded via
+      Subtitles > Add Subtitle File.
+
+  - situation: opening a network stream (URL) fails or shows error
+    avoid: typing URL without verifying it is a direct media stream URL
+    instead: >
+      Use Ctrl+N and paste the direct stream URL (rtsp://, http:// pointing to
+      .m3u8, .mp4, etc.). YouTube URLs require youtube-dl integration; VLC alone
+      may not play standard YouTube watch?v= URLs without setup.
+
+  - situation: playback speed change persists after closing VLC
+    avoid: leaving VLC at non-normal speed — it remembers the speed between sessions
+    instead: >
+      Press = to reset speed to 1.0x before closing, or change preference to always
+      start at 1.0x under Tools > Preferences > Input / Codecs.
+
+navigation:
+  - target: specific time position in video
+    method: "Click the timeline/progress bar at the bottom to seek, or right-click it for chapter markers"
+    notes: Dragging the playhead is most precise; keyboard shortcuts offer fixed increments.
+
+  - target: playlist
+    method: "Ctrl+L to toggle playlist panel on the right side"
+    notes: Drag files into the playlist panel to queue them; double-click to play.
+
+  - target: Media Information (codec details, metadata)
+    method: "Ctrl+I"
+    notes: Shows file format, video/audio codec, bitrate, and metadata tags.
+
+  - target: Preferences / Settings
+    method: "Tools > Preferences (Ctrl+P on some systems)"
+    notes: Use 'All' settings mode (radio button at bottom) to see advanced options.
+
+  - target: subtitle track selection
+    method: "Subtitles menu > Sub Track, or press V to cycle"
+    notes: Multiple embedded tracks are listed; Disable removes subtitles.
+
+  - target: audio track selection
+    method: "Audio menu > Audio Track, or press B to cycle"
+    notes: Useful for multi-language videos with multiple audio streams.
+
+common_tasks:
+  - name: open and play a video file
+    steps:
+      - "Press Ctrl+O to open file browser"
+      - "Navigate to the video file and click Open"
+      - "Playback starts automatically"
+      - "Press Space to pause/resume"
+
+  - name: add external subtitle file
+    steps:
+      - "Open the video file first"
+      - "Go to Subtitles menu > Add Subtitle File"
+      - "Browse to the .srt or .ass subtitle file"
+      - "Click Open — subtitles appear immediately"
+
+  - name: take a screenshot of current frame
+    steps:
+      - "Pause the video at the desired frame with Space"
+      - "Press E to advance frame by frame if needed"
+      - "Press Shift+S to save screenshot"
+      - "Screenshot saved to Pictures folder by default (configurable in Preferences)"
+
+  - name: play a video at slower speed for transcription
+    steps:
+      - "Open the video and start playback"
+      - "Press [ to decrease speed (e.g., 0.75x, 0.5x)"
+      - "Press = to return to normal speed when done"
+
+  - name: stream a video from a URL
+    steps:
+      - "Press Ctrl+N to open Network Stream dialog"
+      - "Paste the direct media URL into the URL field"
+      - "Click Play"
+      - "Wait for VLC to buffer and begin playback"

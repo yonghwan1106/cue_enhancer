@@ -1,0 +1,236 @@
+app_name: Microsoft PowerPoint
+
+shortcuts:
+  - action: save presentation
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: save as
+    keys: "F12"
+    reliability: 1.0
+  - action: open file
+    keys: "Ctrl+O"
+    reliability: 1.0
+  - action: new presentation
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: undo
+    keys: "Ctrl+Z"
+    reliability: 1.0
+  - action: redo
+    keys: "Ctrl+Y"
+    reliability: 1.0
+  - action: copy
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: cut
+    keys: "Ctrl+X"
+    reliability: 1.0
+  - action: paste
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: paste and keep source formatting
+    keys: "Ctrl+V then Ctrl (Paste Options button)"
+    reliability: 0.8
+  - action: select all objects on slide
+    keys: "Ctrl+A"
+    reliability: 1.0
+  - action: duplicate selected object or slide
+    keys: "Ctrl+D"
+    reliability: 1.0
+  - action: delete selected object
+    keys: "Delete"
+    reliability: 1.0
+  - action: toggle bold
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: toggle italic
+    keys: "Ctrl+I"
+    reliability: 1.0
+  - action: toggle underline
+    keys: "Ctrl+U"
+    reliability: 1.0
+  - action: increase font size
+    keys: "Ctrl+Shift+>"
+    reliability: 1.0
+  - action: decrease font size
+    keys: "Ctrl+Shift+<"
+    reliability: 1.0
+  - action: align text left
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: align text center
+    keys: "Ctrl+E"
+    reliability: 1.0
+  - action: align text right
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: insert new slide
+    keys: "Ctrl+M"
+    reliability: 1.0
+  - action: find text
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: find and replace
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: start slideshow from beginning
+    keys: "F5"
+    reliability: 1.0
+  - action: start slideshow from current slide
+    keys: "Shift+F5"
+    reliability: 1.0
+  - action: end slideshow
+    keys: "Escape"
+    reliability: 1.0
+  - action: next slide (slide panel or slideshow)
+    keys: "Page Down"
+    reliability: 1.0
+  - action: previous slide
+    keys: "Page Up"
+    reliability: 1.0
+  - action: group selected objects
+    keys: "Ctrl+G"
+    reliability: 1.0
+  - action: ungroup objects
+    keys: "Ctrl+Shift+G"
+    reliability: 1.0
+  - action: enter text edit mode on selected shape
+    keys: "F2 or Enter"
+    reliability: 1.0
+  - action: exit text edit mode
+    keys: "Escape"
+    reliability: 1.0
+  - action: insert hyperlink
+    keys: "Ctrl+K"
+    reliability: 1.0
+  - action: check spelling
+    keys: "F7"
+    reliability: 1.0
+  - action: open slide layout panel
+    keys: "Alt+H, L (Home > Layout)"
+    reliability: 0.9
+  - action: zoom in on slide
+    keys: "Ctrl++ or use View > Zoom"
+    reliability: 0.9
+  - action: fit slide to window
+    keys: "Ctrl+Shift+F5 (or View > Fit Slide to Window)"
+    reliability: 0.8
+  - action: move object by 1pt (nudge)
+    keys: "Arrow keys (with object selected)"
+    reliability: 1.0
+  - action: move object by 10pt (large nudge)
+    keys: "Ctrl+Arrow keys (with object selected)"
+    reliability: 1.0
+  - action: send object backward
+    keys: "Alt+Shift+B (via Arrange menu)"
+    reliability: 0.8
+  - action: bring object forward
+    keys: "Alt+Shift+F (via Arrange menu)"
+    reliability: 0.8
+
+pitfalls:
+  - situation: clicking on a shape single-click enters object selection mode, not text edit
+    avoid: typing immediately after a single click expecting text to appear
+    instead: >
+      Single click selects the object (shows handles). Press Enter or F2 or
+      double-click to enter text edit mode. Escape exits text edit back to
+      object selection; Escape again deselects all objects on the slide.
+
+  - situation: Ctrl+D duplicates a slide when Slide panel is focused but duplicates an object when canvas is focused
+    avoid: pressing Ctrl+D without knowing what is focused
+    instead: >
+      Click in the main slide canvas area first to ensure slide objects are in scope.
+      If you intended to duplicate the slide (not an object), right-click the slide
+      thumbnail in the panel and choose Duplicate Slide.
+
+  - situation: animations playing in wrong order
+    avoid: adding animations without checking the Animation Pane sequence
+    instead: >
+      Open Animation Pane (Animations tab > Animation Pane) to see the full order.
+      Drag items in the pane to reorder, or use the reorder buttons.
+
+  - situation: images inserted with wrong wrapping or positioning
+    avoid: inserting images and having them placed over existing content with no control
+    instead: >
+      After inserting, use the Position and Size dialog (F4) for precise placement.
+      Use Arrange > Align to align objects to the slide center or edges.
+
+  - situation: font not embedded causing display issues when sharing the file
+    avoid: using custom fonts without embedding them in the file
+    instead: >
+      Go to File > Options > Save and check "Embed fonts in the file".
+      This increases file size but ensures correct display on other computers.
+
+  - situation: presenter view showing on wrong screen during presentation
+    avoid: starting slideshow without configuring display settings first
+    instead: >
+      Go to Slideshow tab > Set Up Slide Show to configure which monitor shows
+      the presentation vs. Presenter View. Use Display Settings to swap if needed.
+
+navigation:
+  - target: specific slide by number
+    method: "Click slide thumbnail in the Slides panel on the left"
+    notes: During slideshow, type the slide number then press Enter to jump to it.
+
+  - target: Slide Sorter view
+    method: "View > Slide Sorter or Ctrl+Shift+Tab (some versions)"
+    notes: Shows all slides as thumbnails; drag to reorder, double-click to edit.
+
+  - target: Outline view (all slide text)
+    method: "View > Outline View"
+    notes: Edit all text content across slides in outline format.
+
+  - target: slide layout options
+    method: "Home tab > Layout dropdown"
+    notes: Apply pre-set layouts (Title Slide, Title and Content, Blank, etc.).
+
+  - target: Animation Pane
+    method: "Animations tab > Animation Pane button"
+    notes: Shows all animations on current slide in sequence order.
+
+  - target: Slide Master
+    method: "View > Slide Master"
+    notes: Edit template styles affecting all slides; Close Master View to exit.
+
+  - target: object on slide (keyboard cycle)
+    method: "Press Tab to cycle through objects on the current slide"
+    notes: Shift+Tab cycles in reverse; Enter/F2 enters edit mode for the object.
+
+common_tasks:
+  - name: add a new slide with a specific layout
+    steps:
+      - "In the Slides panel, click after the slide where you want to insert"
+      - "Press Ctrl+M to insert a new slide with default layout"
+      - "Go to Home tab > Layout to change the layout"
+      - "Or right-click in the Slides panel and choose New Slide or Duplicate Slide"
+
+  - name: insert and position an image
+    steps:
+      - "Go to Insert tab > Pictures > This Device"
+      - "Browse to the image and click Insert"
+      - "Drag the image to position it"
+      - "Drag corner handles to resize (hold Shift to maintain aspect ratio)"
+      - "Use F4 for precise position and size values"
+
+  - name: add an animation to an object
+    steps:
+      - "Select the object on the slide"
+      - "Go to Animations tab"
+      - "Click an animation in the gallery (or More for full list)"
+      - "Set Start, Duration, and Delay in the Timing group"
+      - "Click Preview to test the animation"
+
+  - name: run the presentation
+    steps:
+      - "Press F5 to start from the beginning"
+      - "Click or press Space/Enter/Right arrow to advance"
+      - "Press Left arrow or Backspace to go back"
+      - "Press Escape to exit"
+
+  - name: export as PDF
+    steps:
+      - "Press Alt+F to open File menu"
+      - "Choose Export > Create PDF/XPS"
+      - "Set filename and location"
+      - "Choose 'Standard' quality for print or 'Minimum size' for web"
+      - "Click Publish"

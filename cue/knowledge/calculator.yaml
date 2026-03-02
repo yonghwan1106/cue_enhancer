@@ -1,0 +1,199 @@
+app_name: Windows Calculator
+
+shortcuts:
+  - action: switch to Standard mode
+    keys: "Alt+1"
+    reliability: 1.0
+  - action: switch to Scientific mode
+    keys: "Alt+2"
+    reliability: 1.0
+  - action: switch to Graphing mode
+    keys: "Alt+3"
+    reliability: 0.9
+  - action: switch to Programmer mode
+    keys: "Alt+4"
+    reliability: 1.0
+  - action: switch to Date Calculation mode
+    keys: "Alt+5"
+    reliability: 0.9
+  - action: clear current entry (CE)
+    keys: "Delete"
+    reliability: 1.0
+  - action: clear all / reset (C)
+    keys: "Escape"
+    reliability: 1.0
+  - action: backspace (delete last digit)
+    keys: "Backspace"
+    reliability: 1.0
+  - action: equals / calculate result
+    keys: "Enter or ="
+    reliability: 1.0
+  - action: addition
+    keys: "+"
+    reliability: 1.0
+  - action: subtraction
+    keys: "-"
+    reliability: 1.0
+  - action: multiplication
+    keys: "*"
+    reliability: 1.0
+  - action: division
+    keys: "/"
+    reliability: 1.0
+  - action: percentage
+    keys: "%"
+    reliability: 1.0
+  - action: square root
+    keys: "Ctrl+Shift+2 (or @ symbol, or click sqrt button)"
+    reliability: 0.8
+  - action: square (x²)
+    keys: "Q (or click x² button)"
+    reliability: 0.8
+  - action: reciprocal (1/x)
+    keys: "R (or click 1/x button)"
+    reliability: 0.8
+  - action: negate / toggle sign (+/-)
+    keys: "F9"
+    reliability: 1.0
+  - action: decimal point
+    keys: ". (period)"
+    reliability: 1.0
+  - action: memory store (MS)
+    keys: "Ctrl+M"
+    reliability: 0.9
+  - action: memory recall (MR)
+    keys: "Ctrl+R"
+    reliability: 0.9
+  - action: memory clear (MC)
+    keys: "Ctrl+L"
+    reliability: 0.9
+  - action: memory add (M+)
+    keys: "Ctrl+P"
+    reliability: 0.9
+  - action: memory subtract (M-)
+    keys: "Ctrl+Q"
+    reliability: 0.9
+  - action: open history panel
+    keys: "Ctrl+H"
+    reliability: 0.9
+  - action: copy result to clipboard
+    keys: "Ctrl+C"
+    reliability: 1.0
+  - action: paste number from clipboard
+    keys: "Ctrl+V"
+    reliability: 1.0
+  - action: toggle Programmer HEX mode
+    keys: "Alt+H (in Programmer mode)"
+    reliability: 0.9
+  - action: toggle Programmer DEC mode
+    keys: "Alt+D (in Programmer mode)"
+    reliability: 0.9
+  - action: toggle Programmer OCT mode
+    keys: "Alt+O (in Programmer mode)"
+    reliability: 0.9
+  - action: toggle Programmer BIN mode
+    keys: "Alt+B (in Programmer mode)"
+    reliability: 0.9
+
+pitfalls:
+  - situation: pressing Escape clears the entire calculation instead of just the current entry
+    avoid: pressing Escape when meaning to clear only the last entry
+    instead: >
+      Press Delete to clear the Current Entry (CE) without resetting the ongoing
+      calculation. Escape (C = Clear All) resets the entire calculation back to 0.
+
+  - situation: operator precedence not respected in Standard mode
+    avoid: expecting Standard mode to follow PEMDAS/BODMAS order of operations
+    instead: >
+      Standard mode calculates left to right (not PEMDAS). Type 2 + 3 * 4 and
+      press = will give 20 (not 14). Use Scientific mode for proper operator
+      precedence, or use parentheses where available.
+
+  - situation: result is in scientific notation and hard to read
+    avoid: assuming the display value is exact when shown as e+N notation
+    instead: >
+      Copy the result (Ctrl+C) and paste into a text editor to see the full number.
+      Scientific mode shows more digits. Very large/small numbers inherently use
+      scientific notation.
+
+  - situation: Programmer mode number entered in wrong base
+    avoid: typing digits that are invalid for the selected base (e.g., 8 or 9 in BIN mode)
+    instead: >
+      Calculator greys out invalid digit keys for the current base. Switch to
+      DEC (Alt+D) first to enter a decimal number, then switch to HEX/BIN
+      to see the conversion. Do not type hex letters without being in HEX mode.
+
+  - situation: closing Calculator loses calculation history
+    avoid: closing the app when you still need previous calculation results
+    instead: >
+      Use the History panel (Ctrl+H) to review recent calculations before closing.
+      Copy important results to clipboard (Ctrl+C) or paste into a note.
+      Calculator history is not saved between sessions.
+
+navigation:
+  - target: Standard mode (basic arithmetic)
+    method: "Alt+1 or hamburger menu (top-left) > Standard"
+    notes: Simple four-function calculator; no operator precedence.
+
+  - target: Scientific mode (trig, powers, logs)
+    method: "Alt+2 or hamburger menu > Scientific"
+    notes: Supports sin/cos/tan, log, ln, powers, parentheses, and proper order of operations.
+
+  - target: Programmer mode (hex/dec/oct/bin)
+    method: "Alt+4 or hamburger menu > Programmer"
+    notes: Switch between number bases with Alt+H/D/O/B; shows bitwise operations.
+
+  - target: History panel
+    method: "Ctrl+H or click the clock/history icon"
+    notes: Shows previous calculations in the current session; click to recall a result.
+
+  - target: Memory panel
+    method: "Click M^ button or the memory section in the display area"
+    notes: Shows all stored memory values; click to recall, delete individual entries.
+
+  - target: Unit Converter
+    method: "Hamburger menu > Converter (Length, Weight, Temperature, etc.)"
+    notes: Select conversion type, enter value, and select From/To units.
+
+common_tasks:
+  - name: perform a basic arithmetic calculation
+    steps:
+      - "Open Calculator (search 'Calculator' in Start or press Win then type calc)"
+      - "Ensure you are in Standard mode (Alt+1)"
+      - "Type the first number using keyboard numpad or number row"
+      - "Press an operator key (+, -, *, /)"
+      - "Type the second number"
+      - "Press Enter or = for the result"
+
+  - name: convert between number bases (hex/dec/bin)
+    steps:
+      - "Press Alt+4 to switch to Programmer mode"
+      - "Press Alt+D to enter in Decimal mode"
+      - "Type the decimal number"
+      - "Press Alt+H to see the Hexadecimal equivalent"
+      - "Press Alt+B to see Binary equivalent"
+      - "Copy the result with Ctrl+C"
+
+  - name: calculate with scientific functions
+    steps:
+      - "Press Alt+2 to switch to Scientific mode"
+      - "Type the number"
+      - "Click or use keyboard shortcut for the function (sin, cos, log, etc.)"
+      - "Press Enter for result"
+
+  - name: use memory to store an intermediate result
+    steps:
+      - "Calculate the intermediate result"
+      - "Press Ctrl+M to store it in memory"
+      - "Continue calculating"
+      - "Press Ctrl+R to recall the stored value when needed"
+      - "Press Ctrl+L to clear memory when done"
+
+  - name: convert units (e.g., miles to kilometers)
+    steps:
+      - "Open the hamburger menu (top-left three lines)"
+      - "Under 'Converter', select 'Length'"
+      - "Enter the value in the input field"
+      - "Select 'Miles' in the From dropdown"
+      - "Select 'Kilometers' in the To dropdown"
+      - "Result displays automatically"

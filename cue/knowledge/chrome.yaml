@@ -1,0 +1,220 @@
+app_name: Google Chrome
+
+shortcuts:
+  - action: focus address bar / omnibox
+    keys: "Ctrl+L or Alt+D or F6"
+    reliability: 1.0
+  - action: open new tab
+    keys: "Ctrl+T"
+    reliability: 1.0
+  - action: close current tab
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: reopen last closed tab
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: open new window
+    keys: "Ctrl+N"
+    reliability: 1.0
+  - action: open incognito window
+    keys: "Ctrl+Shift+N"
+    reliability: 1.0
+  - action: go to next tab
+    keys: "Ctrl+Tab"
+    reliability: 1.0
+  - action: go to previous tab
+    keys: "Ctrl+Shift+Tab"
+    reliability: 1.0
+  - action: switch to specific tab by number
+    keys: "Ctrl+1 through Ctrl+8"
+    reliability: 1.0
+  - action: switch to last tab
+    keys: "Ctrl+9"
+    reliability: 1.0
+  - action: go back in history
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: go forward in history
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: reload page
+    keys: "Ctrl+R or F5"
+    reliability: 1.0
+  - action: hard reload (bypass cache)
+    keys: "Ctrl+Shift+R or Ctrl+F5"
+    reliability: 1.0
+  - action: stop page loading
+    keys: "Escape"
+    reliability: 1.0
+  - action: find in page
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: find next match
+    keys: "F3 or Enter (in find bar)"
+    reliability: 1.0
+  - action: find previous match
+    keys: "Shift+F3"
+    reliability: 1.0
+  - action: zoom in
+    keys: "Ctrl++"
+    reliability: 1.0
+  - action: zoom out
+    keys: "Ctrl+-"
+    reliability: 1.0
+  - action: reset zoom to 100%
+    keys: "Ctrl+0"
+    reliability: 1.0
+  - action: open downloads page
+    keys: "Ctrl+J"
+    reliability: 1.0
+  - action: open history page
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: open bookmarks manager
+    keys: "Ctrl+Shift+O"
+    reliability: 1.0
+  - action: bookmark current page
+    keys: "Ctrl+D"
+    reliability: 1.0
+  - action: open settings
+    keys: "Alt+E then S, or navigate to chrome://settings"
+    reliability: 0.9
+  - action: open developer tools
+    keys: "F12 or Ctrl+Shift+I"
+    reliability: 1.0
+  - action: open JavaScript console
+    keys: "Ctrl+Shift+J"
+    reliability: 1.0
+  - action: open task manager
+    keys: "Shift+Esc"
+    reliability: 1.0
+  - action: print page
+    keys: "Ctrl+P"
+    reliability: 1.0
+  - action: save page as
+    keys: "Ctrl+S"
+    reliability: 1.0
+  - action: scroll down
+    keys: "Space or Down arrow"
+    reliability: 0.9
+  - action: scroll up
+    keys: "Shift+Space or Up arrow"
+    reliability: 0.9
+  - action: scroll to top of page
+    keys: "Ctrl+Home"
+    reliability: 1.0
+  - action: scroll to bottom of page
+    keys: "Ctrl+End"
+    reliability: 1.0
+  - action: focus next interactive element
+    keys: "Tab"
+    reliability: 1.0
+  - action: activate focused link / button
+    keys: "Enter"
+    reliability: 1.0
+  - action: open link in new tab
+    keys: "Ctrl+click or Middle-click"
+    reliability: 1.0
+
+pitfalls:
+  - situation: typing URL while a text input field on the page has focus
+    avoid: typing directly — text goes into the page's form field, not the address bar
+    instead: >
+      Press Ctrl+L first to focus the omnibox (address bar), then type the URL.
+      The omnibox is always focused after Ctrl+L regardless of page focus state.
+
+  - situation: download dialog blocked by popup blocker
+    avoid: waiting indefinitely after clicking a download link with no visible response
+    instead: >
+      Look for a blocked popup notification in the address bar area (right side).
+      Click the notification icon and choose to allow the download.
+      Alternatively check Ctrl+J (Downloads) to see if the download started anyway.
+
+  - situation: page zoom is changed and UI elements appear wrong
+    avoid: scrolling with Ctrl+scroll wheel which changes page zoom unexpectedly
+    instead: >
+      Press Ctrl+0 to reset zoom to 100%. Zoom level persists per domain.
+      Check the zoom indicator that appears in the address bar when zoom is not 100%.
+
+  - situation: accidentally opening DevTools instead of the intended action
+    avoid: pressing F12 when meaning to press F11 (fullscreen)
+    instead: >
+      Press F12 again or Ctrl+Shift+I to close DevTools. F11 toggles true
+      browser fullscreen (hides tabs and address bar).
+
+  - situation: find bar highlights matches but Tab key does not navigate to next match
+    avoid: pressing Tab in the find bar expecting to jump to next match in the page
+    instead: >
+      In the find bar, Enter goes to next match and Shift+Enter goes to previous.
+      F3 also cycles matches. Press Escape to close the find bar when done.
+
+  - situation: cookie consent or overlay dialogs block interaction with page content
+    avoid: trying to click through overlays without dismissing them first
+    instead: >
+      Look for Decline/Accept/Close buttons on the overlay and click them.
+      If the overlay cannot be dismissed, try scrolling to find hidden close buttons,
+      or use Tab to cycle to the close button and press Enter.
+
+navigation:
+  - target: address bar
+    method: "Ctrl+L (instantly focuses and selects current URL)"
+    notes: Type to search or enter URL; suggestions appear from history and bookmarks.
+
+  - target: specific Chrome internal page
+    method: "Ctrl+L then type chrome:// URL (e.g., chrome://settings, chrome://downloads)"
+    notes: "Common internal URLs: chrome://flags, chrome://extensions, chrome://history."
+
+  - target: text on current page
+    method: "Ctrl+F then type search term"
+    notes: All matches highlighted; Enter/Shift+Enter or F3/Shift+F3 to cycle.
+
+  - target: extensions
+    method: "Navigate to chrome://extensions or Extensions icon in toolbar"
+    notes: Manage, enable/disable, or remove extensions from this page.
+
+  - target: tab by position
+    method: "Ctrl+1 through Ctrl+8, Ctrl+9 for last tab"
+    notes: Faster than clicking when many tabs are open.
+
+  - target: downloads
+    method: "Ctrl+J or navigate to chrome://downloads"
+    notes: Shows current and recent downloads; right-click to open file location.
+
+  - target: page element (keyboard navigation)
+    method: "Tab to cycle through focusable elements, Enter to activate"
+    notes: Shift+Tab reverses direction; useful when mouse cannot click small targets.
+
+common_tasks:
+  - name: navigate to a URL
+    steps:
+      - "Press Ctrl+L to focus the address bar"
+      - "Type the URL or search query"
+      - "Press Enter to navigate"
+
+  - name: open a link in a new background tab
+    steps:
+      - "Ctrl+click the link (opens in new tab without switching to it)"
+      - "Or middle-click the link"
+      - "Switch to the new tab with Ctrl+Tab when ready"
+
+  - name: download a file
+    steps:
+      - "Click the download link"
+      - "If a dialog appears, choose Save"
+      - "If popup blocked notification appears, click it and allow"
+      - "Press Ctrl+J to monitor download progress"
+
+  - name: find and navigate to text on a page
+    steps:
+      - "Press Ctrl+F to open find bar"
+      - "Type the search term"
+      - "Press Enter or F3 to jump to next match"
+      - "Press Shift+F3 for previous match"
+      - "Press Escape to close find bar"
+
+  - name: clear browsing data
+    steps:
+      - "Press Ctrl+Shift+Delete to open Clear Browsing Data dialog"
+      - "Select time range (All time for complete clear)"
+      - "Check items to clear (cookies, cache, history)"
+      - "Click Clear Data"
