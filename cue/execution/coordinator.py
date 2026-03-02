@@ -7,7 +7,7 @@ import math
 from cue.types import Action, ElementMap, UIElement
 
 CLICK_TYPES = {"left_click", "double_click", "right_click"}
-SNAP_RADIUS = 20
+SNAP_RADIUS = 10
 CONFIDENCE_THRESHOLD = 0.6
 
 

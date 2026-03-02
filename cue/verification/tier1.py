@@ -16,8 +16,8 @@ from cue.types import (
 
 logger = logging.getLogger(__name__)
 
-SSIM_CHANGE = 0.01
-SSIM_MINOR = 0.002
+SSIM_CHANGE = 0.005
+SSIM_MINOR = 0.001
 
 
 def _compute_ssim(img_a: np.ndarray, img_b: np.ndarray) -> float:

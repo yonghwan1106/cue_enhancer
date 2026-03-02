@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import Callable, Awaitable
 
 import numpy as np
@@ -119,6 +120,8 @@ class ExecutionEnhancer:
         steps.append(f"execute:{'ok' if success else 'fail'}")
 
         # ── Step 5: Verify (simple pixel-diff heuristic) ──────────────────────
+        # Wait 200 ms for UI to update before capturing the verification screenshot.
+        await asyncio.sleep(0.2)
         raw_after = await screenshot_fn()
         after_frame = np.array(raw_after) if not isinstance(raw_after, np.ndarray) else raw_after
         if success:

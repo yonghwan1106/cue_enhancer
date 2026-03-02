@@ -171,8 +171,8 @@ class Tier2Verifier:
         overall = _overall_diff(before, after)
         details["overall_diff"] = overall
 
-        region_score = min(region_diff / 0.02, 1.0)  # normalise to [0,1]
-        overall_score = min(overall / 0.01, 1.0)
+        region_score = min(region_diff / 0.005, 1.0)  # normalise to [0,1]; lowered for subtle focus/cursor changes
+        overall_score = min(overall / 0.003, 1.0)
         return 0.7 * region_score + 0.3 * overall_score
 
     def _score_double_click(
@@ -195,7 +195,7 @@ class Tier2Verifier:
         details: dict,
     ) -> float:
         """Typing or key press should produce some change (cursor move, text input)."""
-        changed = _any_change(before, after, threshold=0.001)
+        changed = _any_change(before, after, threshold=0.0005)
         overall = _overall_diff(before, after)
         details["overall_diff"] = overall
         details["any_change"] = changed
