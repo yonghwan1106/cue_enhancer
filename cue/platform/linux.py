@@ -91,29 +91,29 @@ class LinuxEnvironment(EnvironmentAbstraction):
     ) -> None:
         button_num = {"left": "1", "middle": "2", "right": "3"}.get(button, "1")
         await self._run_xdotool(
-            "mousemove", "--sync", str(x), str(y),
+            "mousemove", str(x), str(y),
             "click", "--repeat", str(click_count), button_num,
         )
 
     async def mouse_move(self, x: int, y: int) -> None:
-        await self._run_xdotool("mousemove", "--sync", str(x), str(y))
+        await self._run_xdotool("mousemove", str(x), str(y))
 
     async def mouse_down(self, x: int, y: int, button: str = "left") -> None:
         button_num = {"left": "1", "middle": "2", "right": "3"}.get(button, "1")
         await self._run_xdotool(
-            "mousemove", "--sync", str(x), str(y),
+            "mousemove", str(x), str(y),
             "mousedown", button_num,
         )
 
     async def mouse_up(self, x: int, y: int, button: str = "left") -> None:
         button_num = {"left": "1", "middle": "2", "right": "3"}.get(button, "1")
         await self._run_xdotool(
-            "mousemove", "--sync", str(x), str(y),
+            "mousemove", str(x), str(y),
             "mouseup", button_num,
         )
 
     async def scroll(self, x: int, y: int, delta_x: int = 0, delta_y: int = 0) -> None:
-        await self._run_xdotool("mousemove", "--sync", str(x), str(y))
+        await self._run_xdotool("mousemove", str(x), str(y))
         if delta_y > 0:
             for _ in range(abs(delta_y) // 3 or 1):
                 await self._run_xdotool("click", "4")  # scroll up
@@ -123,7 +123,7 @@ class LinuxEnvironment(EnvironmentAbstraction):
 
     async def get_clipboard(self) -> str:
         proc = await asyncio.create_subprocess_exec(
-            "xclip", "-selection", "clipboard", "-o",
+            "xsel", "--clipboard", "--output",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -132,7 +132,7 @@ class LinuxEnvironment(EnvironmentAbstraction):
 
     async def set_clipboard(self, text: str) -> None:
         proc = await asyncio.create_subprocess_exec(
-            "xclip", "-selection", "clipboard",
+            "xsel", "--clipboard", "--input",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
