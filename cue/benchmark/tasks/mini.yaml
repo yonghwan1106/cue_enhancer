@@ -1,0 +1,51 @@
+- id: mini-001
+  app: Notepad
+  difficulty: easy
+  failure_type: grounding
+  instruction: Open Notepad and type "Hello World"
+  initial_state: ""
+  success_criteria:
+    type: file_content_check
+    checks:
+      - file: output.txt
+        condition: contains
+        value: Hello World
+  human_baseline_steps: 3
+  timeout_seconds: 60
+  tags:
+    - typing
+    - text_editor
+
+- id: mini-002
+  app: Browser
+  difficulty: medium
+  failure_type: navigation
+  instruction: Navigate to https://example.com and verify the page title
+  initial_state: ""
+  success_criteria:
+    type: url_check
+    checks:
+      - url_contains: example.com
+  human_baseline_steps: 2
+  timeout_seconds: 60
+  tags:
+    - navigation
+    - browser
+
+- id: mini-003
+  app: Calculator
+  difficulty: easy
+  failure_type: execution
+  instruction: Calculate 15 + 27 and read the result
+  initial_state: ""
+  success_criteria:
+    type: app_state_check
+    checks:
+      - key: display_value
+        condition: "=="
+        value: "42"
+  human_baseline_steps: 4
+  timeout_seconds: 45
+  tags:
+    - calculation
+    - desktop_app

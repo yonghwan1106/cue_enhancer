@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from cue.safety.gate import SafetyGate
+from cue.safety.gate import EmergencyStop, SafetyGate
 
-__all__ = ["SafetyGate"]
+__all__ = ["EmergencyStop", "SafetyGate"]

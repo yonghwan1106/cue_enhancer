@@ -608,3 +608,118 @@ class Episode:
     completed_subtasks: int = 0
     start_time: float = 0.0
     end_time: float = 0.0
+
+
+# ─── Benchmark Types (Phase 3) ─────────────────────────────
+
+
+class PermissionLevel(Enum):
+    """4-level permission system for Safety Gate v2."""
+
+    OBSERVE = 0      # Agent suggests, human executes
+    CONFIRM = 1      # All actions need approval
+    AUTO_SAFE = 2    # Safe actions auto-execute (default)
+    FULL_AUTO = 3    # All except BLOCKED auto-execute (sandbox only)
+
+
+class FailureCategory(str, Enum):
+    """Classification of task failure types."""
+
+    GROUNDING = "grounding"
+    PLANNING = "planning"
+    EXECUTION = "execution"
+    NAVIGATION = "navigation"
+    VERIFICATION = "verification"
+    TIMEOUT = "timeout"
+    SAFETY_BLOCK = "safety_block"
+    UNKNOWN = "unknown"
+
+
+@dataclass
+class SuccessCriterion:
+    """Automated success check for a benchmark task."""
+
+    type: str = ""  # cell_value_check, url_check, file_content_check, tab_count, etc.
+    checks: list[dict[str, Any]] = field(default_factory=list)
+
+
+@dataclass
+class BenchmarkTask:
+    """Definition of a single benchmark task."""
+
+    id: str = ""
+    app: str = ""
+    difficulty: str = "medium"  # easy | medium | hard
+    failure_type: str = ""  # primary failure type this task tests
+    instruction: str = ""
+    initial_state: str = ""  # VM snapshot or setup script
+    success_criteria: SuccessCriterion = field(default_factory=SuccessCriterion)
+    human_baseline_steps: int = 0
+    timeout_seconds: int = 120
+    tags: list[str] = field(default_factory=list)
+
+
+@dataclass
+class TaskMetrics:
+    """Metrics collected for a single task execution."""
+
+    task_id: str = ""
+    success: bool = False
+    steps_taken: int = 0
+    total_time: float = 0.0
+    tokens_used: int = 0
+    api_calls: int = 0
+    failure_category: FailureCategory = FailureCategory.UNKNOWN
+    failure_reason: str = ""
+    step_efficiency_ratio: float = 0.0  # agent_steps / human_baseline_steps
+    grounding_accuracy: float = 0.0
+    first_attempt_success_rate: float = 0.0
+    error_recovery_rate: float = 0.0
+
+
+@dataclass
+class BenchmarkResult:
+    """Aggregated result of a benchmark suite run."""
+
+    suite_name: str = ""
+    config_name: str = "full_cue"
+    total_tasks: int = 0
+    successful_tasks: int = 0
+    success_rate: float = 0.0
+    avg_steps: float = 0.0
+    avg_time: float = 0.0
+    avg_tokens: int = 0
+    avg_api_calls: float = 0.0
+    task_metrics: list[TaskMetrics] = field(default_factory=list)
+    by_difficulty: dict[str, float] = field(default_factory=dict)
+    by_app: dict[str, float] = field(default_factory=dict)
+    by_failure_type: dict[str, int] = field(default_factory=dict)
+    run_timestamp: float = 0.0
+
+
+@dataclass
+class AblationResult:
+    """Result of an ablation study configuration run."""
+
+    config_name: str = ""
+    modules_enabled: dict[str, bool] = field(default_factory=dict)
+    success_rate: float = 0.0
+    avg_steps: float = 0.0
+    avg_tokens: int = 0
+    avg_time: float = 0.0
+    runs: list[BenchmarkResult] = field(default_factory=list)
+
+
+@dataclass
+class FailureRecord:
+    """Detailed record of a single task failure for analysis."""
+
+    task_id: str = ""
+    category: FailureCategory = FailureCategory.UNKNOWN
+    step_num: int = 0
+    action_attempted: str = ""
+    expected_outcome: str = ""
+    actual_outcome: str = ""
+    screen_description: str = ""
+    recovery_attempted: bool = False
+    recovery_success: bool = False

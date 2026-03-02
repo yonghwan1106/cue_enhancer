@@ -101,14 +101,98 @@ def config_cmd(
 
 @app.command("benchmark")
 def benchmark(
-    suite: str = typer.Argument("mini", help="Benchmark suite: mini, full"),
+    suite: str = typer.Argument("mini", help="Benchmark suite: mini, osworld"),
+    config: str | None = typer.Option(None, "--config", "-c", help="Config YAML path"),
+    output: str | None = typer.Option(None, "--output", "-o", help="Output directory"),
+    runs: int = typer.Option(1, "--runs", "-r", help="Number of runs"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
 ) -> None:
-    """Run benchmark tests (placeholder for Phase 1)."""
+    """Run benchmark suite and display results."""
+    cfg = CUEConfig.load(config)
+    if output:
+        cfg.benchmark.output_dir = output
+    cfg.benchmark.runs_per_config = runs
+
     console.print(Panel(
-        "[yellow]Benchmark runner is a placeholder in Phase 1.[/yellow]\n"
-        "Full benchmark integration planned for Phase 2.",
+        f"[bold]Suite:[/bold] {suite}\n"
+        f"[bold]Runs:[/bold] {runs}",
         title="CUE Benchmark",
+        border_style="blue",
     ))
+
+    from cue.benchmark import BenchmarkRunner
+    runner = BenchmarkRunner(config=cfg)
+
+    try:
+        result = asyncio.run(runner.run_suite(suite))
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Benchmark interrupted.[/yellow]")
+        raise typer.Exit(1)
+
+    _display_benchmark_result(result, verbose)
+
+
+@app.command("ablation")
+def ablation(
+    suite: str = typer.Argument("mini", help="Benchmark suite"),
+    config: str | None = typer.Option(None, "--config", "-c", help="Config YAML path"),
+    runs: int = typer.Option(3, "--runs", "-r", help="Runs per configuration"),
+    output: str | None = typer.Option(None, "--output", "-o", help="Output directory"),
+) -> None:
+    """Run ablation study to measure module contributions."""
+    cfg = CUEConfig.load(config)
+    if output:
+        cfg.benchmark.output_dir = output
+    cfg.benchmark.runs_per_config = runs
+
+    console.print(Panel(
+        f"[bold]Suite:[/bold] {suite}\n"
+        f"[bold]Runs per config:[/bold] {runs}\n"
+        f"[bold]Total configs:[/bold] 14",
+        title="CUE Ablation Study",
+        border_style="magenta",
+    ))
+
+    from cue.benchmark import AblationRunner
+    abl = AblationRunner(config=cfg)
+
+    try:
+        results = asyncio.run(abl.run_ablation(suite=suite, runs_per_config=runs))
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Ablation interrupted.[/yellow]")
+        raise typer.Exit(1)
+
+    contributions = abl.analyze_contributions(results)
+    _display_ablation_results(results, contributions)
+
+
+@app.command("analyze")
+def analyze_cmd(
+    results_path: str = typer.Argument(..., help="Path to benchmark results JSON"),
+) -> None:
+    """Analyze benchmark failures."""
+    import json
+    from pathlib import Path
+
+    path = Path(results_path)
+    if not path.exists():
+        console.print(f"[red]File not found: {results_path}[/red]")
+        raise typer.Exit(1)
+
+    from cue.benchmark import FailureAnalyzer
+
+    with open(path) as f:
+        data = json.load(f)
+
+    console.print(Panel(
+        f"[bold]Analyzing:[/bold] {results_path}",
+        title="Failure Analysis",
+        border_style="yellow",
+    ))
+
+    analyzer = FailureAnalyzer()
+    report = analyzer.generate_report_from_json(data)
+    console.print(report)
 
 
 @app.command("version")
@@ -125,6 +209,83 @@ def version() -> None:
     except ImportError:
         table.add_row("anthropic SDK", "[red]not installed[/red]")
     console.print(table)
+
+
+def _display_benchmark_result(result: "BenchmarkResult", verbose: bool = False) -> None:
+    """Display benchmark results in a rich table."""
+    from cue.types import BenchmarkResult
+
+    table = Table(title="Benchmark Results", show_lines=True)
+    table.add_column("Metric", style="cyan")
+    table.add_column("Value", style="green")
+
+    table.add_row("Success Rate", f"{result.success_rate:.1f}%")
+    table.add_row("Tasks", f"{result.successful_tasks}/{result.total_tasks}")
+    table.add_row("Avg Steps", f"{result.avg_steps:.1f}")
+    table.add_row("Avg Time", f"{result.avg_time:.1f}s")
+    table.add_row("Avg Tokens", str(result.avg_tokens))
+
+    console.print(table)
+
+    # By difficulty
+    if result.by_difficulty:
+        diff_table = Table(title="By Difficulty")
+        diff_table.add_column("Difficulty")
+        diff_table.add_column("Success Rate")
+        for diff, rate in result.by_difficulty.items():
+            diff_table.add_row(diff, f"{rate:.1f}%")
+        console.print(diff_table)
+
+    # By app
+    if result.by_app:
+        app_table = Table(title="By Application")
+        app_table.add_column("App")
+        app_table.add_column("Success Rate")
+        for app_name, rate in result.by_app.items():
+            app_table.add_row(app_name, f"{rate:.1f}%")
+        console.print(app_table)
+
+    # Failure breakdown
+    if result.by_failure_type:
+        fail_table = Table(title="Failure Types")
+        fail_table.add_column("Category")
+        fail_table.add_column("Count")
+        for cat, count in sorted(result.by_failure_type.items(), key=lambda x: -x[1]):
+            fail_table.add_row(cat, str(count))
+        console.print(fail_table)
+
+
+def _display_ablation_results(
+    results: dict, contributions: dict
+) -> None:
+    """Display ablation study results."""
+    # Results table
+    table = Table(title="Ablation Study Results", show_lines=True)
+    table.add_column("Config", style="cyan")
+    table.add_column("Success %", style="green")
+    table.add_column("Avg Steps", style="white")
+    table.add_column("Avg Tokens", style="white")
+
+    for name, result in results.items():
+        table.add_row(name, f"{result.success_rate:.1f}%", f"{result.avg_steps:.1f}", str(result.avg_tokens))
+    console.print(table)
+
+    # Contributions table
+    contrib_table = Table(title="Module Contributions", show_lines=True)
+    contrib_table.add_column("Module", style="cyan")
+    contrib_table.add_column("Solo +%", style="green")
+    contrib_table.add_column("Interaction +%", style="yellow")
+    contrib_table.add_column("Critical?", style="red")
+
+    for module, data in contributions.items():
+        critical = "YES" if data.get("is_critical") else "no"
+        contrib_table.add_row(
+            module,
+            f"{data['solo_contribution']:.1f}%",
+            f"{data['interaction_effect']:.1f}%",
+            critical,
+        )
+    console.print(contrib_table)
 
 
 def _display_config(cfg: CUEConfig) -> None:
@@ -159,6 +320,13 @@ def _display_config(cfg: CUEConfig) -> None:
     table.add_row("Safety", "level", s.level.value)
     table.add_row("", "blocked_commands", str(len(s.blocked_commands)))
     table.add_row("", "confirmation_patterns", str(len(s.confirmation_patterns)))
+
+    # Benchmark
+    b = cfg.benchmark
+    table.add_row("Benchmark", "suite", b.suite)
+    table.add_row("", "runs_per_config", str(b.runs_per_config))
+    table.add_row("", "output_dir", b.output_dir)
+    table.add_row("", "timeout_per_task", str(b.timeout_per_task))
 
     # Agent
     a = cfg.agent

@@ -89,6 +89,8 @@ class SafetyConfig(BaseModel):
             "email",
         ]
     )
+    permission_level: int = 2  # 0=Observe, 1=Confirm, 2=Auto-Safe, 3=Full Auto
+    max_repeated_actions: int = 5  # Emergency stop: consecutive same-action limit
     sensitive_paths: list[str] = Field(
         default_factory=lambda: [
             "/etc/",
@@ -140,6 +142,19 @@ class EfficiencyConfig(BaseModel):
     enable_prefetch: bool = True
 
 
+class BenchmarkConfig(BaseModel):
+    """Benchmark and ablation study configuration."""
+
+    suite: str = "mini"  # mini | osworld | custom
+    tasks_dir: str = ""  # defaults to bundled tasks
+    runs_per_config: int = 3  # for statistical significance
+    output_dir: str = ".cue/benchmark_results"
+    timeout_per_task: int = 120
+    parallel_tasks: int = 1  # sequential by default
+    save_screenshots: bool = False
+    save_traces: bool = True
+
+
 class AgentConfig(BaseModel):
     """Main agent loop configuration."""
 
@@ -169,6 +184,7 @@ class CUEConfig(BaseSettings):
     planning: PlanningConfig = Field(default_factory=PlanningConfig)
     memory: MemoryConfig = Field(default_factory=MemoryConfig)
     efficiency: EfficiencyConfig = Field(default_factory=EfficiencyConfig)
+    benchmark: BenchmarkConfig = Field(default_factory=BenchmarkConfig)
     agent: AgentConfig = Field(default_factory=AgentConfig)
 
     @classmethod

@@ -1,0 +1,164 @@
+# Mini-benchmark: 10 tasks for quick validation (~2 per difficulty, across diverse apps)
+
+# ─── EASY ────────────────────────────────────────────────────────────────────
+
+- id: "calc-001"
+  app: "LibreOffice Calc"
+  difficulty: "easy"
+  failure_type: "grounding"
+  instruction: "Click on cell A1 and type 'Hello World'"
+  initial_state: ""
+  success_criteria:
+    type: "cell_value_check"
+    checks:
+      - cell: "A1"
+        condition: "=="
+        value: "Hello World"
+  human_baseline_steps: 2
+  timeout_seconds: 60
+  tags: ["grounding", "typing", "spreadsheet"]
+
+- id: "writer-001"
+  app: "LibreOffice Writer"
+  difficulty: "easy"
+  failure_type: "grounding"
+  instruction: "Open a new document and type 'Test Document' as the first line"
+  initial_state: ""
+  success_criteria:
+    type: "file_content_check"
+    checks:
+      - file: "current_document"
+        condition: "contains"
+        value: "Test Document"
+  human_baseline_steps: 2
+  timeout_seconds: 60
+  tags: ["grounding", "typing", "word_processor"]
+
+- id: "files-001"
+  app: "File Manager"
+  difficulty: "easy"
+  failure_type: "navigation"
+  instruction: "Navigate to the home directory and confirm you can see at least one folder"
+  initial_state: ""
+  success_criteria:
+    type: "app_state_check"
+    checks:
+      - key: "current_path_is_home"
+        condition: "=="
+        value: true
+  human_baseline_steps: 2
+  timeout_seconds: 45
+  tags: ["navigation", "file_manager"]
+
+# ─── MEDIUM ──────────────────────────────────────────────────────────────────
+
+- id: "firefox-001"
+  app: "Firefox"
+  difficulty: "medium"
+  failure_type: "navigation"
+  instruction: "Open Firefox, navigate to https://example.com, and verify the page title contains 'Example'"
+  initial_state: ""
+  success_criteria:
+    type: "url_check"
+    checks:
+      - condition: "contains"
+        value: "example.com"
+  human_baseline_steps: 3
+  timeout_seconds: 90
+  tags: ["navigation", "browser", "url"]
+
+- id: "vscode-001"
+  app: "VS Code"
+  difficulty: "medium"
+  failure_type: "execution"
+  instruction: "Open VS Code, use the Command Palette (Ctrl+Shift+P) to open a new terminal"
+  initial_state: ""
+  success_criteria:
+    type: "app_state_check"
+    checks:
+      - key: "terminal_open"
+        condition: "=="
+        value: true
+  human_baseline_steps: 3
+  timeout_seconds: 90
+  tags: ["execution", "keyboard_shortcut", "ide"]
+
+- id: "terminal-001"
+  app: "Terminal"
+  difficulty: "medium"
+  failure_type: "execution"
+  instruction: "Open a terminal and run 'echo hello' then verify the output contains 'hello'"
+  initial_state: ""
+  success_criteria:
+    type: "app_state_check"
+    checks:
+      - key: "last_output"
+        condition: "contains"
+        value: "hello"
+  human_baseline_steps: 3
+  timeout_seconds: 60
+  tags: ["execution", "terminal", "command"]
+
+- id: "gimp-001"
+  app: "GIMP"
+  difficulty: "medium"
+  failure_type: "grounding"
+  instruction: "Open GIMP, create a new image (File > New) with default settings and click OK"
+  initial_state: ""
+  success_criteria:
+    type: "app_state_check"
+    checks:
+      - key: "has_open_canvas"
+        condition: "=="
+        value: true
+  human_baseline_steps: 4
+  timeout_seconds: 120
+  tags: ["grounding", "dialog", "image_editor"]
+
+# ─── HARD ────────────────────────────────────────────────────────────────────
+
+- id: "firefox-002"
+  app: "Firefox"
+  difficulty: "hard"
+  failure_type: "planning"
+  instruction: "Open Firefox, open 3 tabs, navigate each to a different URL (example.com, wikipedia.org, github.com), then verify you have exactly 3 tabs open"
+  initial_state: ""
+  success_criteria:
+    type: "tab_count"
+    checks:
+      - condition: ">="
+        value: 3
+  human_baseline_steps: 9
+  timeout_seconds: 180
+  tags: ["planning", "browser", "multi_step"]
+
+- id: "calc-002"
+  app: "LibreOffice Calc"
+  difficulty: "hard"
+  failure_type: "planning"
+  instruction: "In a new spreadsheet: enter numbers 1–5 in cells A1:A5, then write a SUM formula in A6 that totals them, and verify A6 equals 15"
+  initial_state: ""
+  success_criteria:
+    type: "cell_value_check"
+    checks:
+      - cell: "A6"
+        condition: "=="
+        value: "15"
+  human_baseline_steps: 8
+  timeout_seconds: 150
+  tags: ["planning", "formula", "spreadsheet"]
+
+- id: "chromium-001"
+  app: "Chromium"
+  difficulty: "hard"
+  failure_type: "execution"
+  instruction: "Open Chromium, open the developer console (F12), type 'document.title' in the console and copy the output to clipboard"
+  initial_state: ""
+  success_criteria:
+    type: "clipboard_check"
+    checks:
+      - condition: "contains"
+        value: ""
+  human_baseline_steps: 6
+  timeout_seconds: 180
+  tags: ["execution", "devtools", "browser", "clipboard"]
