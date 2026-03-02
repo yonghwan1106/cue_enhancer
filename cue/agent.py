@@ -7,6 +7,7 @@ import base64
 import io
 import logging
 import time
+import uuid
 from typing import Any
 
 import anthropic
@@ -18,8 +19,12 @@ from cue.types import (
     Action,
     ActionResult,
     EnhancedContext,
+    Episode,
     ExpectedOutcome,
+    MemoryContext,
     ScreenState,
+    StepRecord,
+    SubTask,
     TaskResult,
     VerificationResult,
 )
@@ -30,17 +35,17 @@ logger = logging.getLogger(__name__)
 class CUEAgent:
     """Main agent loop integrating all CUE enhancement modules.
 
-    10-step loop (Phase 1):
-    1. Take screenshot
-    2. Grounding enhancement
-    3. Safety check (screen)
-    4. Build enhanced prompt for Claude
-    5. Call Claude API
-    6. Parse Claude's action
-    7. Safety check (action)
-    8. Execute action with enhancements
-    9. Verify result
-    10. Repeat or finish
+    Phase 2 — 10-step loop:
+    1. Screenshot capture
+    2. Efficiency check (cache hit → skip grounding)
+    3. Grounding enhancement (parallel 3-expert)
+    4. Safety gate — screen content injection check
+    5. Planning enhancement (subtask + app KB + lessons)
+    6. Claude API call (with enhanced context)
+    7. Safety gate — proposed action validation
+    8. Execution enhancement (coord refinement + timing)
+    9. Verification (3-tier) + Reflection
+    10. Memory update (working + episodic + reflexion)
     """
 
     def __init__(self, config: CUEConfig | None = None):
@@ -51,6 +56,11 @@ class CUEAgent:
         self._execution = None
         self._verification = None
         self._safety = None
+        self._planning = None
+        self._memory = None
+        self._efficiency = None
+        self._reflection = None
+        self._checkpoint = None
         self._initialized = False
 
     async def _init_modules(self) -> None:
@@ -77,10 +87,39 @@ class CUEAgent:
 
             self._verification = VerificationOrchestrator(self.config.verification)
 
+            # Phase 2: Tier 3 + Reflection + Checkpoint
+            if self.config.verification.tier3_enabled:
+                from cue.verification.tier3 import Tier3Verifier
+
+                tier3 = Tier3Verifier(self.client, self.config.agent.model)
+                self._verification.set_tier3(tier3)
+
+            from cue.verification.reflection import ReflectionEngine
+            from cue.verification.checkpoint import CheckpointManager
+
+            self._reflection = ReflectionEngine()
+            self._checkpoint = CheckpointManager()
+
         if self.config.is_module_enabled("safety"):
             from cue.safety import SafetyGate
 
             self._safety = SafetyGate(self.config.safety)
+
+        # Phase 2 modules
+        if self.config.is_module_enabled("planning"):
+            from cue.planning import PlanningEnhancer
+
+            self._planning = PlanningEnhancer(self.config.planning)
+
+        if self.config.is_module_enabled("memory"):
+            from cue.memory import ThreeLayerMemory
+
+            self._memory = ThreeLayerMemory(self.config.memory)
+
+        if self.config.is_module_enabled("efficiency"):
+            from cue.efficiency import EfficiencyEngine
+
+            self._efficiency = EfficiencyEngine(self.config.efficiency)
 
         self._initialized = True
 
@@ -88,16 +127,26 @@ class CUEAgent:
         """Execute a task with the full CUE enhancement loop."""
         await self._init_modules()
         start_time = time.monotonic()
+        episode_id = str(uuid.uuid4())[:8]
 
-        logger.info("Starting task: %s", task)
+        logger.info("Starting task: %s (episode=%s)", task, episode_id)
 
         messages: list[dict[str, Any]] = []
+        step_records: list[StepRecord] = []
         step_count = 0
         max_steps = self.config.agent.max_steps
         timeout = self.config.agent.timeout_seconds
+        subtasks: list[SubTask] = []
+        completed_subtasks = 0
+
+        # Step 5 (pre-loop): Planning enhancement — retrieve memory + plan
+        memory_context = MemoryContext()
+        app_name = ""
+        if self._memory:
+            memory_context = await self._memory.remember(task, "")
 
         # System prompt with CUE augmentation
-        system_prompt = self._build_system_prompt(task)
+        system_prompt = self._build_system_prompt(task, memory_context)
 
         # Initial user message
         messages.append({
@@ -109,58 +158,86 @@ class CUEAgent:
             elapsed = time.monotonic() - start_time
             if elapsed > timeout:
                 logger.warning("Task timed out after %.1fs", elapsed)
-                return TaskResult(
-                    success=False,
-                    task=task,
-                    steps_taken=step_count,
-                    total_time_seconds=elapsed,
-                    error="Task timed out",
-                )
+                break
 
             # Step 1: Take screenshot
             screenshot = await self._take_screenshot()
             screen_state = await self._build_screen_state(screenshot)
 
-            # Step 2: Grounding enhancement
+            # Detect app for planning/memory
+            if not app_name and screen_state.app_name:
+                app_name = screen_state.app_name
+                if self._memory:
+                    memory_context = await self._memory.remember(task, app_name)
+
+            # Step 2: Efficiency check (cache)
+            screenshot_hash = ""
+            if self._efficiency:
+                import hashlib
+                small = screenshot.resize((64, 64))
+                screenshot_hash = hashlib.md5(small.tobytes()).hexdigest()
+                send_mode = self._efficiency.should_send_screenshot(
+                    screenshot_hash, str(hash(str(screen_state.a11y_tree)))
+                )
+            else:
+                send_mode = "full"
+
+            # Step 3: Grounding enhancement
             enhanced_context = await self._enhance_grounding(screenshot, task)
 
-            # Step 3: Safety check (screen)
+            # Step 4: Safety check (screen)
             if self._safety:
                 screen_safety = self._safety.check_screen(screen_state)
                 if screen_safety.level.value == "blocked":
                     logger.warning("Screen safety blocked: %s", screen_safety.reason)
 
-            # Step 4: Build enhanced content for Claude
-            content = self._build_message_content(screenshot, enhanced_context)
+            # Step 5: Planning enhancement (inject subtasks + knowledge + lessons)
+            planning_text = ""
+            if self._planning and step_count == 0:
+                planning_text = await self._planning.enhance_prompt(
+                    task, screen_state, memory_context
+                )
+                subtasks = self._planning._decompose_task(task, app_name)
 
-            # Add screenshot + context to messages
+                # Optimize plan with efficiency engine
+                if self._efficiency and subtasks:
+                    app_knowledge = None
+                    if self._planning and self._planning._knowledge:
+                        app_knowledge = self._planning._knowledge.get_knowledge(app_name)
+                    subtasks, opt_result = self._efficiency.optimize_plan(
+                        subtasks, app_knowledge
+                    )
+                    if opt_result.methods_applied:
+                        logger.info(
+                            "Plan optimized: %d→%d steps (%s)",
+                            opt_result.original_steps,
+                            opt_result.optimized_steps,
+                            ", ".join(opt_result.methods_applied),
+                        )
+
+            # Build enhanced content for Claude
+            content = self._build_message_content(
+                screenshot, enhanced_context, planning_text, send_mode
+            )
+
             if step_count == 0:
                 messages[0]["content"].extend(content)
             else:
                 messages.append({"role": "user", "content": content})
 
-            # Step 5: Call Claude API
+            # Step 6: Call Claude API
             response = await self._call_claude(system_prompt, messages)
 
-            # Parse response
             assistant_content = response.content
             messages.append({"role": "assistant", "content": assistant_content})
 
-            # Step 6: Extract action from response
+            # Extract action from response
             action = self._parse_action(assistant_content)
 
             if action is None:
-                # Claude returned text only — task may be complete
                 text_response = self._extract_text(assistant_content)
                 if self._is_task_complete(text_response):
-                    elapsed = time.monotonic() - start_time
-                    return TaskResult(
-                        success=True,
-                        task=task,
-                        steps_taken=step_count,
-                        total_time_seconds=elapsed,
-                    )
-                # Continue the loop — Claude might need more context
+                    break
                 step_count += 1
                 continue
 
@@ -168,7 +245,7 @@ class CUEAgent:
             if self._safety:
                 action_safety = self._safety.check_action(action)
                 if action_safety.level.value == "blocked":
-                    logger.warning("Action blocked by safety: %s", action_safety.reason)
+                    logger.warning("Action blocked: %s", action_safety.reason)
                     messages.append({
                         "role": "user",
                         "content": [{
@@ -179,22 +256,57 @@ class CUEAgent:
                     })
                     step_count += 1
                     continue
-                elif action_safety.level.value == "needs_confirmation":
-                    logger.info("Action needs confirmation: %s", action_safety.reason)
-                    # In Phase 1, auto-confirm (real confirmation UI in Phase 2)
 
             # Step 8: Execute with enhancements
             before_screenshot = np.array(screenshot)
             action_result = await self._execute_action(action, enhanced_context)
 
-            # Step 9: Verify result
+            # Step 9: Verify result + Reflection
             after_screenshot_img = await self._take_screenshot()
             after_screenshot = np.array(after_screenshot_img)
             verification = await self._verify_action(
                 before_screenshot, after_screenshot, screen_state, action
             )
 
-            # Build result message for Claude
+            # Build step record
+            step_record = StepRecord(
+                num=step_count + 1,
+                action=action,
+                success=verification.success if verification else action_result.success,
+                verification=verification,
+                timestamp=time.time(),
+            )
+            step_records.append(step_record)
+
+            # Working memory update
+            if self._memory:
+                self._memory.working.add_step(step_record)
+
+            # Checkpoint on success
+            if self._checkpoint and step_record.success:
+                await self._checkpoint.save_checkpoint(
+                    screenshot_hash=screenshot_hash,
+                    a11y_tree_hash=str(hash(str(screen_state.a11y_tree))),
+                    step_num=step_count + 1,
+                    subtask_index=completed_subtasks,
+                    action_history=[sr.action for sr in step_records],
+                )
+
+            # Reflection (action-level)
+            if self._reflection:
+                action_ref = await self._reflection.reflect_action(step_record)
+                if action_ref.decision.value == "retry" and action_ref.retry_action:
+                    logger.info("Reflection: retrying with adjusted action")
+
+                # Trajectory reflection every 3 steps
+                if len(step_records) >= 3 and len(step_records) % 3 == 0:
+                    traj_ref = await self._reflection.reflect_trajectory(
+                        step_records, task
+                    )
+                    if traj_ref.decision.value == "strategy":
+                        logger.warning("Trajectory reflection: strategy change needed")
+
+            # Build result message
             result_text = self._build_result_text(action_result, verification)
             messages.append({
                 "role": "user",
@@ -205,16 +317,48 @@ class CUEAgent:
             logger.info(
                 "Step %d: action=%s success=%s verification=%s",
                 step_count, action.type,
-                action_result.success, verification.success if verification else "n/a",
+                action_result.success,
+                verification.success if verification else "n/a",
             )
 
+        # Post-loop: Step 10 — Memory update (episodic + reflexion)
         elapsed = time.monotonic() - start_time
+        task_success = self._is_task_complete(
+            self._extract_text(messages[-1].get("content", "")) if messages else ""
+        ) or (step_count < max_steps and elapsed <= timeout)
+
+        if self._memory:
+            episode = Episode(
+                id=episode_id,
+                task=task,
+                app=app_name,
+                success=task_success,
+                steps=step_records,
+                subtasks=subtasks,
+                completed_subtasks=completed_subtasks,
+                start_time=start_time,
+                end_time=time.time(),
+            )
+            try:
+                await self._memory.learn(episode)
+            except Exception as e:
+                logger.warning("Failed to store episode: %s", e)
+
+        if elapsed > timeout:
+            return TaskResult(
+                success=False, task=task, steps_taken=step_count,
+                total_time_seconds=elapsed, error="Task timed out",
+            )
+
+        if step_count >= max_steps:
+            return TaskResult(
+                success=False, task=task, steps_taken=step_count,
+                total_time_seconds=elapsed, error=f"Max steps ({max_steps}) reached",
+            )
+
         return TaskResult(
-            success=False,
-            task=task,
-            steps_taken=step_count,
+            success=True, task=task, steps_taken=step_count,
             total_time_seconds=elapsed,
-            error=f"Max steps ({max_steps}) reached",
         )
 
     # ─── Internal methods ──────────────────────────────────
@@ -246,6 +390,21 @@ class CUEAgent:
         if not self._grounding:
             return EnhancedContext(elements=[], element_description="")
 
+        # Use efficiency cache if available
+        if self._efficiency:
+            import hashlib
+            small = screenshot.resize((64, 64))
+            cache_key = hashlib.md5(small.tobytes()).hexdigest()
+            cached = await self._efficiency.get_cached_state(
+                cache_key,
+                lambda: self._grounding.enhance(screenshot, task_context),
+            )
+            if cached:
+                return EnhancedContext(
+                    elements=cached.elements,
+                    element_description=cached.element_description,
+                )
+
         result = await self._grounding.enhance(screenshot, task_context)
         return EnhancedContext(
             elements=result.elements,
@@ -257,8 +416,6 @@ class CUEAgent:
     ) -> anthropic.types.Message:
         """Call Claude API with computer use tools."""
         cfg = self.config.agent
-
-        # Serialize messages — convert content blocks for API
         api_messages = self._prepare_messages(messages)
 
         response = self.client.messages.create(
@@ -280,11 +437,10 @@ class CUEAgent:
         return response
 
     def _prepare_messages(self, messages: list[dict]) -> list[dict]:
-        """Prepare messages for the Claude API, ensuring proper format."""
+        """Prepare messages for the Claude API."""
         prepared = []
         for msg in messages:
             if isinstance(msg.get("content"), list):
-                # Already structured content
                 prepared.append(msg)
             elif isinstance(msg.get("content"), str):
                 prepared.append({
@@ -295,8 +451,10 @@ class CUEAgent:
                 prepared.append(msg)
         return prepared
 
-    def _build_system_prompt(self, task: str) -> str:
-        return (
+    def _build_system_prompt(
+        self, task: str, memory_context: MemoryContext | None = None
+    ) -> str:
+        parts = [
             "You are a computer use agent. You can see the screen and interact with it "
             "to complete tasks. Use the computer tool to take actions.\n\n"
             "Guidelines:\n"
@@ -305,27 +463,37 @@ class CUEAgent:
             "- Verify each action's result before proceeding\n"
             "- If an action fails, try alternative approaches\n"
             "- Report completion when the task is done\n"
-        )
+        ]
+
+        # Inject memory context (lessons + past episodes)
+        if memory_context and (memory_context.lessons or memory_context.similar_episodes):
+            parts.append("\n" + memory_context.to_prompt_text())
+
+        return "\n".join(parts)
 
     def _build_message_content(
-        self, screenshot: Image.Image, context: EnhancedContext
+        self,
+        screenshot: Image.Image,
+        context: EnhancedContext,
+        planning_text: str = "",
+        send_mode: str = "full",
     ) -> list[dict]:
         """Build message content with screenshot and enhanced context."""
         content: list[dict] = []
 
-        # Screenshot as base64
-        buffered = io.BytesIO()
-        screenshot.save(buffered, format="PNG")
-        img_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-
-        content.append({
-            "type": "image",
-            "source": {
-                "type": "base64",
-                "media_type": "image/png",
-                "data": img_b64,
-            },
-        })
+        # Screenshot (respect efficiency send_mode)
+        if send_mode != "skip":
+            buffered = io.BytesIO()
+            screenshot.save(buffered, format="PNG")
+            img_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            content.append({
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": "image/png",
+                    "data": img_b64,
+                },
+            })
 
         # Enhanced context description
         if context.element_description:
@@ -334,13 +502,19 @@ class CUEAgent:
                 "text": f"[CUE Grounding] Detected UI elements:\n{context.element_description}",
             })
 
+        # Planning context (only on first step)
+        if planning_text:
+            content.append({
+                "type": "text",
+                "text": f"[CUE Planning]\n{planning_text}",
+            })
+
         return content
 
     def _parse_action(self, content: Any) -> Action | None:
         """Extract an Action from Claude's response content."""
         if not isinstance(content, list):
             return None
-
         for block in content:
             if hasattr(block, "type") and block.type == "tool_use":
                 if block.name == "computer":
@@ -357,11 +531,7 @@ class CUEAgent:
         if coordinate and isinstance(coordinate, (list, tuple)) and len(coordinate) == 2:
             coord_tuple = (int(coordinate[0]), int(coordinate[1]))
 
-        return Action(
-            type=action_type,
-            coordinate=coord_tuple,
-            text=text,
-        )
+        return Action(type=action_type, coordinate=coord_tuple, text=text)
 
     async def _execute_action(
         self, action: Action, context: EnhancedContext
@@ -374,15 +544,11 @@ class CUEAgent:
                 execute_fn=self._raw_execute,
                 screenshot_fn=self._take_screenshot,
             )
-
-        # Direct execution without enhancement
         try:
             await self._raw_execute(action)
             return ActionResult(success=True, action_type=action.type)
         except Exception as e:
-            return ActionResult(
-                success=False, action_type=action.type, error=str(e)
-            )
+            return ActionResult(success=False, action_type=action.type, error=str(e))
 
     async def _raw_execute(self, action: Action) -> None:
         """Execute a raw action on the environment."""
@@ -427,7 +593,7 @@ class CUEAgent:
                 await env.mouse_up(*action.coordinate)
 
         elif action.type == "screenshot":
-            pass  # No-op; screenshot is taken by the loop
+            pass
 
         elif action.type == "wait":
             duration = (action.duration_ms or 1000) / 1000.0
@@ -468,7 +634,6 @@ class CUEAgent:
     def _build_result_text(
         self, result: ActionResult, verification: VerificationResult | None
     ) -> str:
-        """Build a result summary for Claude."""
         parts = [f"Action executed: {result.action_type}"]
         if result.success:
             parts.append("Status: Success")
@@ -490,7 +655,6 @@ class CUEAgent:
         return "[CUE] " + " | ".join(parts)
 
     def _extract_text(self, content: Any) -> str:
-        """Extract text from Claude's response content."""
         if isinstance(content, str):
             return content
         if isinstance(content, list):
@@ -504,7 +668,6 @@ class CUEAgent:
         return ""
 
     def _is_task_complete(self, text: str) -> bool:
-        """Heuristic to detect if Claude thinks the task is complete."""
         completion_phrases = [
             "task is complete",
             "task has been completed",

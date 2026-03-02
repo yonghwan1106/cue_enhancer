@@ -364,3 +364,247 @@ class ElementMap:
         """Find elements matching a label (case-insensitive)."""
         label_lower = label.lower()
         return [e for e in self.elements if label_lower in e.label.lower()]
+
+
+# ─── Planning Types ───────────────────────────────────────
+
+
+@dataclass
+class SubTask:
+    """A decomposed sub-task from the planning enhancer."""
+
+    description: str
+    action_type: str = ""  # click, type, scroll, key, navigate, etc.
+    target: str = ""
+    target_region: str = ""
+    method: str = "mouse"  # mouse | keyboard | batch | direct
+    shortcut: str | None = None
+    original_method: str | None = None
+    is_compound: bool = False
+    is_navigation: bool = False
+    is_verification_only: bool = False
+    sub_steps: list[SubTask] = field(default_factory=list)
+    steps: list[str] = field(default_factory=list)
+    batch_items: list[SubTask] = field(default_factory=list)
+    action_description: str = ""
+
+    def with_method(self, method: str, shortcut: str = "",
+                    original_method: str = "") -> SubTask:
+        """Return a copy with updated method."""
+        return SubTask(
+            description=self.description,
+            action_type=self.action_type,
+            target=self.target,
+            target_region=self.target_region,
+            method=method,
+            shortcut=shortcut or self.shortcut,
+            original_method=original_method or self.original_method,
+            is_compound=self.is_compound,
+            sub_steps=list(self.sub_steps),
+            steps=list(self.steps),
+            action_description=self.action_description,
+        )
+
+
+@dataclass
+class StepRecord:
+    """Record of a single step in an episode."""
+
+    num: int = 0
+    action: Action = field(default_factory=lambda: Action(type=""))
+    success: bool = False
+    verification: VerificationResult | None = None
+    strategy_used: str = ""
+    was_recovery: bool = False
+    original_action: str = ""
+    is_milestone: bool = False
+    context_description: str = ""
+    timestamp: float = 0.0
+
+    def to_detailed_text(self) -> str:
+        status = "success" if self.success else "failure"
+        parts = [f"Step {self.num}: {self.action.type} -> {status}"]
+        if self.verification and self.verification.reason:
+            parts.append(f"  Reason: {self.verification.reason}")
+        return "\n".join(parts)
+
+    def is_retry_of(self, other: StepRecord) -> bool:
+        return (self.action.type == other.action.type and
+                self.context_description == other.context_description)
+
+
+# ─── Memory Types ─────────────────────────────────────────
+
+
+@dataclass
+class Lesson:
+    """Generalized lesson — basic unit of Semantic Memory."""
+
+    id: str = ""
+    app: str = ""
+    situation: str = ""
+    failed_approach: str = ""
+    successful_approach: str = ""
+    confidence: float = 0.7
+    success_count: int = 0
+    failure_count: int = 0
+    created_at: float = field(default_factory=lambda: __import__("time").time())
+    last_used: float = field(default_factory=lambda: __import__("time").time())
+    task_context: str = ""
+    text: str = ""
+    reinforcement_count: int = 0
+
+
+@dataclass
+class EpisodeRecord:
+    """Episode record — basic unit of Episodic Memory."""
+
+    id: str = ""
+    task: str = ""
+    app: str = ""
+    success: bool = False
+    total_steps: int = 0
+    steps_summary: str = ""
+    failure_patterns: list[str] = field(default_factory=list)
+    recovery_strategies: list[str] = field(default_factory=list)
+    reflection: str = ""
+    created_at: float = field(default_factory=lambda: __import__("time").time())
+    embedding: list[float] | None = None
+
+
+@dataclass
+class MemoryContext:
+    """Memory context to inject into the current task."""
+
+    lessons: list[Lesson] = field(default_factory=list)
+    similar_episodes: list[EpisodeRecord] = field(default_factory=list)
+    total_tokens: int = 0
+
+    def to_prompt_text(self) -> str:
+        parts = []
+        if self.lessons:
+            parts.append("## Past Lessons")
+            for lesson in self.lessons[:5]:
+                parts.append(
+                    f"- [{lesson.app}] {lesson.situation}: "
+                    f"Use '{lesson.successful_approach}' instead of "
+                    f"'{lesson.failed_approach}' "
+                    f"(confidence {lesson.confidence:.0%})"
+                )
+        if self.similar_episodes:
+            parts.append("\n## Similar Past Episodes")
+            for ep in self.similar_episodes[:3]:
+                status = "SUCCESS" if ep.success else "FAILURE"
+                parts.append(
+                    f"- [{status}] {ep.task} ({ep.total_steps} steps): "
+                    f"{ep.reflection[:100]}"
+                )
+        return "\n".join(parts)
+
+
+@dataclass
+class CompressedHistory:
+    """ACON-compressed history for token optimization."""
+
+    recent_full: list[StepRecord] = field(default_factory=list)
+    mid_summary: list[str] = field(default_factory=list)
+    old_summary: str | None = None
+    token_count: int = 0
+
+    def to_prompt_text(self) -> str:
+        parts = []
+        if self.old_summary:
+            parts.append(f"[Previous Summary] {self.old_summary}")
+        if self.mid_summary:
+            parts.append("[Mid Steps]")
+            for s in self.mid_summary:
+                parts.append(f"  - {s}")
+        parts.append("[Recent Steps]")
+        for step in self.recent_full:
+            parts.append(step.to_detailed_text())
+        return "\n".join(parts)
+
+
+# ─── Reflection Types ─────────────────────────────────────
+
+
+class ReflectionDecision(Enum):
+    CONTINUE = "continue"
+    RETRY = "retry"
+    REPLAN = "replan"
+    STRATEGY_CHANGE = "strategy"
+
+
+@dataclass
+class ActionReflection:
+    success: bool = False
+    decision: ReflectionDecision = ReflectionDecision.CONTINUE
+    retry_action: Action | None = None
+    reason: str = ""
+
+
+@dataclass
+class TrajectoryReflection:
+    making_progress: bool = True
+    decision: ReflectionDecision = ReflectionDecision.CONTINUE
+    new_plan: list[SubTask] | None = None
+    reason: str = ""
+
+
+@dataclass
+class GlobalReflection:
+    on_track: bool = True
+    decision: ReflectionDecision = ReflectionDecision.CONTINUE
+    revised_strategy: str | None = None
+    reason: str = ""
+
+
+# ─── Checkpoint Types ─────────────────────────────────────
+
+
+@dataclass
+class Checkpoint:
+    """State snapshot after a successful step."""
+
+    step_num: int = 0
+    screenshot_hash: str = ""
+    a11y_tree_hash: str = ""
+    action_history: list[Action] = field(default_factory=list)
+    current_subtask_index: int = 0
+    timestamp: float = 0.0
+
+
+@dataclass
+class RecoveryResult:
+    success: bool = False
+    recovered_to_step: int = -1
+    method: str = "failed"  # ctrl_z | re_navigate | failed
+    steps_lost: int = 0
+
+
+# ─── Efficiency Types ─────────────────────────────────────
+
+
+@dataclass
+class OptimizationResult:
+    """Result of step optimization."""
+
+    original_steps: int = 0
+    optimized_steps: int = 0
+    reduction_pct: float = 0.0
+    methods_applied: list[str] = field(default_factory=list)
+
+
+@dataclass
+class Episode:
+    """Complete episode data for memory storage."""
+
+    id: str = ""
+    task: str = ""
+    app: str = ""
+    success: bool = False
+    steps: list[StepRecord] = field(default_factory=list)
+    subtasks: list[SubTask] = field(default_factory=list)
+    completed_subtasks: int = 0
+    start_time: float = 0.0
+    end_time: float = 0.0

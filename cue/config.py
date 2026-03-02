@@ -101,6 +101,45 @@ class SafetyConfig(BaseModel):
     )
 
 
+class PlanningConfig(BaseModel):
+    """Planning Enhancer configuration."""
+
+    level: EnhancerLevel = EnhancerLevel.FULL
+    step_limit: int = 7  # Miller's Law: max subtasks
+    keyboard_first: bool = True
+    enable_app_knowledge: bool = True
+    enable_reflexion: bool = True
+    knowledge_dir: str = ""  # defaults to package bundled knowledge
+
+
+class MemoryConfig(BaseModel):
+    """Experience Memory configuration."""
+
+    level: EnhancerLevel = EnhancerLevel.FULL
+    db_dir: str = "~/.cue"
+    working_memory_steps: int = 10
+    episodic_ttl_days: int = 90
+    max_lessons_per_query: int = 5
+    max_episodes_per_query: int = 3
+    memory_token_budget: int = 500
+    acon_recent_window: int = 5
+    acon_mid_window: int = 5
+    acon_max_tokens: int = 2000
+
+
+class EfficiencyConfig(BaseModel):
+    """Efficiency Engine configuration."""
+
+    level: EnhancerLevel = EnhancerLevel.FULL
+    enable_step_optimizer: bool = True
+    enable_latency_optimizer: bool = True
+    enable_context_manager: bool = True
+    cache_ttl_seconds: float = 2.0
+    token_budget_per_step: int = 2000
+    enable_selective_screenshots: bool = True
+    enable_prefetch: bool = True
+
+
 class AgentConfig(BaseModel):
     """Main agent loop configuration."""
 
@@ -127,6 +166,9 @@ class CUEConfig(BaseSettings):
     execution: ExecutionConfig = Field(default_factory=ExecutionConfig)
     verification: VerificationConfig = Field(default_factory=VerificationConfig)
     safety: SafetyConfig = Field(default_factory=SafetyConfig)
+    planning: PlanningConfig = Field(default_factory=PlanningConfig)
+    memory: MemoryConfig = Field(default_factory=MemoryConfig)
+    efficiency: EfficiencyConfig = Field(default_factory=EfficiencyConfig)
     agent: AgentConfig = Field(default_factory=AgentConfig)
 
     @classmethod
@@ -176,6 +218,9 @@ class CUEConfig(BaseSettings):
             "execution": self.execution,
             "verification": self.verification,
             "safety": self.safety,
+            "planning": self.planning,
+            "memory": self.memory,
+            "efficiency": self.efficiency,
         }
         mod = config_map.get(module)
         if mod and hasattr(mod, "level"):

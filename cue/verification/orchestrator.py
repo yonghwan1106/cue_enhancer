@@ -15,6 +15,7 @@ from cue.types import (
 )
 from cue.verification.tier1 import Tier1Verifier
 from cue.verification.tier2 import Tier2Verifier
+from cue.verification.tier3 import Tier3Verifier
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,11 @@ class VerificationOrchestrator:
     Tier 3 (VLM-based) is reserved for Phase 2 and not implemented here.
     """
 
-    def __init__(self, config: VerificationConfig | None = None) -> None:
+    def __init__(
+        self,
+        config: VerificationConfig | None = None,
+        tier3: Tier3Verifier | None = None,
+    ) -> None:
         self._config = config or VerificationConfig()
         self._tier1 = Tier1Verifier(
             ssim_change=self._config.tier1_ssim_threshold,
@@ -35,6 +40,7 @@ class VerificationOrchestrator:
             pass_score=self._config.tier2_pass_score,
             fail_score=self._config.tier2_fail_score,
         )
+        self._tier3 = tier3
 
     async def verify_step(
         self,
@@ -93,8 +99,24 @@ class VerificationOrchestrator:
             )
             return t2_result
 
-        # --- Tier 3 placeholder (Phase 2) ---
-        logger.debug("Tier 2 escalated — Tier 3 not implemented, returning failure")
+        # --- Tier 3 (Claude API semantic verification) ---
+        if self._tier3 is not None:
+            logger.debug("Tier 2 escalated — running Tier 3 (Claude API) verification")
+            t3_result = await self._tier3.verify(
+                before_screenshot=before_screenshot,
+                after_screenshot=after_screenshot,
+                action_description=f"{action.type} at {action.coordinate}",
+                expected_outcome=expected.description,
+                tier2_details=t2_result.details,
+            )
+            logger.debug(
+                "Tier 3 decisive: success=%s confidence=%.2f",
+                t3_result.success,
+                t3_result.confidence,
+            )
+            return t3_result
+
+        logger.debug("Tier 2 escalated — Tier 3 not available, returning failure")
         return VerificationResult(
             tier=2,
             success=False,

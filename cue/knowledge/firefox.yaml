@@ -1,0 +1,171 @@
+app_name: Firefox
+
+shortcuts:
+  - action: focus address bar / open URL
+    keys: "Ctrl+L"
+    reliability: 1.0
+  - action: open new tab
+    keys: "Ctrl+T"
+    reliability: 1.0
+  - action: close current tab
+    keys: "Ctrl+W"
+    reliability: 1.0
+  - action: reopen last closed tab
+    keys: "Ctrl+Shift+T"
+    reliability: 1.0
+  - action: open find in page toolbar
+    keys: "Ctrl+F"
+    reliability: 1.0
+  - action: open downloads panel
+    keys: "Ctrl+J"
+    reliability: 1.0
+  - action: open bookmarks sidebar
+    keys: "Ctrl+B"
+    reliability: 1.0
+  - action: open bookmark manager
+    keys: "Ctrl+Shift+O"
+    reliability: 1.0
+  - action: open history sidebar
+    keys: "Ctrl+H"
+    reliability: 1.0
+  - action: open private window
+    keys: "Ctrl+Shift+P"
+    reliability: 1.0
+  - action: zoom in
+    keys: "Ctrl++"
+    reliability: 1.0
+  - action: zoom out
+    keys: "Ctrl+-"
+    reliability: 1.0
+  - action: reset zoom
+    keys: "Ctrl+0"
+    reliability: 1.0
+  - action: reload page
+    keys: "Ctrl+R"
+    reliability: 1.0
+  - action: hard reload (skip cache)
+    keys: "Ctrl+Shift+R"
+    reliability: 1.0
+  - action: switch to next tab
+    keys: "Ctrl+Tab"
+    reliability: 1.0
+  - action: switch to previous tab
+    keys: "Ctrl+Shift+Tab"
+    reliability: 1.0
+  - action: switch to tab by number
+    keys: "Ctrl+1 through Ctrl+8"
+    reliability: 0.9
+  - action: select all text in address bar
+    keys: "Alt+D"
+    reliability: 1.0
+  - action: open developer tools
+    keys: "F12"
+    reliability: 1.0
+  - action: focus next link / focusable element
+    keys: "Tab"
+    reliability: 0.9
+  - action: activate focused element
+    keys: "Enter"
+    reliability: 1.0
+  - action: go back
+    keys: "Alt+Left"
+    reliability: 1.0
+  - action: go forward
+    keys: "Alt+Right"
+    reliability: 1.0
+  - action: scroll down
+    keys: "Space"
+    reliability: 0.85
+  - action: scroll up
+    keys: "Shift+Space"
+    reliability: 0.85
+
+pitfalls:
+  - situation: clicking a download link when a popup blocker is active
+    avoid: clicking immediately without checking for blocked popup notification bar
+    instead: >
+      After clicking a download link, watch for the "Firefox prevented this site
+      from opening a popup" bar near the top. If it appears, click "Allow" or
+      use Ctrl+J to access the downloads panel directly.
+
+  - situation: download dialog appears asking Open / Save
+    avoid: pressing Enter blindly (may open instead of saving)
+    instead: >
+      Tab to the "Save File" option and press Enter, or use the keyboard shortcut
+      shown in the dialog. Verify the Downloads panel (Ctrl+J) shows the file
+      after dismissing.
+
+  - situation: navigating to a URL while focused inside a page form/input
+    avoid: typing the URL directly — it will enter text into the form instead
+    instead: Press Ctrl+L first to focus the address bar, then type the URL.
+
+  - situation: find-in-page is open and interfering with keyboard shortcuts
+    avoid: pressing shortcuts that conflict with the find toolbar (e.g. Ctrl+G cycles matches)
+    instead: Press Escape to close the find toolbar before using other shortcuts.
+
+  - situation: trying to interact with a page element hidden behind a sticky header
+    avoid: clicking at the element's reported bounding box — it may be occluded
+    instead: Scroll the page slightly (Space or arrow keys) so the element is fully visible.
+
+  - situation: file upload dialog
+    avoid: typing the file path into the page — most upload buttons open a system dialog
+    instead: >
+      Click the upload button to open the OS file picker, then navigate using
+      the path bar at the top of the dialog or paste the full path into the
+      filename field and press Enter.
+
+navigation:
+  - target: address bar / URL bar
+    method: "Ctrl+L"
+    notes: Instantly focuses the address bar; selection is automatic so you can type immediately.
+
+  - target: specific tab by index
+    method: "Ctrl+<number> (1-8) or Ctrl+9 for last tab"
+    notes: Faster than clicking on tabs, especially when many tabs are open.
+
+  - target: downloads page
+    method: "Ctrl+J"
+    notes: Opens the Downloads panel overlay; press Escape to close.
+
+  - target: settings / preferences
+    method: "Type 'about:preferences' in address bar then Enter"
+    notes: Direct internal URL; faster than Help menu navigation.
+
+  - target: extensions / add-ons manager
+    method: "Type 'about:addons' in address bar then Enter"
+    notes: Direct internal URL.
+
+  - target: text on current page
+    method: "Ctrl+F then type search term"
+    notes: Find toolbar highlights all matches; Enter cycles forward, Shift+Enter cycles back.
+
+  - target: next/previous search result in page
+    method: "F3 (next) or Shift+F3 (previous)"
+    notes: Works even when the find toolbar is focused.
+
+common_tasks:
+  - name: navigate to URL
+    steps:
+      - "Press Ctrl+L to focus address bar"
+      - "Type the URL"
+      - "Press Enter"
+
+  - name: open link in new tab
+    steps:
+      - "Middle-click the link, OR"
+      - "Right-click > Open Link in New Tab, OR"
+      - "Ctrl+click the link"
+
+  - name: download a file
+    steps:
+      - "Click the download link"
+      - "If popup blocked, click Allow in the notification bar"
+      - "If Save dialog appears, choose Save File and press Enter"
+      - "Press Ctrl+J to confirm download started"
+
+  - name: find text on page
+    steps:
+      - "Press Ctrl+F"
+      - "Type the search term"
+      - "Press Enter to jump to first match"
+      - "Press Escape when done"
