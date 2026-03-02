@@ -63,6 +63,10 @@ class CUEAgent:
         self._checkpoint = None
         self._initialized = False
 
+        # Screenshot cache: avoid redundant captures within 200ms
+        self._last_screenshot: Image.Image | None = None
+        self._last_screenshot_time: float = 0.0
+
     async def _init_modules(self) -> None:
         """Lazily initialize all modules."""
         if self._initialized:
@@ -274,11 +278,17 @@ class CUEAgent:
 
             # Step 8: Execute with enhancements
             before_screenshot = np.array(screenshot)
-            action_result = await self._execute_action(action, enhanced_context)
+            action_result = await self._execute_action(
+                action, enhanced_context, before_frame=before_screenshot
+            )
 
             # Step 9: Verify result + Reflection
-            after_screenshot_img = await self._take_screenshot()
-            after_screenshot = np.array(after_screenshot_img)
+            # Reuse execution's after_screenshot when available (avoids redundant capture)
+            if action_result.after_screenshot is not None:
+                after_screenshot = action_result.after_screenshot
+            else:
+                after_screenshot_img = await self._take_screenshot()
+                after_screenshot = np.array(after_screenshot_img)
             verification = await self._verify_action(
                 before_screenshot, after_screenshot, screen_state, action
             )
@@ -389,8 +399,16 @@ class CUEAgent:
     # ─── Internal methods ──────────────────────────────────
 
     async def _take_screenshot(self) -> Image.Image:
+        now = time.monotonic()
+        if self._last_screenshot is not None and (now - self._last_screenshot_time) < 0.2:
+            return self._last_screenshot
         cfg = self.config.agent
-        return await self._environment.take_screenshot(cfg.screenshot_width, cfg.screenshot_height)
+        screenshot = await self._environment.take_screenshot(
+            cfg.screenshot_width, cfg.screenshot_height
+        )
+        self._last_screenshot = screenshot
+        self._last_screenshot_time = now
+        return screenshot
 
     async def _build_screen_state(self, screenshot: Image.Image) -> ScreenState:
         a11y_tree = None
@@ -559,7 +577,8 @@ class CUEAgent:
         return Action(type=action_type, coordinate=coord_tuple, text=text)
 
     async def _execute_action(
-        self, action: Action, context: EnhancedContext
+        self, action: Action, context: EnhancedContext,
+        before_frame: np.ndarray | None = None,
     ) -> ActionResult:
         """Execute an action, optionally with execution enhancement."""
         if self._execution:
@@ -568,6 +587,7 @@ class CUEAgent:
                 context=context,
                 execute_fn=self._raw_execute,
                 screenshot_fn=self._take_screenshot,
+                before_frame=before_frame,
             )
         try:
             await self._raw_execute(action)

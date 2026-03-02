@@ -35,6 +35,7 @@ class VerificationOrchestrator:
         self._tier1 = Tier1Verifier(
             ssim_change=self._config.tier1_ssim_threshold,
             ssim_minor=self._config.tier1_minor_threshold,
+            fast_mode=(self._config.level == EnhancerLevel.BASIC),
         )
         self._tier2 = Tier2Verifier(
             pass_score=self._config.tier2_pass_score,
@@ -73,6 +74,11 @@ class VerificationOrchestrator:
             after_tree=after_tree,
             expected=expected,
         )
+
+        # BASIC level: Tier 1 only, never escalate to higher tiers
+        if self._config.level == EnhancerLevel.BASIC:
+            t1_result.needs_escalation = False
+            return t1_result
 
         if not t1_result.needs_escalation:
             logger.debug(

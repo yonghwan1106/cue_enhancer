@@ -42,7 +42,7 @@ class TextGrounder:
         data = await asyncio.to_thread(
             pytesseract.image_to_data,
             screenshot,
-            config="--psm 11",
+            config="--psm 6",
             output_type=pytesseract.Output.DICT,
         )
 

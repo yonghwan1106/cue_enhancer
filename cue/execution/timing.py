@@ -13,7 +13,7 @@ from cue.types import StabilityResult
 
 POLL_INTERVAL_MS = 100
 STABILITY_THRESHOLD = 0.005
-STABILITY_TIMEOUT_MS = 3000
+STABILITY_TIMEOUT_MS = 1500
 STABLE_FRAMES_REQUIRED = 2
 
 
@@ -48,8 +48,16 @@ class TimingController:
 
         Returns a :class:`StabilityResult` describing the outcome.
         """
+        # Adaptive timeout: use learned profile if available
+        effective_timeout = timeout_ms
+        if app_name:
+            profile = self._profiles.get(app_name)
+            if profile and profile.sample_count >= 2:
+                adaptive = profile.avg_render_time_ms * 2.5
+                effective_timeout = max(min(adaptive, timeout_ms), 200.0)
+
         start = time.monotonic()
-        deadline = start + timeout_ms / 1000.0
+        deadline = start + effective_timeout / 1000.0
         poll_s = POLL_INTERVAL_MS / 1000.0
 
         prev_frame: np.ndarray | None = None

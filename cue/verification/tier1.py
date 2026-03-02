@@ -20,21 +20,37 @@ SSIM_CHANGE = 0.005
 SSIM_MINOR = 0.001
 
 
-def _compute_ssim(img_a: np.ndarray, img_b: np.ndarray) -> float:
-    """Return SSIM score between two screenshots (0-1, higher = more similar)."""
-    from skimage.metrics import structural_similarity  # type: ignore[import]
+def _compute_ssim(
+    img_a: np.ndarray, img_b: np.ndarray, fast_mode: bool = False
+) -> float:
+    """Return SSIM-like score between two screenshots (0-1, higher = more similar).
 
-    # Convert BGR/RGB to grayscale
+    When *fast_mode* is True, uses mean-absolute-diff on downscaled images
+    (~16x faster, no scikit-image dependency).
+    """
+    # Downscale large images for performance
+    h, w = img_a.shape[:2]
+    scale = max(1, min(h // 270, w // 480))
+    if scale > 1:
+        img_a = img_a[::scale, ::scale]
+        img_b = img_b[::scale, ::scale]
+
+    # Convert to grayscale
     if img_a.ndim == 3:
         gray_a = np.mean(img_a, axis=2).astype(np.float32)
     else:
         gray_a = img_a.astype(np.float32)
-
     if img_b.ndim == 3:
         gray_b = np.mean(img_b, axis=2).astype(np.float32)
     else:
         gray_b = img_b.astype(np.float32)
 
+    if fast_mode:
+        # Fast mean-absolute-diff normalised to approximate SSIM range (0-1)
+        mad = float(np.mean(np.abs(gray_a - gray_b)) / 255.0)
+        return max(0.0, 1.0 - mad * 10.0)
+
+    from skimage.metrics import structural_similarity  # type: ignore[import]
     score: float = structural_similarity(gray_a, gray_b, data_range=255.0)
     return score
 
@@ -96,9 +112,11 @@ class Tier1Verifier:
         self,
         ssim_change: float = SSIM_CHANGE,
         ssim_minor: float = SSIM_MINOR,
+        fast_mode: bool = False,
     ) -> None:
         self._ssim_change = ssim_change
         self._ssim_minor = ssim_minor
+        self._fast_mode = fast_mode
 
     async def verify(
         self,
@@ -111,7 +129,7 @@ class Tier1Verifier:
         details: dict = {}
 
         # --- Signal 1: SSIM screenshot diff ---
-        ssim_score = _compute_ssim(before_screenshot, after_screenshot)
+        ssim_score = _compute_ssim(before_screenshot, after_screenshot, fast_mode=self._fast_mode)
         ssim_diff = 1.0 - ssim_score  # higher diff = more change
         details["ssim_score"] = ssim_score
         details["ssim_diff"] = ssim_diff

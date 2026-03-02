@@ -40,8 +40,9 @@ class ExecutionConfig(BaseModel):
     enable_timing_control: bool = True
     enable_fallback_chain: bool = True
     stability_threshold: float = 0.005
-    stability_timeout_ms: int = 3000
+    stability_timeout_ms: int = 1500
     stability_poll_interval_ms: int = 100
+    post_action_delay_ms: int = 50
     max_fallback_stages: int = 6
 
 

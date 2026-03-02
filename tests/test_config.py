@@ -48,7 +48,7 @@ class TestExecutionConfig:
         assert cfg.coordinate_snap_radius == 10
         assert cfg.enable_pre_validation is True
         assert cfg.enable_fallback_chain is True
-        assert cfg.stability_timeout_ms == 3000
+        assert cfg.stability_timeout_ms == 1500
 
 
 class TestVerificationConfig:

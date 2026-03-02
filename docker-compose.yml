@@ -1,0 +1,13 @@
+services:
+  cue:
+    build: .
+    environment:
+      - ANTHROPIC_API_KEY
+      - DISPLAY=:99
+    volumes:
+      - cue-data:/root/.cue
+    stdin_open: true
+    tty: true
+
+volumes:
+  cue-data:

@@ -7,7 +7,7 @@ from typing import Callable, Awaitable
 
 import numpy as np
 
-from cue.config import ExecutionConfig
+from cue.config import EnhancerLevel, ExecutionConfig
 from cue.types import (
     Action,
     ActionResult,
@@ -48,6 +48,7 @@ class ExecutionEnhancer:
         context: EnhancedContext,
         execute_fn: Callable[[Action], Awaitable[bool]],
         screenshot_fn: Callable[[], Awaitable[np.ndarray]],
+        before_frame: np.ndarray | None = None,
     ) -> ActionResult:
         """Run the full pipeline and return an :class:`ActionResult`.
 
@@ -96,8 +97,8 @@ class ExecutionEnhancer:
             "refine:snapped" if "snapped_to" in refined_action.metadata else "refine:unchanged"
         )
 
-        # ── Step 3: Wait for stable UI ────────────────────────────────────────
-        if cfg.enable_timing_control:
+        # ── Step 3: Wait for stable UI (skipped for BASIC level) ──────────────
+        if cfg.enable_timing_control and cfg.level != EnhancerLevel.BASIC:
             stability = await self._timing.wait_for_stable_ui(
                 screenshot_fn,
                 timeout_ms=cfg.stability_timeout_ms,
@@ -109,8 +110,9 @@ class ExecutionEnhancer:
             )
 
         # ── Step 4: Execute ───────────────────────────────────────────────────
-        raw_before = await screenshot_fn()
-        before_frame = np.array(raw_before) if not isinstance(raw_before, np.ndarray) else raw_before
+        if before_frame is None:
+            raw_before = await screenshot_fn()
+            before_frame = np.array(raw_before) if not isinstance(raw_before, np.ndarray) else raw_before
         try:
             success = await execute_fn(refined_action)
         except Exception as exc:
@@ -120,8 +122,8 @@ class ExecutionEnhancer:
         steps.append(f"execute:{'ok' if success else 'fail'}")
 
         # ── Step 5: Verify (simple pixel-diff heuristic) ──────────────────────
-        # Wait 200 ms for UI to update before capturing the verification screenshot.
-        await asyncio.sleep(0.2)
+        # Brief post-action delay (reduced from 200ms; stability already checked)
+        await asyncio.sleep(cfg.post_action_delay_ms / 1000.0)
         raw_after = await screenshot_fn()
         after_frame = np.array(raw_after) if not isinstance(raw_after, np.ndarray) else raw_after
         if success:

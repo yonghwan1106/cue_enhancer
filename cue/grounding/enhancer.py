@@ -7,6 +7,7 @@ import hashlib
 import time
 from typing import Any
 
+import numpy as np
 from PIL import Image
 
 from cue.config import GroundingConfig
@@ -43,6 +44,11 @@ class GroundingEnhancer:
         # Simple dict cache: key -> (result, expiry_timestamp)
         self._cache: dict[str, tuple[GroundingResult, float]] = {}
 
+        # Frame-diff cache: skip re-grounding if screen barely changed
+        self._prev_frame: np.ndarray | None = None
+        self._prev_result: GroundingResult | None = None
+        self._frame_diff_threshold: float = 0.01
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -51,6 +57,19 @@ class GroundingEnhancer:
         self, screenshot: Image.Image, task_context: str = ""
     ) -> GroundingResult:
         """Run all three experts in parallel and return a merged GroundingResult."""
+        # Fast frame-diff: skip re-grounding if screen barely changed
+        frame = np.array(screenshot)
+        if self._prev_frame is not None and self._prev_result is not None:
+            if frame.shape == self._prev_frame.shape:
+                diff = float(
+                    np.mean(
+                        np.abs(frame.astype(np.float32) - self._prev_frame.astype(np.float32))
+                    )
+                    / 255.0
+                )
+                if diff < self._frame_diff_threshold:
+                    return self._prev_result
+
         cache_key = self._cache_key(screenshot, task_context)
         cached = self._get_cached(cache_key)
         if cached is not None:
@@ -90,6 +109,8 @@ class GroundingEnhancer:
         )
 
         self._put_cached(cache_key, result)
+        self._prev_frame = frame
+        self._prev_result = result
         return result
 
     async def locate(
