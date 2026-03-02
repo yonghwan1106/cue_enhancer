@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cue-enhancer"
+version = "0.1.0"
+description = "Computer Use Enhancer - Augmentation layer for Claude Computer Use API"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "CUE Project Team" }]
+
+dependencies = [
+    "anthropic>=0.40.0",
+    "opencv-python>=4.8.0",
+    "pytesseract>=0.3.10",
+    "Pillow>=10.0.0",
+    "numpy>=1.24.0",
+    "scikit-image>=0.21.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "rich>=13.0",
+    "typer>=0.9.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+]
+easyocr = ["easyocr>=1.7"]
+
+[project.scripts]
+cue = "cue.cli:app"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
