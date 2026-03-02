@@ -175,7 +175,7 @@ class AgentConfig(BaseModel):
     timeout_seconds: int = 600
     screenshot_width: int = 1024
     screenshot_height: int = 768
-    model: str = "claude-sonnet-4-6-20250514"
+    model: str = "claude-sonnet-4-6"
     api_betas: list[str] = Field(
         default_factory=lambda: ["computer-use-2025-11-24"]
     )

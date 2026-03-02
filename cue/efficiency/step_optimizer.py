@@ -6,6 +6,9 @@ from typing import Any
 
 from cue.types import OptimizationResult, SubTask
 
+# AppKnowledge may be a dataclass or a dict depending on the caller.
+# We accept both via `Any` and introspect at runtime.
+
 
 class StepOptimizer:
     """Optimize a subtask plan by minimizing steps needed to complete it."""
@@ -13,7 +16,7 @@ class StepOptimizer:
     def optimize_plan(
         self,
         subtasks: list[SubTask],
-        app_knowledge: dict[str, Any] | None = None,
+        app_knowledge: Any = None,
     ) -> tuple[list[SubTask], OptimizationResult]:
         """Apply all optimization passes in sequence.
 
@@ -61,21 +64,29 @@ class StepOptimizer:
     def _apply_keyboard_shortcuts(
         self,
         subtasks: list[SubTask],
-        knowledge: dict[str, Any] | None,
+        knowledge: Any,
     ) -> tuple[list[SubTask], bool]:
         """Replace mouse actions with keyboard shortcuts when reliable enough."""
         if not knowledge:
             return subtasks, False
 
-        shortcuts: dict[str, dict[str, Any]] = knowledge.get("shortcuts", {})
-        if not shortcuts:
+        # Support both dict and AppKnowledge dataclass
+        if isinstance(knowledge, dict):
+            shortcuts_dict: dict[str, dict[str, Any]] = knowledge.get("shortcuts", {})
+        else:
+            # AppKnowledge dataclass: .shortcuts is list[Shortcut]
+            shortcuts_dict = {}
+            for sc in getattr(knowledge, "shortcuts", []):
+                shortcuts_dict[sc.action] = {"key": sc.keys, "reliability": sc.reliability}
+
+        if not shortcuts_dict:
             return subtasks, False
 
         result: list[SubTask] = []
         changed = False
 
         for task in subtasks:
-            shortcut_info = shortcuts.get(task.action_type) or shortcuts.get(
+            shortcut_info = shortcuts_dict.get(task.action_type) or shortcuts_dict.get(
                 task.target
             )
             if (
@@ -128,7 +139,7 @@ class StepOptimizer:
     def _eliminate_redundant_nav(
         self,
         subtasks: list[SubTask],
-        knowledge: dict[str, Any] | None,
+        knowledge: Any,
     ) -> tuple[list[SubTask], bool]:
         """Remove navigation steps that go where we already are, and
         remove standalone verification steps when the preceding step
@@ -168,13 +179,22 @@ class StepOptimizer:
     def _apply_direct_navigation(
         self,
         subtasks: list[SubTask],
-        knowledge: dict[str, Any] | None,
+        knowledge: Any,
     ) -> tuple[list[SubTask], bool]:
         """Replace multi-step scroll sequences with single direct navigation."""
         if len(subtasks) < 2:
             return subtasks, False
 
-        direct_nav = knowledge.get("direct_navigation", {}) if knowledge else {}
+        # Support both dict and AppKnowledge dataclass
+        if not knowledge:
+            direct_nav: dict[str, str] = {}
+        elif isinstance(knowledge, dict):
+            direct_nav = knowledge.get("direct_navigation", {})
+        else:
+            # AppKnowledge dataclass: .navigation is list[DirectNavigation]
+            direct_nav = {}
+            for nav in getattr(knowledge, "navigation", []):
+                direct_nav[nav.target] = nav.method
 
         result: list[SubTask] = []
         changed = False

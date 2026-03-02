@@ -206,8 +206,8 @@ class CUEAgent:
                 # Optimize plan with efficiency engine
                 if self._efficiency and subtasks:
                     app_knowledge = None
-                    if self._planning and self._planning._knowledge:
-                        app_knowledge = self._planning._knowledge.get_knowledge(app_name)
+                    if self._planning and self._planning._kb:
+                        app_knowledge = self._planning._kb.get_knowledge(app_name)
                     subtasks, opt_result = self._efficiency.optimize_plan(
                         subtasks, app_knowledge
                     )
@@ -236,7 +236,7 @@ class CUEAgent:
             messages.append({"role": "assistant", "content": assistant_content})
 
             # Extract action from response
-            action = self._parse_action(assistant_content)
+            action, tool_use_id = self._parse_action(assistant_content)
 
             if action is None:
                 text_response = self._extract_text(assistant_content)
@@ -250,17 +250,24 @@ class CUEAgent:
                 emergency = self._safety.check_emergency(action)
                 if emergency.level.value == "blocked":
                     logger.warning("Emergency stop: %s", emergency.reason)
+                    # Must send tool_result even for blocked actions
+                    if tool_use_id:
+                        messages.append({
+                            "role": "user",
+                            "content": [{"type": "tool_result", "tool_use_id": tool_use_id,
+                                         "content": f"Action blocked by safety gate: {emergency.reason}"}],
+                        })
                     break
                 action_safety = self._safety.check_with_permission(action)
                 if action_safety.level.value == "blocked":
                     logger.warning("Action blocked: %s", action_safety.reason)
                     messages.append({
                         "role": "user",
-                        "content": [{
-                            "type": "text",
-                            "text": f"[CUE Safety] Action blocked: {action_safety.reason}. "
-                                    "Please choose a different approach.",
-                        }],
+                        "content": [
+                            {"type": "tool_result", "tool_use_id": tool_use_id,
+                             "content": f"[CUE Safety] Action blocked: {action_safety.reason}. "
+                                        "Please choose a different approach."},
+                        ],
                     })
                     step_count += 1
                     continue
@@ -318,12 +325,18 @@ class CUEAgent:
                     if traj_ref.decision.value in ("strategy_change", "replan"):
                         logger.warning("Trajectory reflection: strategy change needed")
 
-            # Build result message
+            # Build result message as tool_result for the API
             result_text = self._build_result_text(action_result, verification)
-            messages.append({
-                "role": "user",
-                "content": [{"type": "text", "text": result_text}],
-            })
+            result_content: list[dict[str, Any]] = []
+            if tool_use_id:
+                result_content.append({
+                    "type": "tool_result",
+                    "tool_use_id": tool_use_id,
+                    "content": result_text,
+                })
+            else:
+                result_content.append({"type": "text", "text": result_text})
+            messages.append({"role": "user", "content": result_content})
 
             step_count += 1
             logger.info(
@@ -430,14 +443,14 @@ class CUEAgent:
         cfg = self.config.agent
         api_messages = self._prepare_messages(messages)
 
-        response = await self.client.messages.create(
+        response = await self.client.beta.messages.create(
             model=cfg.model,
             max_tokens=4096,
             system=system,
             messages=api_messages,
             tools=[
                 {
-                    "type": "computer_20241022",
+                    "type": "computer_20251124",
                     "name": "computer",
                     "display_width_px": cfg.screenshot_width,
                     "display_height_px": cfg.screenshot_height,
@@ -523,15 +536,15 @@ class CUEAgent:
 
         return content
 
-    def _parse_action(self, content: Any) -> Action | None:
-        """Extract an Action from Claude's response content."""
+    def _parse_action(self, content: Any) -> tuple[Action | None, str | None]:
+        """Extract an Action and tool_use id from Claude's response content."""
         if not isinstance(content, list):
-            return None
+            return None, None
         for block in content:
             if hasattr(block, "type") and block.type == "tool_use":
                 if block.name == "computer":
-                    return self._tool_input_to_action(block.input)
-        return None
+                    return self._tool_input_to_action(block.input), block.id
+        return None, None
 
     def _tool_input_to_action(self, tool_input: dict) -> Action:
         """Convert Claude's tool_use input to an Action."""

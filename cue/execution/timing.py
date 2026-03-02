@@ -58,7 +58,9 @@ class TimingController:
         last_diff = 0.0
 
         while time.monotonic() < deadline:
-            frame = await screenshot_fn()
+            raw_frame = await screenshot_fn()
+            # Ensure numpy array (screenshot_fn may return PIL Image)
+            frame = np.array(raw_frame) if not isinstance(raw_frame, np.ndarray) else raw_frame
             frames_checked += 1
 
             if prev_frame is not None and prev_frame.shape == frame.shape:

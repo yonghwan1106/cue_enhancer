@@ -108,7 +108,8 @@ class ExecutionEnhancer:
             )
 
         # ── Step 4: Execute ───────────────────────────────────────────────────
-        before_frame = await screenshot_fn()
+        raw_before = await screenshot_fn()
+        before_frame = np.array(raw_before) if not isinstance(raw_before, np.ndarray) else raw_before
         try:
             success = await execute_fn(refined_action)
         except Exception as exc:
@@ -118,7 +119,8 @@ class ExecutionEnhancer:
         steps.append(f"execute:{'ok' if success else 'fail'}")
 
         # ── Step 5: Verify (simple pixel-diff heuristic) ──────────────────────
-        after_frame = await screenshot_fn()
+        raw_after = await screenshot_fn()
+        after_frame = np.array(raw_after) if not isinstance(raw_after, np.ndarray) else raw_after
         if success:
             diff = float(
                 np.mean(
@@ -174,7 +176,8 @@ class ExecutionEnhancer:
         """Return a verify callable that checks whether the screen changed."""
 
         async def _verify() -> bool:
-            after = await screenshot_fn()
+            raw = await screenshot_fn()
+            after = np.array(raw) if not isinstance(raw, np.ndarray) else raw
             if after.shape != before.shape:
                 return True
             diff = float(
