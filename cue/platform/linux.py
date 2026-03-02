@@ -19,7 +19,7 @@ class LinuxEnvironment(EnvironmentAbstraction):
     Dependencies:
     - xdotool: keyboard/mouse automation
     - scrot or import (ImageMagick): screenshot capture
-    - xclip: clipboard access
+    - xsel: clipboard access
     - AT-SPI2 (gi.repository.Atspi): accessibility tree
     """
 
