@@ -45,7 +45,7 @@ class TestGroundingConfig:
 class TestExecutionConfig:
     def test_defaults(self):
         cfg = ExecutionConfig()
-        assert cfg.coordinate_snap_radius == 20
+        assert cfg.coordinate_snap_radius == 10
         assert cfg.enable_pre_validation is True
         assert cfg.enable_fallback_chain is True
         assert cfg.stability_timeout_ms == 3000
@@ -54,7 +54,7 @@ class TestExecutionConfig:
 class TestVerificationConfig:
     def test_defaults(self):
         cfg = VerificationConfig()
-        assert cfg.tier1_ssim_threshold == 0.01
+        assert cfg.tier1_ssim_threshold == 0.005
         assert cfg.tier3_enabled is False
         assert cfg.tier3_max_calls_per_episode == 3
 

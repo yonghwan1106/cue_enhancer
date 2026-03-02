@@ -238,7 +238,7 @@ grounding:
 
 execution:
   level: "full"
-  coordinate_snap_radius: 20
+  coordinate_snap_radius: 10
   enable_fallback_chain: true
   max_fallback_stages: 6
 
@@ -308,7 +308,7 @@ efficiency:
 - `checkpoint.py` — State snapshots for rollback
 - `orchestrator.py` — Tier coordination
 
-**SSIM threshold:** 0.95 (screen changed) vs 0.95+ (no change detected)
+**SSIM diff threshold:** 0.005 (screen changed) vs 0.001 (minor/no change detected)
 
 ### `cue/planning/`
 **Hierarchical planning** with app knowledge base.

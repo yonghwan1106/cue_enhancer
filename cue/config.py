@@ -35,7 +35,7 @@ class ExecutionConfig(BaseModel):
     """Execution Enhancer configuration."""
 
     level: EnhancerLevel = EnhancerLevel.FULL
-    coordinate_snap_radius: int = 20
+    coordinate_snap_radius: int = 10
     enable_pre_validation: bool = True
     enable_timing_control: bool = True
     enable_fallback_chain: bool = True
@@ -49,8 +49,8 @@ class VerificationConfig(BaseModel):
     """Verification Loop configuration."""
 
     level: EnhancerLevel = EnhancerLevel.FULL
-    tier1_ssim_threshold: float = 0.01
-    tier1_minor_threshold: float = 0.002
+    tier1_ssim_threshold: float = 0.005
+    tier1_minor_threshold: float = 0.001
     tier2_pass_score: float = 0.6
     tier2_fail_score: float = 0.2
     tier3_enabled: bool = False  # Phase 2
