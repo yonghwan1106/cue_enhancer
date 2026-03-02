@@ -24,23 +24,36 @@ class LinuxEnvironment(EnvironmentAbstraction):
     """
 
     async def take_screenshot(self, width: int = 1024, height: int = 768) -> Image.Image:
-        proc = await asyncio.create_subprocess_exec(
-            "scrot", "-o", "/tmp/cue_screenshot.png",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        await proc.wait()
+        import os
+        import tempfile
 
-        if proc.returncode != 0:
-            # Fallback to import (ImageMagick)
+        fd, tmp_path = tempfile.mkstemp(suffix=".png", prefix="cue_screenshot_")
+        os.close(fd)
+
+        try:
             proc = await asyncio.create_subprocess_exec(
-                "import", "-window", "root", "/tmp/cue_screenshot.png",
+                "scrot", "-o", tmp_path,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )
             await proc.wait()
 
-        img = Image.open("/tmp/cue_screenshot.png")
+            if proc.returncode != 0:
+                # Fallback to import (ImageMagick)
+                proc = await asyncio.create_subprocess_exec(
+                    "import", "-window", "root", tmp_path,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                )
+                await proc.wait()
+
+            img = Image.open(tmp_path)
+            img.load()  # Force read into memory before deleting temp file
+        finally:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
         if img.size != (width, height):
             img = img.resize((width, height), Image.LANCZOS)
         return img

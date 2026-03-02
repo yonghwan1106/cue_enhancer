@@ -50,7 +50,7 @@ class CUEAgent:
 
     def __init__(self, config: CUEConfig | None = None):
         self.config = config or CUEConfig.load()
-        self.client = anthropic.Anthropic()
+        self.client = anthropic.AsyncAnthropic()
         self._environment = None
         self._grounding = None
         self._execution = None
@@ -154,6 +154,10 @@ class CUEAgent:
             "content": [{"type": "text", "text": f"Task: {task}"}],
         })
 
+        # Safety: start episode timer for emergency stop
+        if self._safety:
+            self._safety.start_episode()
+
         while step_count < max_steps:
             elapsed = time.monotonic() - start_time
             if elapsed > timeout:
@@ -194,10 +198,10 @@ class CUEAgent:
             # Step 5: Planning enhancement (inject subtasks + knowledge + lessons)
             planning_text = ""
             if self._planning and step_count == 0:
-                planning_text = await self._planning.enhance_prompt(
+                planning_text = self._planning.enhance_prompt(
                     task, screen_state, memory_context
                 )
-                subtasks = self._planning._decompose_task(task, app_name)
+                subtasks = self._planning._decompose_task(task, app_name, None)
 
                 # Optimize plan with efficiency engine
                 if self._efficiency and subtasks:
@@ -241,9 +245,13 @@ class CUEAgent:
                 step_count += 1
                 continue
 
-            # Step 7: Safety check (action)
+            # Step 7: Safety check (action) + emergency stop
             if self._safety:
-                action_safety = self._safety.check_action(action)
+                emergency = self._safety.check_emergency(action)
+                if emergency.level.value == "blocked":
+                    logger.warning("Emergency stop: %s", emergency.reason)
+                    break
+                action_safety = self._safety.check_with_permission(action)
                 if action_safety.level.value == "blocked":
                     logger.warning("Action blocked: %s", action_safety.reason)
                     messages.append({
@@ -297,13 +305,17 @@ class CUEAgent:
                 action_ref = await self._reflection.reflect_action(step_record)
                 if action_ref.decision.value == "retry" and action_ref.retry_action:
                     logger.info("Reflection: retrying with adjusted action")
+                    try:
+                        await self._raw_execute(action_ref.retry_action)
+                    except Exception as e:
+                        logger.warning("Reflection retry failed: %s", e)
 
                 # Trajectory reflection every 3 steps
                 if len(step_records) >= 3 and len(step_records) % 3 == 0:
                     traj_ref = await self._reflection.reflect_trajectory(
-                        step_records, task
+                        step_records[-3:], task
                     )
-                    if traj_ref.decision.value == "strategy":
+                    if traj_ref.decision.value in ("strategy_change", "replan"):
                         logger.warning("Trajectory reflection: strategy change needed")
 
             # Build result message
@@ -325,7 +337,7 @@ class CUEAgent:
         elapsed = time.monotonic() - start_time
         task_success = self._is_task_complete(
             self._extract_text(messages[-1].get("content", "")) if messages else ""
-        ) or (step_count < max_steps and elapsed <= timeout)
+        )
 
         if self._memory:
             episode = Episode(
@@ -418,7 +430,7 @@ class CUEAgent:
         cfg = self.config.agent
         api_messages = self._prepare_messages(messages)
 
-        response = self.client.messages.create(
+        response = await self.client.messages.create(
             model=cfg.model,
             max_tokens=4096,
             system=system,
@@ -550,8 +562,8 @@ class CUEAgent:
         except Exception as e:
             return ActionResult(success=False, action_type=action.type, error=str(e))
 
-    async def _raw_execute(self, action: Action) -> None:
-        """Execute a raw action on the environment."""
+    async def _raw_execute(self, action: Action) -> bool:
+        """Execute a raw action on the environment. Returns True on success."""
         env = self._environment
 
         if action.type in ("left_click", "double_click", "right_click"):
@@ -601,6 +613,9 @@ class CUEAgent:
 
         else:
             logger.warning("Unknown action type: %s", action.type)
+            return False
+
+        return True
 
     async def _verify_action(
         self,

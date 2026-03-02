@@ -61,7 +61,7 @@ class ReflectionEngine:
     async def reflect_trajectory(
         self,
         recent_steps: list[StepRecord],
-        subtask: SubTask,
+        task_context: str | SubTask | None = None,
     ) -> TrajectoryReflection:
         """Reflect on the recent trajectory and decide if replanning is needed."""
         window = recent_steps[-self.TRAJECTORY_CHECK_INTERVAL:]

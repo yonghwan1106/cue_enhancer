@@ -190,10 +190,10 @@ class MetricsCollector:
             by_app.setdefault(task.app, []).append(m.success)
 
         result.by_difficulty = {
-            diff: sum(vals) / len(vals) for diff, vals in by_difficulty.items()
+            diff: sum(vals) / len(vals) * 100.0 for diff, vals in by_difficulty.items()
         }
         result.by_app = {
-            app: sum(vals) / len(vals) for app, vals in by_app.items()
+            app: sum(vals) / len(vals) * 100.0 for app, vals in by_app.items()
         }
         return result
 

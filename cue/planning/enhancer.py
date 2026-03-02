@@ -116,7 +116,7 @@ class PlanningEnhancer:
         self,
         task: str,
         app: str,
-        knowledge: AppKnowledge | None,
+        knowledge: AppKnowledge | None = None,
     ) -> list[SubTask]:
         """Call TaskPlanner with knowledge context."""
         return self._planner.decompose(task, app=app, knowledge=knowledge)

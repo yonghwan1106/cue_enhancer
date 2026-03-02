@@ -50,7 +50,7 @@ class Tier3Verifier:
             before_b64 = self._encode_image(before_screenshot)
             after_b64 = self._encode_image(after_screenshot)
 
-            response = self.client.messages.create(
+            response = await self.client.messages.create(
                 model=self.model,
                 max_tokens=150,
                 messages=[{

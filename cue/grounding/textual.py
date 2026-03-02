@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 from PIL import Image
 
 from cue.types import TextElement
@@ -37,7 +39,8 @@ class TextGrounder:
         except ImportError:
             return []
 
-        data = pytesseract.image_to_data(
+        data = await asyncio.to_thread(
+            pytesseract.image_to_data,
             screenshot,
             config="--psm 11",
             output_type=pytesseract.Output.DICT,
@@ -85,7 +88,9 @@ class TextGrounder:
         import numpy as np
 
         img_array = np.array(screenshot.convert("RGB"))
-        raw_results = self._easyocr_reader.readtext(img_array)  # type: ignore[union-attr]
+        raw_results = await asyncio.to_thread(
+            self._easyocr_reader.readtext, img_array  # type: ignore[union-attr]
+        )
 
         elements: list[TextElement] = []
         for bbox_pts, text, conf in raw_results:

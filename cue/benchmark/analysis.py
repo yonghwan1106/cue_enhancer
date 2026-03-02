@@ -91,7 +91,7 @@ class FailureAnalyzer:
         """Generate a text report from a JSON-serialized BenchmarkResult dict."""
         lines = [
             f"Suite: {data.get('suite_name', 'unknown')}",
-            f"Success rate: {data.get('success_rate', 0):.1%}",
+            f"Success rate: {data.get('success_rate', 0):.1f}%",
             f"Total tasks: {data.get('total_tasks', 0)}",
             f"Successful: {data.get('successful_tasks', 0)}",
             "",
