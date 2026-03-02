@@ -8,18 +8,19 @@ Phase 3: Agent Memory Integration (requires ANTHROPIC_API_KEY)
 from __future__ import annotations
 
 import asyncio
-import io
 import os
 import sys
 import tempfile
 import time
 import uuid
 
-# Force UTF-8 output on Windows (cp949 cannot encode box-drawing / em-dash chars).
-if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf8"):
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+# Force UTF-8 on Windows before any print() calls.
+# cp949 (Korean locale) cannot encode em-dashes that appear in engine reason strings.
+os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
 
 os.environ.setdefault("DISPLAY", ":99")
 
@@ -406,7 +407,7 @@ async def phase3_agent_integration() -> None:
     from cue.config import AgentConfig, CUEConfig, MemoryConfig
     from cue.memory import ThreeLayerMemory
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
         mem_config = MemoryConfig(db_dir=tmpdir)
         memory = ThreeLayerMemory(mem_config)
 
@@ -429,10 +430,8 @@ async def phase3_agent_integration() -> None:
         print("  --- Run 1 ---")
         try:
             from cue.agent import CUEAgent
-            from cue.platform.linux import LinuxEnvironment
 
-            env1 = LinuxEnvironment()
-            agent1 = CUEAgent(config=cfg, env=env1, memory=memory)
+            agent1 = CUEAgent(config=cfg)
             result1 = await agent1.run(task)
 
             check("3", "Run 1 completes",
@@ -458,8 +457,7 @@ async def phase3_agent_integration() -> None:
         # --- Run 2 ---
         print("  --- Run 2 ---")
         try:
-            env2 = LinuxEnvironment()
-            agent2 = CUEAgent(config=cfg, env=env2, memory=memory)
+            agent2 = CUEAgent(config=cfg)
             result2 = await agent2.run(task)
 
             check("3", "Run 2 completes",
