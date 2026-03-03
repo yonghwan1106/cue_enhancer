@@ -44,6 +44,9 @@ class ExecutionConfig(BaseModel):
     stability_poll_interval_ms: int = 100
     post_action_delay_ms: int = 50
     max_fallback_stages: int = 6
+    enable_zoom_reground: bool = True
+    use_precise_drag: bool = True
+    drag_step_delay_ms: int = 50
 
 
 class VerificationConfig(BaseModel):

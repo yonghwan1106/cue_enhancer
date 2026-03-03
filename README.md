@@ -3,6 +3,7 @@
 **모델을 바꾸지 않고, 모델이 더 잘 보고 · 판단하고 · 행동하도록 돕는 증강 레이어**
 *An augmentation layer that helps Claude see better, plan better, and act better — without changing the model.*
 
+[![CI](https://github.com/yonghwan1106/cue_enhancer/actions/workflows/ci.yml/badge.svg)](https://github.com/yonghwan1106/cue_enhancer/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776ab.svg)](https://www.python.org/)
 [![Claude API](https://img.shields.io/badge/Claude-Computer%20Use%20API-d97706.svg)](https://docs.anthropic.com/en/docs/computer-use)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from cue.execution.coordinator import CoordinateRefiner
+from cue.execution.drag import PreciseDragExecutor
 from cue.execution.enhancer import ExecutionEnhancer
 from cue.execution.fallback import FallbackChain
 from cue.execution.timing import AppTimingProfile, TimingController
@@ -15,4 +16,5 @@ __all__ = [
     "TimingController",
     "AppTimingProfile",
     "FallbackChain",
+    "PreciseDragExecutor",
 ]

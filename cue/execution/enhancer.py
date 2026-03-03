@@ -97,6 +97,15 @@ class ExecutionEnhancer:
             "refine:snapped" if "snapped_to" in refined_action.metadata else "refine:unchanged"
         )
 
+        # ── Step 2b: Zoom refinement if suggested ─────────────────────────────
+        if cfg.enable_zoom_reground and refined_action.metadata.get("suggest_zoom"):
+            refined_action = await self._refiner.zoom_and_refine(
+                refined_action, elements, execute_fn, screenshot_fn,
+            )
+            steps.append(
+                "zoom:" + ("refined" if refined_action.metadata.get("zoom_refined") else "unchanged")
+            )
+
         # ── Step 3: Wait for stable UI (skipped for BASIC level) ──────────────
         if cfg.enable_timing_control and cfg.level != EnhancerLevel.BASIC:
             stability = await self._timing.wait_for_stable_ui(

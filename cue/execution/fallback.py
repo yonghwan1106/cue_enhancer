@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Callable, Awaitable, Any
 
 from cue.types import Action, ActionResult, ElementMap
+from cue.execution.drag import PreciseDragExecutor
 
 # Common keyboard shortcuts for menu/command labels.
 _SHORTCUTS: dict[str, str] = {
@@ -39,6 +40,9 @@ class FallbackChain:
 
     Each stage is tried in order; the chain stops at the first success.
     """
+
+    def __init__(self) -> None:
+        self._drag_executor = PreciseDragExecutor()
 
     async def try_fallbacks(
         self,
