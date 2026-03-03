@@ -212,7 +212,7 @@ class MetricsCollector:
     def to_markdown(self, result: BenchmarkResult) -> str:
         """Generate a markdown report table for a BenchmarkResult."""
         lines = [
-            f"# Benchmark Report — {result.suite_name}",
+            f"# Benchmark Report - {result.suite_name}",
             "",
             f"**Config**: {result.config_name}  ",
             f"**Total tasks**: {result.total_tasks}  ",

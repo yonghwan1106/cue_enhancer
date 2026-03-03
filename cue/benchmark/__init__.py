@@ -8,6 +8,7 @@ from cue.benchmark.analysis import FailureAnalyzer
 from cue.benchmark.metrics import MetricsCollector
 from cue.benchmark.checkers import SuccessChecker
 from cue.benchmark.task_loader import TaskLoader
+from cue.benchmark.env_extractor import EnvStateExtractor
 
 __all__ = [
     "BenchmarkRunner",
@@ -16,4 +17,5 @@ __all__ = [
     "MetricsCollector",
     "SuccessChecker",
     "TaskLoader",
+    "EnvStateExtractor",
 ]
